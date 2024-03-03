@@ -47,7 +47,7 @@ func HasAPIKey(next http.Handler) http.Handler {
 	})
 }
 
-func HasRoleInFacility(w http.ResponseWriter, r *http.Request, facility string, role ...constants.RoleID) bool {
+func HasRoleInFacility(w http.ResponseWriter, r *http.Request, facility constants.FacilityID, role ...constants.RoleID) bool {
 	user := GetSelfUser(r)
 
 	for _, userRole := range user.Roles {
