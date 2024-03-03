@@ -3,17 +3,16 @@ package models
 import (
 	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database"
-	"gorm.io/gorm"
 	"time"
 )
 
 type UserRole struct {
-	ID         uint             `json:"id" gorm:"primaryKey" example:"1"`
-	CID        uint             `json:"cid" example:"1293257"`
-	RoleID     constants.RoleID `json:"role" gorm:"type:varchar(10)" example:"ATM"`
-	FacilityID string           `json:"facility_id" example:"ZDV"`
-	CreatedAt  time.Time        `json:"created_at" example:"2021-01-01T00:00:00Z"`
-	UpdatedAt  time.Time        `json:"updated_at" example:"2021-01-01T00:00:00Z"`
+	ID         uint                 `json:"id" gorm:"primaryKey" example:"1"`
+	CID        uint                 `json:"cid" example:"1293257"`
+	RoleID     constants.RoleID     `json:"role" gorm:"type:varchar(10)" example:"ATM"`
+	FacilityID constants.FacilityID `json:"facility_id" example:"ZDV"`
+	CreatedAt  time.Time            `json:"created_at" example:"2021-01-01T00:00:00Z"`
+	UpdatedAt  time.Time            `json:"updated_at" example:"2021-01-01T00:00:00Z"`
 }
 
 func (ur *UserRole) Create() error {
@@ -37,39 +36,36 @@ func GetAllUserRoles() ([]UserRole, error) {
 	return userRoles, database.DB.Find(&userRoles).Error
 }
 
-func GetAllUserRolesByCID(db *gorm.DB, cid uint) ([]UserRole, error) {
+func GetAllUserRolesByCID(cid uint) ([]UserRole, error) {
 	var userRoles []UserRole
 	return userRoles, database.DB.Where("cid = ?", cid).Find(&userRoles).Error
 }
 
-func GetAllUserRolesByRoleID(db *gorm.DB, roleID string) ([]UserRole, error) {
+func GetAllUserRolesByRoleID(roleID string) ([]UserRole, error) {
 	var userRoles []UserRole
 	return userRoles, database.DB.Where("role_id = ?", roleID).Find(&userRoles).Error
 }
 
-func GetAllUserRolesByFacilityID(db *gorm.DB, facilityID string) ([]UserRole, error) {
+func GetAllUserRolesByFacilityID(facilityID string) ([]UserRole, error) {
 	var userRoles []UserRole
 	return userRoles, database.DB.Where("facility_id = ?", facilityID).Find(&userRoles).Error
 }
 
-func CanModifyRole(user *User, role constants.RoleID) bool {
-	return HasRoleList(user, role.RolesCanAdd())
-}
-
-func HasRoleList(user *User, roles []constants.RoleID) bool {
-	for _, role := range roles {
-		if HasRole(user, role) {
-			return true
-		}
+func CanModifyRole(user *User, role constants.RoleID, facilityId constants.FacilityID) bool {
+	managementType := role.ManagementType()
+	if managementType == constants.DivisionManagementManaged {
+		return user.HasRoleAnyFacility(constants.DivisionManagementRole)
+	} else if managementType == constants.DivisionManaged {
+		return user.HasRoleListAnyFacility([]constants.RoleID{
+			constants.DivisionManagementRole,
+			constants.DivisionStaffRole,
+		})
+	} else if managementType == constants.FacilityManaged {
+		return user.HasRoleListAnyFacility([]constants.RoleID{
+			constants.DivisionManagementRole,
+			constants.DivisionStaffRole,
+		}) || user.HasRoleListAtFacility(role.FacilityManagerRoles(), facilityId)
 	}
-	return false
-}
 
-func HasRole(user *User, role constants.RoleID) bool {
-	for _, r := range user.Roles {
-		if r.RoleID == role {
-			return true
-		}
-	}
 	return false
 }
