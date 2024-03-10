@@ -2,7 +2,9 @@ package user
 
 import (
 	"context"
+	"github.com/VATUSA/primary-api/internal/v1/roster"
 	user_flag "github.com/VATUSA/primary-api/internal/v1/user-flag"
+	user_role "github.com/VATUSA/primary-api/internal/v1/user-role"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/chi/v5"
@@ -21,8 +23,14 @@ func Router(r chi.Router) {
 		r.Put("/", UpdateUser)
 		r.Patch("/", PatchUser)
 		r.Delete("/", DeleteUser)
+		r.Route("/roster", func(r chi.Router) {
+			roster.Router(r)
+		})
 		r.Route("/user-flag", func(r chi.Router) {
 			user_flag.Router(r)
+		})
+		r.Route("/role", func(r chi.Router) {
+			user_role.Router(r)
 		})
 	})
 }

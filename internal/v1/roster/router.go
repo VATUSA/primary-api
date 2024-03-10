@@ -9,8 +9,8 @@ import (
 )
 
 func Router(r chi.Router) {
-	r.Get("/", ListRoster)
 	r.Post("/", CreateRoster)
+	r.Get("/", ListRoster)
 	r.Route("/{RosterID}", func(r chi.Router) {
 		r.Use(Ctx)
 		r.Get("/", GetRoster)
@@ -42,8 +42,4 @@ func Ctx(next http.Handler) http.Handler {
 		ctx := context.WithValue(r.Context(), "roster", roster)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
-}
-
-func GetRosterCtx(r *http.Request) *models.Roster {
-	return r.Context().Value("roster").(*models.Roster)
 }

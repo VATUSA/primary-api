@@ -95,7 +95,18 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO - Create User-Flag
+	userflag := &models.UserFlag{
+		CID:            user.CID,
+		NoStaffRole:    false,
+		NoVisiting:     false,
+		NoTransferring: false,
+		NoTraining:     false,
+	}
+	if err := userflag.Create(); err != nil {
+		render.Render(w, r, utils.ErrInternalServer)
+		return
+
+	}
 
 	render.Status(r, http.StatusCreated)
 	render.Render(w, r, NewUserResponse(user))

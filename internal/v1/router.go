@@ -10,7 +10,6 @@ import (
 	"github.com/VATUSA/primary-api/internal/v1/news"
 	"github.com/VATUSA/primary-api/internal/v1/notification"
 	rating_change "github.com/VATUSA/primary-api/internal/v1/rating-change"
-	"github.com/VATUSA/primary-api/internal/v1/roster"
 	roster_request "github.com/VATUSA/primary-api/internal/v1/roster-request"
 	"github.com/VATUSA/primary-api/internal/v1/user"
 	user_role "github.com/VATUSA/primary-api/internal/v1/user-role"
@@ -54,10 +53,6 @@ func Router(r chi.Router, cfg *config.Config) {
 
 		r.Route("/rating-change", func(r chi.Router) {
 			rating_change.Router(r)
-		})
-
-		r.Route("/roster", func(r chi.Router) {
-			roster.Router(r)
 		})
 
 		r.Route("/roster-request", func(r chi.Router) {

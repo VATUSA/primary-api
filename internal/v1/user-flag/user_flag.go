@@ -64,7 +64,7 @@ func NewUserFlagListResponse(r []models.UserFlag) []render.Renderer {
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 404 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /user/{cid}/user-flag/ [get]
+// @Router /user/{cid}/user-flag [get]
 func GetUserFlag(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewUserFlagResponse(utils.GetUserFlagCtx(r)))
 }
@@ -81,7 +81,7 @@ func GetUserFlag(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 404 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /user/{cid}/user-flag/ [put]
+// @Router /user/{cid}/user-flag [put]
 func UpdateUserFlag(w http.ResponseWriter, r *http.Request) {
 	req := &Request{}
 	if err := req.Bind(r); err != nil {
@@ -124,7 +124,7 @@ func UpdateUserFlag(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 404 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /user/{cid}/user-flag/ [patch]
+// @Router /user/{cid}/user-flag [patch]
 func PatchUserFlag(w http.ResponseWriter, r *http.Request) {
 	req := &Request{}
 	if err := req.Bind(r); err != nil {
@@ -176,7 +176,7 @@ func PatchUserFlag(w http.ResponseWriter, r *http.Request) {
 // @Success 204
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /user/{cid}/user-flag/ [delete]
+// @Router /user/{cid}/user-flag [delete]
 func DeleteUserFlag(w http.ResponseWriter, r *http.Request) {
 	userFlag := utils.GetUserFlagCtx(r)
 	if err := userFlag.Delete(); err != nil {

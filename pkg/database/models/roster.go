@@ -2,8 +2,8 @@ package models
 
 import (
 	"errors"
+	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database"
-	"gorm.io/gorm"
 	"time"
 )
 
@@ -15,7 +15,7 @@ type Roster struct {
 	Home      bool       `json:"home" example:"true"`
 	Visiting  bool       `json:"visiting" example:"false"`
 	Status    string     `json:"status" example:"Active"` // Active, LOA
-	Roles     []UserRole `json:"roles" gorm:"foreignKey:ID"`
+	Roles     []UserRole `json:"roles" gorm:"foreignKey:RosterID"`
 	CreatedAt time.Time  `json:"created_at" example:"2021-01-01T00:00:00Z"`
 	UpdatedAt time.Time  `json:"updated_at" example:"2021-01-01T00:00:00Z"`
 	DeletedAt time.Time  `json:"deleted_at" example:"2021-01-01T00:00:00Z"` // Soft Deletes for logging
@@ -59,17 +59,34 @@ func (r *Roster) Get() error {
 	return database.DB.Where("id = ?", r.ID).First(r).Error
 }
 
-func GetAllRosters() ([]Roster, error) {
+func GetRosterByFacilityAndCID(facility constants.FacilityID, cid uint) (Roster, error) {
+	var roster Roster
+	return roster, database.DB.Where("facility = ? AND cid = ?", facility, cid).First(&roster).Error
+}
+
+func GetRosters() ([]Roster, error) {
 	var rosters []Roster
 	return rosters, database.DB.Find(&rosters).Error
 }
 
-func GetAllRostersByCID(db *gorm.DB, cid uint) ([]Roster, error) {
+func GetRostersByCID(cid uint) ([]Roster, error) {
 	var rosters []Roster
-	return rosters, db.Where("cid = ?", cid).Find(&rosters).Error
+	return rosters, database.DB.Where("cid = ?", cid).Find(&rosters).Error
 }
 
-func GetAllRostersByFacility(db *gorm.DB, facility string) ([]Roster, error) {
+func GetRostersByFacility(facility string) ([]Roster, error) {
 	var rosters []Roster
-	return rosters, db.Where("facility = ?", facility).Find(&rosters).Error
+	return rosters, database.DB.Where("facility = ?", facility).Find(&rosters).Error
+}
+
+func GetRostersByFacilityAndType(facility, rosterType string) ([]Roster, error) {
+	var rosters []Roster
+
+	if rosterType == "home" {
+		return rosters, database.DB.Where("facility = ? AND home = ?", facility, true).Find(&rosters).Error
+	} else if rosterType == "visiting" {
+		return rosters, database.DB.Where("facility = ? AND visiting = ?", facility, true).Find(&rosters).Error
+	} else {
+		return rosters, errors.New("invalid roster type")
+	}
 }

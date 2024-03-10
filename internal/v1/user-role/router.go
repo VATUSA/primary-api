@@ -14,7 +14,6 @@ func Router(r chi.Router) {
 	r.Route("/{UserRoleID}", func(r chi.Router) {
 		r.Use(Ctx)
 		r.Get("/", GetUserRole)
-		r.Put("/", UpdateUserRole)
 		r.Delete("/", DeleteUserRole)
 	})
 }
@@ -43,8 +42,4 @@ func Ctx(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 
-}
-
-func GetUserRoleCtx(r *http.Request) *models.UserRole {
-	return r.Context().Value("userRole").(*models.UserRole)
 }

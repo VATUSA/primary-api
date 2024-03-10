@@ -12,6 +12,7 @@ type UserRole struct {
 	CID        uint                 `json:"cid" example:"1293257"`
 	RoleID     constants.RoleID     `json:"role" gorm:"type:varchar(10)" example:"ATM"`
 	FacilityID constants.FacilityID `json:"facility_id" example:"ZDV"`
+	RosterID   uint                 `json:"roster_id" example:"1"`
 	CreatedAt  time.Time            `json:"created_at" example:"2021-01-01T00:00:00Z"`
 	UpdatedAt  time.Time            `json:"updated_at" example:"2021-01-01T00:00:00Z"`
 }

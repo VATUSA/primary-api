@@ -524,6 +524,9 @@ definitions:
         allOf:
         - $ref: '#/definitions/constants.RoleID'
         example: ATM
+      roster_id:
+        example: 1
+        type: integer
       updated_at:
         example: "2021-01-01T00:00:00Z"
         type: string
@@ -670,9 +673,6 @@ definitions:
     type: object
   roster.Request:
     properties:
-      cid:
-        example: 1293257
-        type: integer
       facility:
         example: ZDV
         type: string
@@ -693,7 +693,6 @@ definitions:
         example: false
         type: boolean
     required:
-    - cid
     - facility
     - operating_initials
     - status
@@ -996,9 +995,6 @@ definitions:
     type: object
   user_role.Request:
     properties:
-      cid:
-        example: 1293257
-        type: integer
       facility_id:
         allOf:
         - $ref: '#/definitions/constants.FacilityID'
@@ -1008,7 +1004,6 @@ definitions:
         - $ref: '#/definitions/constants.RoleID'
         example: ATM
     required:
-    - cid
     - facility_id
     - role_id
     type: object
@@ -1031,6 +1026,9 @@ definitions:
         allOf:
         - $ref: '#/definitions/constants.RoleID'
         example: ATM
+      roster_id:
+        example: 1
+        type: integer
       updated_at:
         example: "2021-01-01T00:00:00Z"
         type: string
@@ -1902,6 +1900,44 @@ paths:
       summary: Update a facility log entry
       tags:
       - facility-log
+  /facility/{facility}/roster:
+    get:
+      consumes:
+      - application/json
+      description: Get rosters by facility
+      parameters:
+      - description: Facility
+        in: path
+        name: facility
+        required: true
+        type: string
+      - description: Type
+        enum:
+        - home
+        - visiting
+        in: query
+        name: type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/roster.Response'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Get rosters by facility
+      tags:
+      - roster
   /faq:
     get:
       consumes:
@@ -2807,60 +2843,6 @@ paths:
       summary: Update a rating change
       tags:
       - rating-change
-  /roster:
-    get:
-      consumes:
-      - application/json
-      description: List rosters
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/roster.Response'
-            type: array
-        "422":
-          description: Unprocessable Entity
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: List rosters
-      tags:
-      - roster
-    post:
-      consumes:
-      - application/json
-      description: Create a new roster
-      parameters:
-      - description: Roster
-        in: body
-        name: roster
-        required: true
-        schema:
-          $ref: '#/definitions/roster.Request'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/roster.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Create a new roster
-      tags:
-      - roster
   /roster-request:
     get:
       consumes:
@@ -3012,101 +2994,6 @@ paths:
       summary: Update a roster request
       tags:
       - roster-request
-  /roster/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete a roster
-      parameters:
-      - description: Roster ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Delete a roster
-      tags:
-      - roster
-    get:
-      consumes:
-      - application/json
-      description: Get a roster
-      parameters:
-      - description: Roster ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/roster.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Get a roster
-      tags:
-      - roster
-    put:
-      consumes:
-      - application/json
-      description: Update a roster
-      parameters:
-      - description: Roster ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Roster
-        in: body
-        name: roster
-        required: true
-        schema:
-          $ref: '#/definitions/roster.Request'
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Update a roster
-      tags:
-      - roster
   /user:
     get:
       consumes:
@@ -3163,167 +3050,6 @@ paths:
       summary: Create a new user
       tags:
       - user
-  /user-roles:
-    delete:
-      consumes:
-      - application/json
-      description: Delete a user role
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Delete a user role
-      tags:
-      - user-roles
-    get:
-      consumes:
-      - application/json
-      description: List user roles
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/user_role.Response'
-            type: array
-        "422":
-          description: Unprocessable Entity
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: List user roles
-      tags:
-      - user-roles
-    patch:
-      consumes:
-      - application/json
-      description: Patch a user role
-      parameters:
-      - description: User Role
-        in: body
-        name: user_role
-        required: true
-        schema:
-          $ref: '#/definitions/user_role.Request'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/user_role.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Patch a user role
-      tags:
-      - user-roles
-    post:
-      consumes:
-      - application/json
-      description: Create a new user role
-      parameters:
-      - description: User Role
-        in: body
-        name: user_role
-        required: true
-        schema:
-          $ref: '#/definitions/user_role.Request'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/user_role.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Create a new user role
-      tags:
-      - user-roles
-    put:
-      consumes:
-      - application/json
-      description: Update a user role
-      parameters:
-      - description: User Role
-        in: body
-        name: user_role
-        required: true
-        schema:
-          $ref: '#/definitions/user_role.Request'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/user_role.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Update a user role
-      tags:
-      - user-roles
-  /user-roles/{id}:
-    get:
-      consumes:
-      - application/json
-      description: Get a user role
-      parameters:
-      - description: User Role ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/user_role.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Get a user role
-      tags:
-      - user-roles
   /user/{cid}:
     delete:
       consumes:
@@ -3447,7 +3173,312 @@ paths:
       summary: Update a user
       tags:
       - user
-  /user/{cid}/user-flag/:
+  /user/{cid}/role:
+    get:
+      consumes:
+      - application/json
+      description: List user roles
+      parameters:
+      - description: User CID
+        in: path
+        name: cid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/user_role.Response'
+            type: array
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: List user roles
+      tags:
+      - user-roles
+    post:
+      consumes:
+      - application/json
+      description: Create a new user role
+      parameters:
+      - description: User CID
+        in: path
+        name: cid
+        required: true
+        type: integer
+      - description: User Role
+        in: body
+        name: user_role
+        required: true
+        schema:
+          $ref: '#/definitions/user_role.Request'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/user_role.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Create a new user role
+      tags:
+      - user-roles
+  /user/{cid}/role/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a user role
+      parameters:
+      - description: User CID
+        in: path
+        name: cid
+        required: true
+        type: integer
+      - description: User Role ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Delete a user role
+      tags:
+      - user-roles
+    get:
+      consumes:
+      - application/json
+      description: Get a user role
+      parameters:
+      - description: User CID
+        in: path
+        name: cid
+        required: true
+        type: integer
+      - description: User Role ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_role.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Get a user role
+      tags:
+      - user-roles
+  /user/{cid}/roster:
+    get:
+      consumes:
+      - application/json
+      description: List rosters for a user
+      parameters:
+      - description: User CID
+        in: path
+        name: cid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/roster.Response'
+            type: array
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: List rosters for a user
+      tags:
+      - roster
+    post:
+      consumes:
+      - application/json
+      description: Create a new roster
+      parameters:
+      - description: User CID
+        in: path
+        name: cid
+        required: true
+        type: integer
+      - description: Roster
+        in: body
+        name: roster
+        required: true
+        schema:
+          $ref: '#/definitions/roster.Request'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/roster.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Create a new roster
+      tags:
+      - roster
+  /user/{cid}/roster/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a roster
+      parameters:
+      - description: User CID
+        in: path
+        name: cid
+        required: true
+        type: integer
+      - description: Roster ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Delete a roster
+      tags:
+      - roster
+    get:
+      consumes:
+      - application/json
+      description: Get a roster
+      parameters:
+      - description: User CID
+        in: path
+        name: cid
+        required: true
+        type: integer
+      - description: Roster ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/roster.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Get a roster
+      tags:
+      - roster
+    put:
+      consumes:
+      - application/json
+      description: Update a roster
+      parameters:
+      - description: User CID
+        in: path
+        name: cid
+        required: true
+        type: integer
+      - description: Roster ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Roster
+        in: body
+        name: roster
+        required: true
+        schema:
+          $ref: '#/definitions/roster.Request'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Update a roster
+      tags:
+      - roster
+  /user/{cid}/user-flag:
     delete:
       consumes:
       - application/json
