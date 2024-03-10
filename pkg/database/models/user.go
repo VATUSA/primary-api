@@ -1,9 +1,7 @@
 package models
 
 import (
-	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database"
-	"slices"
 	"strings"
 	"time"
 )
@@ -47,14 +45,14 @@ func (u *User) Delete() error {
 
 func (u *User) Get() error {
 	if u.Email != "" {
-		return database.DB.Where("email = ?", u.Email).Preload("Roles").First(u).Error
+		return database.DB.Where("email = ?", u.Email).First(u).Error
 	}
 
 	if u.DiscordID != "" {
-		return database.DB.Where("discord_id = ?", u.DiscordID).Preload("Roles").First(u).Error
+		return database.DB.Where("discord_id = ?", u.DiscordID).First(u).Error
 	}
 
-	return database.DB.Where("c_id = ?", u.CID).Preload("Roles").First(u).Error
+	return database.DB.Where("c_id = ?", u.CID).First(u).Error
 }
 
 func GetAllUsers() ([]User, error) {
@@ -87,40 +85,4 @@ func IsValidUser(cid uint) bool {
 		return false
 	}
 	return true
-}
-
-func (u *User) HasRoleAnyFacility(roleId constants.RoleID) bool {
-	for _, userRole := range u.Roles {
-		if userRole.RoleID == roleId {
-			return true
-		}
-	}
-	return false
-}
-
-func (u *User) HasRoleListAnyFacility(roleIds []constants.RoleID) bool {
-	for _, userRole := range u.Roles {
-		if slices.Contains(roleIds, userRole.RoleID) {
-			return true
-		}
-	}
-	return false
-}
-
-func (u *User) HasRoleAtFacility(roleId constants.RoleID, facilityId constants.FacilityID) bool {
-	for _, userRole := range u.Roles {
-		if userRole.RoleID == roleId && userRole.FacilityID == facilityId {
-			return true
-		}
-	}
-	return false
-}
-
-func (u *User) HasRoleListAtFacility(roleIds []constants.RoleID, facilityId constants.FacilityID) bool {
-	for _, userRole := range u.Roles {
-		if slices.Contains(roleIds, userRole.RoleID) && userRole.FacilityID == facilityId {
-			return true
-		}
-	}
-	return false
 }

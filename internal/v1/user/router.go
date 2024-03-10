@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	user_flag "github.com/VATUSA/primary-api/internal/v1/user-flag"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/chi/v5"
@@ -20,6 +21,9 @@ func Router(r chi.Router) {
 		r.Put("/", UpdateUser)
 		r.Patch("/", PatchUser)
 		r.Delete("/", DeleteUser)
+		r.Route("/user-flag", func(r chi.Router) {
+			user_flag.Router(r)
+		})
 	})
 }
 
@@ -47,8 +51,4 @@ func Ctx(next http.Handler) http.Handler {
 		ctx := context.WithValue(r.Context(), "user", user)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
-}
-
-func GetUserCtx(r *http.Request) *models.User {
-	return r.Context().Value("user").(*models.User)
 }

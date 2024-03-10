@@ -36,6 +36,110 @@ definitions:
         example: '''1234567'' or ''System'''
         type: string
     type: object
+  constants.FacilityID:
+    enum:
+    - ZAE
+    - ZHQ
+    - ZZN
+    - ZZI
+    - ZAB
+    - ZAN
+    - ZTL
+    - ZBW
+    - ZAU
+    - ZOB
+    - ZDV
+    - ZFW
+    - HCF
+    - ZHU
+    - ZID
+    - ZJX
+    - ZKC
+    - ZLA
+    - ZME
+    - ZMA
+    - ZMP
+    - ZNY
+    - ZOA
+    - ZLC
+    - ZSE
+    - ZDC
+    type: string
+    x-enum-varnames:
+    - AcademyFacility
+    - HeadquartersFacility
+    - NonMemberFacility
+    - InactiveFacility
+    - AlbuquerqueFacility
+    - AnchorageFacility
+    - AtlantaFacility
+    - BostonFacility
+    - ChicagoFacility
+    - ClevelandFacility
+    - DenverFacility
+    - FortWorthFacility
+    - HonoluluFacility
+    - HoustonFacility
+    - IndianapolisFacility
+    - JacksonvilleFacility
+    - KansasCityFacility
+    - LosAngelesFacility
+    - MemphisFacility
+    - MiamiFacility
+    - MinneapolisFacility
+    - NewYorkFacility
+    - OaklandFacility
+    - SaltLakeFacility
+    - SeattleFacility
+    - WashingtonFacility
+  constants.RoleID:
+    enum:
+    - ATM
+    - DATM
+    - TA
+    - EC
+    - AEC
+    - FE
+    - AFE
+    - WM
+    - AWM
+    - INS
+    - MTR
+    - DIVISION_STAFF
+    - DIVISION_MANAGEMENT
+    - DEV
+    - ACE
+    - NTMS
+    - NTMT
+    - SMT
+    - TCT
+    - CBT
+    - FACCBT
+    - EMAIL
+    type: string
+    x-enum-varnames:
+    - AirTrafficManagerRole
+    - DeputyAirTrafficManagerRole
+    - TrainingAdministratorRole
+    - EventCoordinatorRole
+    - AssistantEventCoordinatorRole
+    - FacilityEngineerRole
+    - AssistantFacilityEngineerRole
+    - WebMasterRole
+    - AssistantWebMasterRole
+    - InstructorRole
+    - MentorRole
+    - DivisionStaffRole
+    - DivisionManagementRole
+    - DeveloperTeamRole
+    - AceTeamRole
+    - NTMSRole
+    - NTMTRole
+    - SocialMediaTeam
+    - TrainingContentTeam
+    - AcademyMaterialEditor
+    - FacilityMaterialEditor
+    - EmailUser
   disciplinary_log.Request:
     properties:
       cid:
@@ -316,21 +420,6 @@ definitions:
         example: "2021-01-01T00:00:00Z"
         type: string
     type: object
-  models.Role:
-    properties:
-      created_at:
-        example: "2021-01-01T00:00:00Z"
-        type: string
-      name:
-        example: Air Traffic Manager
-        type: string
-      role:
-        example: ATM
-        type: string
-      updated_at:
-        example: "2021-01-01T00:00:00Z"
-        type: string
-    type: object
   models.User:
     properties:
       cid:
@@ -376,10 +465,6 @@ definitions:
       preferred_ois:
         example: RP
         type: string
-      roles:
-        items:
-          $ref: '#/definitions/models.UserRole'
-        type: array
       updated_at:
         example: "2021-01-01T00:00:00Z"
         type: string
@@ -392,9 +477,6 @@ definitions:
       created_at:
         example: "2021-01-01T00:00:00Z"
         type: string
-      id:
-        example: 1
-        type: integer
       no_staff_log_entry_id:
         example: 1
         type: integer
@@ -432,13 +514,16 @@ definitions:
         example: "2021-01-01T00:00:00Z"
         type: string
       facility_id:
+        allOf:
+        - $ref: '#/definitions/constants.FacilityID'
         example: ZDV
-        type: string
       id:
         example: 1
         type: integer
       role:
-        $ref: '#/definitions/models.Role'
+        allOf:
+        - $ref: '#/definitions/constants.RoleID'
+        example: ATM
       updated_at:
         example: "2021-01-01T00:00:00Z"
         type: string
@@ -594,12 +679,6 @@ definitions:
       home:
         example: true
         type: boolean
-      instructor:
-        example: false
-        type: boolean
-      mentor:
-        example: false
-        type: boolean
       operating_initials:
         example: RP
         type: string
@@ -640,15 +719,13 @@ definitions:
       id:
         example: 1
         type: integer
-      instructor:
-        example: false
-        type: boolean
-      mentor:
-        example: false
-        type: boolean
       operating_initials:
         example: RP
         type: string
+      roles:
+        items:
+          $ref: '#/definitions/models.UserRole'
+        type: array
       status:
         description: Active, LOA
         example: Active
@@ -851,19 +928,12 @@ definitions:
       preferred_ois:
         example: RP
         type: string
-      roles:
-        items:
-          $ref: '#/definitions/models.UserRole'
-        type: array
       updated_at:
         example: "2021-01-01T00:00:00Z"
         type: string
     type: object
   user_flag.Request:
     properties:
-      cid:
-        example: 1293257
-        type: integer
       no_staff_log_entry_id:
         example: 1
         type: integer
@@ -887,8 +957,6 @@ definitions:
       no_visiting_log_entry_id:
         example: 1
         type: integer
-    required:
-    - cid
     type: object
   user_flag.Response:
     properties:
@@ -898,9 +966,6 @@ definitions:
       created_at:
         example: "2021-01-01T00:00:00Z"
         type: string
-      id:
-        example: 1
-        type: integer
       no_staff_log_entry_id:
         example: 1
         type: integer
@@ -935,11 +1000,13 @@ definitions:
         example: 1293257
         type: integer
       facility_id:
+        allOf:
+        - $ref: '#/definitions/constants.FacilityID'
         example: ZDV
-        type: string
       role_id:
+        allOf:
+        - $ref: '#/definitions/constants.RoleID'
         example: ATM
-        type: string
     required:
     - cid
     - facility_id
@@ -954,13 +1021,16 @@ definitions:
         example: "2021-01-01T00:00:00Z"
         type: string
       facility_id:
+        allOf:
+        - $ref: '#/definitions/constants.FacilityID'
         example: ZDV
-        type: string
       id:
         example: 1
         type: integer
       role:
-        $ref: '#/definitions/models.Role'
+        allOf:
+        - $ref: '#/definitions/constants.RoleID'
+        example: ATM
       updated_at:
         example: "2021-01-01T00:00:00Z"
         type: string
@@ -3093,158 +3163,6 @@ paths:
       summary: Create a new user
       tags:
       - user
-  /user-flag:
-    get:
-      consumes:
-      - application/json
-      description: List user flags
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/user_flag.Response'
-            type: array
-        "422":
-          description: Unprocessable Entity
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: List user flags
-      tags:
-      - user-flag
-    post:
-      consumes:
-      - application/json
-      description: Create a new user flag
-      parameters:
-      - description: User Flag
-        in: body
-        name: user_flag
-        required: true
-        schema:
-          $ref: '#/definitions/user_flag.Request'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/user_flag.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Create a new user flag
-      tags:
-      - user-flag
-  /user-flag/{cid}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete a user flag
-      parameters:
-      - description: CID
-        in: path
-        name: cid
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Delete a user flag
-      tags:
-      - user-flag
-    patch:
-      consumes:
-      - application/json
-      description: Patch a user flag
-      parameters:
-      - description: CID
-        in: path
-        name: cid
-        required: true
-        type: integer
-      - description: User Flag
-        in: body
-        name: user_flag
-        required: true
-        schema:
-          $ref: '#/definitions/user_flag.Request'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/user_flag.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Patch a user flag
-      tags:
-      - user-flag
-  /user-flag/{id}:
-    get:
-      consumes:
-      - application/json
-      description: Get a user flag
-      parameters:
-      - description: User Flag ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/user_flag.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Get a user flag
-      tags:
-      - user-flag
   /user-roles:
     delete:
       consumes:
@@ -3529,6 +3447,141 @@ paths:
       summary: Update a user
       tags:
       - user
+  /user/{cid}/user-flag/:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a user flag
+      parameters:
+      - description: CID
+        in: path
+        name: cid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Delete a user flag
+      tags:
+      - user-flag
+    get:
+      consumes:
+      - application/json
+      description: Get a user flag
+      parameters:
+      - description: CID
+        in: path
+        name: cid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_flag.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Get a user flag
+      tags:
+      - user-flag
+    patch:
+      consumes:
+      - application/json
+      description: Patch a user flag
+      parameters:
+      - description: CID
+        in: path
+        name: cid
+        required: true
+        type: integer
+      - description: User Flag
+        in: body
+        name: user_flag
+        required: true
+        schema:
+          $ref: '#/definitions/user_flag.Request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_flag.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Patch a user flag
+      tags:
+      - user-flag
+    put:
+      consumes:
+      - application/json
+      description: Update a user flag
+      parameters:
+      - description: CID
+        in: path
+        name: cid
+        required: true
+        type: integer
+      - description: User Flag
+        in: body
+        name: user_flag
+        required: true
+        schema:
+          $ref: '#/definitions/user_flag.Request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_flag.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Update a user flag
+      tags:
+      - user-flag
 schemes:
 - http
 swagger: "2.0"

@@ -3195,236 +3195,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/user-flag": {
-            "get": {
-                "description": "List user flags",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user-flag"
-                ],
-                "summary": "List user flags",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/user_flag.Response"
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
-                        "schema": {
-                            "$ref": "#/definitions/utils.ErrResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/utils.ErrResponse"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "Create a new user flag",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user-flag"
-                ],
-                "summary": "Create a new user flag",
-                "parameters": [
-                    {
-                        "description": "User Flag",
-                        "name": "user_flag",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/user_flag.Request"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/user_flag.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/utils.ErrResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/utils.ErrResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/user-flag/{cid}": {
-            "delete": {
-                "description": "Delete a user flag",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user-flag"
-                ],
-                "summary": "Delete a user flag",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "CID",
-                        "name": "cid",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/utils.ErrResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/utils.ErrResponse"
-                        }
-                    }
-                }
-            },
-            "patch": {
-                "description": "Patch a user flag",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user-flag"
-                ],
-                "summary": "Patch a user flag",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "CID",
-                        "name": "cid",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "User Flag",
-                        "name": "user_flag",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/user_flag.Request"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/user_flag.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/utils.ErrResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/utils.ErrResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/utils.ErrResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/user-flag/{id}": {
-            "get": {
-                "description": "Get a user flag",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user-flag"
-                ],
-                "summary": "Get a user flag",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "User Flag ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/user_flag.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/utils.ErrResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/utils.ErrResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/utils.ErrResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/user-roles": {
             "get": {
                 "description": "List user roles",
@@ -3853,6 +3623,209 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/user/{cid}/user-flag/": {
+            "get": {
+                "description": "Get a user flag",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-flag"
+                ],
+                "summary": "Get a user flag",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "CID",
+                        "name": "cid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user_flag.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a user flag",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-flag"
+                ],
+                "summary": "Update a user flag",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "CID",
+                        "name": "cid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "User Flag",
+                        "name": "user_flag",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user_flag.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user_flag.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a user flag",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-flag"
+                ],
+                "summary": "Delete a user flag",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "CID",
+                        "name": "cid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Patch a user flag",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-flag"
+                ],
+                "summary": "Patch a user flag",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "CID",
+                        "name": "cid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "User Flag",
+                        "name": "user_flag",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user_flag.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user_flag.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -3905,6 +3878,116 @@ const docTemplate = `{
                     "example": "'1234567' or 'System'"
                 }
             }
+        },
+        "constants.FacilityID": {
+            "type": "string",
+            "enum": [
+                "ZAE",
+                "ZHQ",
+                "ZZN",
+                "ZZI",
+                "ZAB",
+                "ZAN",
+                "ZTL",
+                "ZBW",
+                "ZAU",
+                "ZOB",
+                "ZDV",
+                "ZFW",
+                "HCF",
+                "ZHU",
+                "ZID",
+                "ZJX",
+                "ZKC",
+                "ZLA",
+                "ZME",
+                "ZMA",
+                "ZMP",
+                "ZNY",
+                "ZOA",
+                "ZLC",
+                "ZSE",
+                "ZDC"
+            ],
+            "x-enum-varnames": [
+                "AcademyFacility",
+                "HeadquartersFacility",
+                "NonMemberFacility",
+                "InactiveFacility",
+                "AlbuquerqueFacility",
+                "AnchorageFacility",
+                "AtlantaFacility",
+                "BostonFacility",
+                "ChicagoFacility",
+                "ClevelandFacility",
+                "DenverFacility",
+                "FortWorthFacility",
+                "HonoluluFacility",
+                "HoustonFacility",
+                "IndianapolisFacility",
+                "JacksonvilleFacility",
+                "KansasCityFacility",
+                "LosAngelesFacility",
+                "MemphisFacility",
+                "MiamiFacility",
+                "MinneapolisFacility",
+                "NewYorkFacility",
+                "OaklandFacility",
+                "SaltLakeFacility",
+                "SeattleFacility",
+                "WashingtonFacility"
+            ]
+        },
+        "constants.RoleID": {
+            "type": "string",
+            "enum": [
+                "ATM",
+                "DATM",
+                "TA",
+                "EC",
+                "AEC",
+                "FE",
+                "AFE",
+                "WM",
+                "AWM",
+                "INS",
+                "MTR",
+                "DIVISION_STAFF",
+                "DIVISION_MANAGEMENT",
+                "DEV",
+                "ACE",
+                "NTMS",
+                "NTMT",
+                "SMT",
+                "TCT",
+                "CBT",
+                "FACCBT",
+                "EMAIL"
+            ],
+            "x-enum-varnames": [
+                "AirTrafficManagerRole",
+                "DeputyAirTrafficManagerRole",
+                "TrainingAdministratorRole",
+                "EventCoordinatorRole",
+                "AssistantEventCoordinatorRole",
+                "FacilityEngineerRole",
+                "AssistantFacilityEngineerRole",
+                "WebMasterRole",
+                "AssistantWebMasterRole",
+                "InstructorRole",
+                "MentorRole",
+                "DivisionStaffRole",
+                "DivisionManagementRole",
+                "DeveloperTeamRole",
+                "AceTeamRole",
+                "NTMSRole",
+                "NTMTRole",
+                "SocialMediaTeam",
+                "TrainingContentTeam",
+                "AcademyMaterialEditor",
+                "FacilityMaterialEditor",
+                "EmailUser"
+            ]
         },
         "disciplinary_log.Request": {
             "type": "object",
@@ -4298,27 +4381,6 @@ const docTemplate = `{
                 }
             }
         },
-        "models.Role": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string",
-                    "example": "2021-01-01T00:00:00Z"
-                },
-                "name": {
-                    "type": "string",
-                    "example": "Air Traffic Manager"
-                },
-                "role": {
-                    "type": "string",
-                    "example": "ATM"
-                },
-                "updated_at": {
-                    "type": "string",
-                    "example": "2021-01-01T00:00:00Z"
-                }
-            }
-        },
         "models.User": {
             "type": "object",
             "properties": {
@@ -4380,12 +4442,6 @@ const docTemplate = `{
                     "type": "string",
                     "example": "RP"
                 },
-                "roles": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.UserRole"
-                    }
-                },
                 "updated_at": {
                     "type": "string",
                     "example": "2021-01-01T00:00:00Z"
@@ -4402,10 +4458,6 @@ const docTemplate = `{
                 "created_at": {
                     "type": "string",
                     "example": "2021-01-01T00:00:00Z"
-                },
-                "id": {
-                    "type": "integer",
-                    "example": 1
                 },
                 "no_staff_log_entry_id": {
                     "type": "integer",
@@ -4457,7 +4509,11 @@ const docTemplate = `{
                     "example": "2021-01-01T00:00:00Z"
                 },
                 "facility_id": {
-                    "type": "string",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/constants.FacilityID"
+                        }
+                    ],
                     "example": "ZDV"
                 },
                 "id": {
@@ -4465,7 +4521,12 @@ const docTemplate = `{
                     "example": 1
                 },
                 "role": {
-                    "$ref": "#/definitions/models.Role"
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/constants.RoleID"
+                        }
+                    ],
+                    "example": "ATM"
                 },
                 "updated_at": {
                     "type": "string",
@@ -4682,14 +4743,6 @@ const docTemplate = `{
                     "type": "boolean",
                     "example": true
                 },
-                "instructor": {
-                    "type": "boolean",
-                    "example": false
-                },
-                "mentor": {
-                    "type": "boolean",
-                    "example": false
-                },
                 "operating_initials": {
                     "type": "string",
                     "example": "RP"
@@ -4737,17 +4790,15 @@ const docTemplate = `{
                     "type": "integer",
                     "example": 1
                 },
-                "instructor": {
-                    "type": "boolean",
-                    "example": false
-                },
-                "mentor": {
-                    "type": "boolean",
-                    "example": false
-                },
                 "operating_initials": {
                     "type": "string",
                     "example": "RP"
+                },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.UserRole"
+                    }
                 },
                 "status": {
                     "description": "Active, LOA",
@@ -5022,12 +5073,6 @@ const docTemplate = `{
                     "type": "string",
                     "example": "RP"
                 },
-                "roles": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.UserRole"
-                    }
-                },
                 "updated_at": {
                     "type": "string",
                     "example": "2021-01-01T00:00:00Z"
@@ -5036,14 +5081,7 @@ const docTemplate = `{
         },
         "user_flag.Request": {
             "type": "object",
-            "required": [
-                "cid"
-            ],
             "properties": {
-                "cid": {
-                    "type": "integer",
-                    "example": 1293257
-                },
                 "no_staff_log_entry_id": {
                     "type": "integer",
                     "example": 1
@@ -5087,10 +5125,6 @@ const docTemplate = `{
                 "created_at": {
                     "type": "string",
                     "example": "2021-01-01T00:00:00Z"
-                },
-                "id": {
-                    "type": "integer",
-                    "example": 1
                 },
                 "no_staff_log_entry_id": {
                     "type": "integer",
@@ -5143,11 +5177,19 @@ const docTemplate = `{
                     "example": 1293257
                 },
                 "facility_id": {
-                    "type": "string",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/constants.FacilityID"
+                        }
+                    ],
                     "example": "ZDV"
                 },
                 "role_id": {
-                    "type": "string",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/constants.RoleID"
+                        }
+                    ],
                     "example": "ATM"
                 }
             }
@@ -5164,7 +5206,11 @@ const docTemplate = `{
                     "example": "2021-01-01T00:00:00Z"
                 },
                 "facility_id": {
-                    "type": "string",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/constants.FacilityID"
+                        }
+                    ],
                     "example": "ZDV"
                 },
                 "id": {
@@ -5172,7 +5218,12 @@ const docTemplate = `{
                     "example": 1
                 },
                 "role": {
-                    "$ref": "#/definitions/models.Role"
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/constants.RoleID"
+                        }
+                    ],
+                    "example": "ATM"
                 },
                 "updated_at": {
                     "type": "string",

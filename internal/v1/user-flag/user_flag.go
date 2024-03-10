@@ -10,7 +10,6 @@ import (
 )
 
 type Request struct {
-	CID                      uint `json:"cid" example:"1293257" validate:"required"`
 	NoStaffRole              bool `json:"no_staff_role" example:"false"`
 	NoStaffLogEntryID        uint `json:"no_staff_log_entry_id" example:"1"`
 	NoVisiting               bool `json:"no_visiting" example:"false"`
@@ -54,92 +53,20 @@ func NewUserFlagListResponse(r []models.UserFlag) []render.Renderer {
 	return list
 }
 
-// CreateUserFlag godoc
-// @Summary Create a new user flag
-// @Description Create a new user flag
-// @Tags user-flag
-// @Accept  json
-// @Produce  json
-// @Param user_flag body Request true "User Flag"
-// @Success 201 {object} Response
-// @Failure 400 {object} utils.ErrResponse
-// @Failure 500 {object} utils.ErrResponse
-// @Router /user-flag [post]
-func CreateUserFlag(w http.ResponseWriter, r *http.Request) {
-	req := &Request{}
-	if err := req.Bind(r); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
-		return
-	}
-
-	if err := req.Validate(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
-		return
-	}
-
-	if !models.IsValidUser(req.CID) {
-		render.Render(w, r, utils.ErrInvalidCID)
-		return
-	}
-
-	userFlag := &models.UserFlag{
-		CID:                      req.CID,
-		NoStaffRole:              req.NoStaffRole,
-		NoStaffLogEntryID:        req.NoStaffLogEntryID,
-		NoVisiting:               req.NoVisiting,
-		NoVisitingLogEntryID:     req.NoVisitingLogEntryID,
-		NoTransferring:           req.NoTransferring,
-		NoTransferringLogEntryID: req.NoTransferringLogEntryID,
-		NoTraining:               req.NoTraining,
-		NoTrainingLogEntryID:     req.NoTrainingLogEntryID,
-	}
-
-	if err := userFlag.Create(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
-		return
-	}
-
-	render.Status(r, http.StatusCreated)
-	render.Render(w, r, NewUserFlagResponse(userFlag))
-}
-
 // GetUserFlag godoc
 // @Summary Get a user flag
 // @Description Get a user flag
 // @Tags user-flag
 // @Accept  json
 // @Produce  json
-// @Param id path int true "User Flag ID"
+// @Param cid path int true "CID"
 // @Success 200 {object} Response
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 404 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /user-flag/{id} [get]
+// @Router /user/{cid}/user-flag/ [get]
 func GetUserFlag(w http.ResponseWriter, r *http.Request) {
-	render.Render(w, r, NewUserFlagResponse(GetUserFlagCtx(r)))
-}
-
-// ListUserFlag godoc
-// @Summary List user flags
-// @Description List user flags
-// @Tags user-flag
-// @Accept  json
-// @Produce  json
-// @Success 200 {object} []Response
-// @Failure 422 {object} utils.ErrResponse
-// @Failure 500 {object} utils.ErrResponse
-// @Router /user-flag [get]
-func ListUserFlag(w http.ResponseWriter, r *http.Request) {
-	flags, err := models.GetAllFlags()
-	if err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
-		return
-	}
-
-	if err := render.RenderList(w, r, NewUserFlagListResponse(flags)); err != nil {
-		render.Render(w, r, utils.ErrRender(err))
-		return
-	}
+	render.Render(w, r, NewUserFlagResponse(utils.GetUserFlagCtx(r)))
 }
 
 // UpdateUserFlag godoc
@@ -154,6 +81,7 @@ func ListUserFlag(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 404 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
+// @Router /user/{cid}/user-flag/ [put]
 func UpdateUserFlag(w http.ResponseWriter, r *http.Request) {
 	req := &Request{}
 	if err := req.Bind(r); err != nil {
@@ -166,13 +94,7 @@ func UpdateUserFlag(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(req.CID) {
-		render.Render(w, r, utils.ErrInvalidCID)
-		return
-	}
-
-	userFlag := GetUserFlagCtx(r)
-	userFlag.CID = req.CID
+	userFlag := utils.GetUserFlagCtx(r)
 	userFlag.NoStaffRole = req.NoStaffRole
 	userFlag.NoStaffLogEntryID = req.NoStaffLogEntryID
 	userFlag.NoVisiting = req.NoVisiting
@@ -202,7 +124,7 @@ func UpdateUserFlag(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 404 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /user-flag/{cid} [patch]
+// @Router /user/{cid}/user-flag/ [patch]
 func PatchUserFlag(w http.ResponseWriter, r *http.Request) {
 	req := &Request{}
 	if err := req.Bind(r); err != nil {
@@ -210,14 +132,7 @@ func PatchUserFlag(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userFlag := GetUserFlagCtx(r)
-	if req.CID != 0 {
-		if !models.IsValidUser(req.CID) {
-			render.Render(w, r, utils.ErrInvalidCID)
-			return
-		}
-		userFlag.CID = req.CID
-	}
+	userFlag := utils.GetUserFlagCtx(r)
 	if req.NoStaffRole {
 		userFlag.NoStaffRole = req.NoStaffRole
 	}
@@ -261,9 +176,9 @@ func PatchUserFlag(w http.ResponseWriter, r *http.Request) {
 // @Success 204
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /user-flag/{cid} [delete]
+// @Router /user/{cid}/user-flag/ [delete]
 func DeleteUserFlag(w http.ResponseWriter, r *http.Request) {
-	userFlag := GetUserFlagCtx(r)
+	userFlag := utils.GetUserFlagCtx(r)
 	if err := userFlag.Delete(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return

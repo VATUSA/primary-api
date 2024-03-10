@@ -95,6 +95,8 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// TODO - Create User-Flag
+
 	render.Status(r, http.StatusCreated)
 	render.Render(w, r, NewUserResponse(user))
 }
@@ -111,7 +113,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /user/{cid} [get]
 func GetUser(w http.ResponseWriter, r *http.Request) {
-	user := GetUserCtx(r)
+	user := utils.GetUserCtx(r)
 
 	render.Render(w, r, NewUserResponse(user))
 }
@@ -153,7 +155,7 @@ func ListUsers(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /user/{cid} [put]
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
-	user := GetUserCtx(r)
+	user := utils.GetUserCtx(r)
 
 	req := &Request{}
 	if err := render.Bind(r, req); err != nil {
@@ -197,7 +199,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /user/{cid} [patch]
 func PatchUser(w http.ResponseWriter, r *http.Request) {
-	user := GetUserCtx(r)
+	user := utils.GetUserCtx(r)
 
 	req := &Request{}
 	if err := render.Bind(r, req); err != nil {
@@ -244,7 +246,7 @@ func PatchUser(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /user/{cid} [delete]
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
-	user := GetUserCtx(r)
+	user := utils.GetUserCtx(r)
 
 	if err := user.Delete(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)

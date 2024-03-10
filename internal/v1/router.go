@@ -13,7 +13,6 @@ import (
 	"github.com/VATUSA/primary-api/internal/v1/roster"
 	roster_request "github.com/VATUSA/primary-api/internal/v1/roster-request"
 	"github.com/VATUSA/primary-api/internal/v1/user"
-	user_flag "github.com/VATUSA/primary-api/internal/v1/user-flag"
 	user_role "github.com/VATUSA/primary-api/internal/v1/user-role"
 	"github.com/VATUSA/primary-api/pkg/config"
 	"github.com/go-chi/chi/v5"
@@ -67,10 +66,6 @@ func Router(r chi.Router, cfg *config.Config) {
 
 		r.Route("/user", func(r chi.Router) {
 			user.Router(r)
-		})
-
-		r.Route("/user-flag", func(r chi.Router) {
-			user_flag.Router(r)
 		})
 
 		r.Route("/user-role", func(r chi.Router) {
