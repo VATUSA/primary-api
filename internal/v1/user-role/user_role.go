@@ -11,9 +11,9 @@ import (
 )
 
 type Request struct {
-	CID        uint             `json:"cid" example:"1293257" validate:"required"`
-	RoleID     constants.RoleID `json:"role_id" example:"ATM" validate:"required"`
-	FacilityID string           `json:"facility_id" example:"ZDV" validate:"required"`
+	CID        uint                 `json:"cid" example:"1293257" validate:"required"`
+	RoleID     constants.RoleID     `json:"role_id" example:"ATM" validate:"required"`
+	FacilityID constants.FacilityID `json:"facility_id" example:"ZDV" validate:"required"`
 }
 
 func (req *Request) Validate() error {

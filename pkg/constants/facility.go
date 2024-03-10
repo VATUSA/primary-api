@@ -1,41 +1,41 @@
 package constants
 
-type Facility string
+type FacilityID string
 
 const (
 	// Special Facilities
-	AcademyFacility      Facility = "ZAE"
-	HeadquartersFacility Facility = "ZHQ"
-	NonMemberFacility    Facility = "ZZN"
-	InactiveFacility     Facility = "ZZI"
+	AcademyFacility      FacilityID = "ZAE"
+	HeadquartersFacility FacilityID = "ZHQ"
+	NonMemberFacility    FacilityID = "ZZN"
+	InactiveFacility     FacilityID = "ZZI"
 
 	// ARTCC Facilities
-	AlbuquerqueFacility  Facility = "ZAB"
-	AnchorageFacility    Facility = "ZAN"
-	AtlantaFacility      Facility = "ZTL"
-	BostonFacility       Facility = "ZBW"
-	ChicagoFacility      Facility = "ZAU"
-	ClevelandFacility    Facility = "ZOB"
-	DenverFacility       Facility = "ZDV"
-	FortWorthFacility    Facility = "ZFW"
-	HonoluluFacility     Facility = "HCF"
-	HoustonFacility      Facility = "ZHU"
-	IndianapolisFacility Facility = "ZID"
-	JacksonvilleFacility Facility = "ZJX"
-	KansasCityFacility   Facility = "ZKC"
-	LosAngelesFacility   Facility = "ZLA"
-	MemphisFacility      Facility = "ZME"
-	MiamiFacility        Facility = "ZMA"
-	MinneapolisFacility  Facility = "ZMP"
-	NewYorkFacility      Facility = "ZNY"
-	OaklandFacility      Facility = "ZOA"
-	SaltLakeFacility     Facility = "ZLC"
-	SeattleFacility      Facility = "ZSE"
-	WashingtonFacility   Facility = "ZDC"
+	AlbuquerqueFacility  FacilityID = "ZAB"
+	AnchorageFacility    FacilityID = "ZAN"
+	AtlantaFacility      FacilityID = "ZTL"
+	BostonFacility       FacilityID = "ZBW"
+	ChicagoFacility      FacilityID = "ZAU"
+	ClevelandFacility    FacilityID = "ZOB"
+	DenverFacility       FacilityID = "ZDV"
+	FortWorthFacility    FacilityID = "ZFW"
+	HonoluluFacility     FacilityID = "HCF"
+	HoustonFacility      FacilityID = "ZHU"
+	IndianapolisFacility FacilityID = "ZID"
+	JacksonvilleFacility FacilityID = "ZJX"
+	KansasCityFacility   FacilityID = "ZKC"
+	LosAngelesFacility   FacilityID = "ZLA"
+	MemphisFacility      FacilityID = "ZME"
+	MiamiFacility        FacilityID = "ZMA"
+	MinneapolisFacility  FacilityID = "ZMP"
+	NewYorkFacility      FacilityID = "ZNY"
+	OaklandFacility      FacilityID = "ZOA"
+	SaltLakeFacility     FacilityID = "ZLC"
+	SeattleFacility      FacilityID = "ZSE"
+	WashingtonFacility   FacilityID = "ZDC"
 )
 
 var (
-	FacilityDisplayNameMap = map[Facility]string{
+	FacilityDisplayNameMap = map[FacilityID]string{
 		AcademyFacility:      "Academy",
 		HeadquartersFacility: "Headquarters",
 		NonMemberFacility:    "Non-Member",
@@ -49,7 +49,7 @@ var (
 		ClevelandFacility:    "Cleveland ARTCC",
 		DenverFacility:       "Denver ARTCC",
 		FortWorthFacility:    "Fort Worth ARTCC",
-		HonoluluFacility:     "Honolulu Control Facility",
+		HonoluluFacility:     "Honolulu Control FacilityID",
 		HoustonFacility:      "Houston ARTCC",
 		IndianapolisFacility: "Indianapolis ARTCC",
 		JacksonvilleFacility: "Jacksonville ARTCC",
@@ -66,6 +66,6 @@ var (
 	}
 )
 
-func (f Facility) DisplayName() string {
+func (f FacilityID) DisplayName() string {
 	return FacilityDisplayNameMap[f]
 }
