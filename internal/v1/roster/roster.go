@@ -10,14 +10,12 @@ import (
 )
 
 type Request struct {
-	CID        uint   `json:"cid" example:"1293257" validate:"required"`
-	Facility   string `json:"facility" example:"ZDV" validate:"required,len=3"`
-	OIs        string `json:"operating_initials" example:"RP" validate:"required"`
-	Home       bool   `json:"home" example:"true"`
-	Visiting   bool   `json:"visiting" example:"false"`
-	Status     string `json:"status" example:"Active" validate:"required,oneof=active loa"` // Active, LOA
-	Mentor     bool   `json:"mentor" example:"false"`
-	Instructor bool   `json:"instructor" example:"false"`
+	CID      uint   `json:"cid" example:"1293257" validate:"required"`
+	Facility string `json:"facility" example:"ZDV" validate:"required,len=3"`
+	OIs      string `json:"operating_initials" example:"RP" validate:"required"`
+	Home     bool   `json:"home" example:"true"`
+	Visiting bool   `json:"visiting" example:"false"`
+	Status   string `json:"status" example:"Active" validate:"required,oneof=active loa"` // Active, LOA
 }
 
 func (req *Request) Validate() error {
@@ -97,14 +95,12 @@ func CreateRoster(w http.ResponseWriter, r *http.Request) {
 	}
 
 	roster := &models.Roster{
-		CID:        data.CID,
-		Facility:   data.Facility,
-		OIs:        data.OIs,
-		Home:       data.Home,
-		Visiting:   data.Visiting,
-		Status:     data.Status,
-		Mentor:     data.Mentor,
-		Instructor: data.Instructor,
+		CID:      data.CID,
+		Facility: data.Facility,
+		OIs:      data.OIs,
+		Home:     data.Home,
+		Visiting: data.Visiting,
+		Status:   data.Status,
 	}
 
 	if err := roster.Create(); err != nil {
@@ -209,8 +205,6 @@ func UpdateRoster(w http.ResponseWriter, r *http.Request) {
 	roster.Home = data.Home
 	roster.Visiting = data.Visiting
 	roster.Status = data.Status
-	roster.Mentor = data.Mentor
-	roster.Instructor = data.Instructor
 
 	if err := roster.Update(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)

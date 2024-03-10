@@ -21,7 +21,6 @@ type User struct {
 	LastLogin            time.Time              `json:"last_login" example:"2021-01-01T00:00:00Z"`
 	LastCertSync         time.Time              `json:"last_cert_sync" example:"2021-01-01T00:00:00Z"`
 	Flags                []UserFlag             `json:"flags" gorm:"foreignKey:CID"`
-	Roles                []UserRole             `json:"roles" gorm:"foreignKey:CID"`
 	RatingChanges        []RatingChange         `json:"-" gorm:"foreignKey:CID"`
 	RosterRequest        []RosterRequest        `json:"-" gorm:"foreignKey:CID"`
 	Roster               []Roster               `json:"-" gorm:"foreignKey:CID"`

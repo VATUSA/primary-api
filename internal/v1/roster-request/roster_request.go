@@ -178,14 +178,12 @@ func UpdateRosterRequest(w http.ResponseWriter, r *http.Request) {
 
 	if req.Status == types.Pending && data.Status == types.Accepted {
 		roster := &models.Roster{
-			CID:        data.CID,
-			Facility:   data.Facility,
-			OIs:        "",
-			Home:       false,
-			Visiting:   false,
-			Status:     "Active",
-			Mentor:     false,
-			Instructor: false,
+			CID:      data.CID,
+			Facility: data.Facility,
+			OIs:      "",
+			Home:     false,
+			Visiting: false,
+			Status:   "Active",
 		}
 
 		if data.RequestType == types.Visiting {
