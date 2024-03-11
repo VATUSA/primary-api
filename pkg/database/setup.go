@@ -18,13 +18,10 @@ func Connect(dbConfig *config.DBConfig) *gorm.DB {
 	switch dbConfig.LoggerLevel {
 	case "silent":
 		logLevel = logger.Silent
-		break
 	case "error":
 		logLevel = logger.Error
-		break
 	case "warn":
 		logLevel = logger.Warn
-		break
 	}
 
 	var err error

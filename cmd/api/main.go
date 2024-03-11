@@ -8,6 +8,7 @@ import (
 	gochi "github.com/VATUSA/primary-api/pkg/go-chi"
 	"github.com/VATUSA/primary-api/pkg/storage"
 	"github.com/joho/godotenv"
+	"log"
 	"net/http"
 )
 
@@ -26,5 +27,5 @@ func main() {
 
 	r := gochi.New(cfg)
 	internal.Router(r, cfg)
-	http.ListenAndServe(":8080", r)
+	log.Fatalf("Err starting http server: %s", http.ListenAndServe(":8080", r))
 }

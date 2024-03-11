@@ -2,7 +2,7 @@ name: Build
 
 on:
   push:
-    branches: [] # Add "main" here when ready
+    branches: ["NA"] # Add "main" here when ready
 
 jobs:
   build:
