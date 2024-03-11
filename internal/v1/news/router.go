@@ -46,7 +46,3 @@ func Ctx(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
-
-func GetNewsCtx(r *http.Request) *models.News {
-	return r.Context().Value("news").(*models.News)
-}

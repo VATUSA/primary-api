@@ -57,7 +57,3 @@ func Ctx(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
-
-func GetDocumentCtx(r *http.Request) *models.Document {
-	return r.Context().Value("document").(*models.Document)
-}

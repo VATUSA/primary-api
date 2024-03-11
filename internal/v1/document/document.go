@@ -142,7 +142,7 @@ func CreateDocument(w http.ResponseWriter, r *http.Request, endpoint string) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /documents/{id} [get]
 func GetDocument(w http.ResponseWriter, r *http.Request) {
-	doc := GetDocumentCtx(r)
+	doc := utils.GetDocumentCtx(r)
 	utils.Render(w, r, NewDocumentResponse(doc))
 }
 
@@ -247,7 +247,7 @@ func ListDocumentsByFacByCat(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /documents/{id} [put]
 func UpdateDocument(w http.ResponseWriter, r *http.Request) {
-	doc := GetDocumentCtx(r)
+	doc := utils.GetDocumentCtx(r)
 
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
@@ -289,7 +289,7 @@ func UpdateDocument(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /documents/{id} [patch]
 func PatchDocument(w http.ResponseWriter, r *http.Request) {
-	doc := GetDocumentCtx(r)
+	doc := utils.GetDocumentCtx(r)
 
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
@@ -332,7 +332,7 @@ func PatchDocument(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /documents/{id} [delete]
 func DeleteDocument(w http.ResponseWriter, r *http.Request) {
-	doc := GetDocumentCtx(r)
+	doc := utils.GetDocumentCtx(r)
 
 	// Delete the file from the S3 bucket
 	directory := path.Join(doc.Facility, string(doc.Category))
@@ -364,7 +364,7 @@ func DeleteDocument(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /documents/{id}/upload [post]
 func UploadDocument(w http.ResponseWriter, r *http.Request, endpoint string) {
-	data := GetDocumentCtx(r)
+	data := utils.GetDocumentCtx(r)
 
 	// Delete the file from the S3 bucket
 	directory := path.Join(data.Facility, string(data.Category))

@@ -119,7 +119,7 @@ func CreateFeedback(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /feedback/{id} [get]
 func GetFeedback(w http.ResponseWriter, r *http.Request) {
-	f := GetFeedbackCtx(r)
+	f := utils.GetFeedbackCtx(r)
 	utils.Render(w, r, NewFeedbackResponse(f))
 }
 
@@ -180,7 +180,7 @@ func UpdateFeedback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	f := GetFeedbackCtx(r)
+	f := utils.GetFeedbackCtx(r)
 	f.PilotCID = data.PilotCID
 	f.Callsign = data.Callsign
 	f.ControllerCID = data.ControllerCID
@@ -212,7 +212,7 @@ func UpdateFeedback(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /feedback/{id} [patch]
 func PatchFeedback(w http.ResponseWriter, r *http.Request) {
-	f := GetFeedbackCtx(r)
+	f := utils.GetFeedbackCtx(r)
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
 		utils.Render(w, r, utils.ErrInvalidRequest(err))
@@ -275,7 +275,7 @@ func PatchFeedback(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /feedback/{id} [delete]
 func DeleteFeedback(w http.ResponseWriter, r *http.Request) {
-	f := GetFeedbackCtx(r)
+	f := utils.GetFeedbackCtx(r)
 	if err := f.Delete(); err != nil {
 		utils.Render(w, r, utils.ErrInternalServer)
 		return

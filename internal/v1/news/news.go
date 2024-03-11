@@ -103,7 +103,7 @@ func CreateNews(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /news/{id} [get]
 func GetNews(w http.ResponseWriter, r *http.Request) {
-	news := GetNewsCtx(r)
+	news := utils.GetNewsCtx(r)
 	utils.Render(w, r, NewNewsResponse(news))
 }
 
@@ -144,7 +144,7 @@ func ListNews(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /news/{id} [put]
 func UpdateNews(w http.ResponseWriter, r *http.Request) {
-	news := GetNewsCtx(r)
+	news := utils.GetNewsCtx(r)
 
 	req := &Request{}
 	if err := render.Bind(r, req); err != nil {
@@ -189,7 +189,7 @@ func UpdateNews(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /news/{id} [patch]
 func PatchNews(w http.ResponseWriter, r *http.Request) {
-	news := GetNewsCtx(r)
+	news := utils.GetNewsCtx(r)
 
 	req := &Request{}
 	if err := render.Bind(r, req); err != nil {
@@ -233,7 +233,7 @@ func PatchNews(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /news/{id} [delete]
 func DeleteNews(w http.ResponseWriter, r *http.Request) {
-	news := GetNewsCtx(r)
+	news := utils.GetNewsCtx(r)
 	if err := news.Delete(); err != nil {
 		utils.Render(w, r, utils.ErrInternalServer)
 		return

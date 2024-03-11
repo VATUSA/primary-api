@@ -45,7 +45,3 @@ func Ctx(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
-
-func GetFeedbackCtx(r *http.Request) *models.Feedback {
-	return r.Context().Value("feedback").(*models.Feedback)
-}

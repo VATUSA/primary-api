@@ -44,7 +44,3 @@ func Ctx(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
-
-func GetNotificationCtx(r *http.Request) *models.Notification {
-	return r.Context().Value("notification").(*models.Notification)
-}

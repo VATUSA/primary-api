@@ -118,7 +118,7 @@ func CreateNotification(w http.ResponseWriter, r *http.Request) {
 // @Failure 404 {object} utils.ErrResponse
 // @Router /notification/{id} [get]
 func GetNotification(w http.ResponseWriter, r *http.Request) {
-	n := GetNotificationCtx(r)
+	n := utils.GetNotificationCtx(r)
 	utils.Render(w, r, NewNotificationResponse(n))
 }
 
@@ -158,7 +158,7 @@ func ListNotifications(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /notification/{id} [put]
 func UpdateNotification(w http.ResponseWriter, r *http.Request) {
-	n := GetNotificationCtx(r)
+	n := utils.GetNotificationCtx(r)
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
 		utils.Render(w, r, utils.ErrInvalidRequest(err))
@@ -214,7 +214,7 @@ func UpdateNotification(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /notification/{id} [patch]
 func PatchNotification(w http.ResponseWriter, r *http.Request) {
-	n := GetNotificationCtx(r)
+	n := utils.GetNotificationCtx(r)
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
 		utils.Render(w, r, utils.ErrInvalidRequest(err))
@@ -272,7 +272,7 @@ func PatchNotification(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /notification/{id} [delete]
 func DeleteNotification(w http.ResponseWriter, r *http.Request) {
-	n := GetNotificationCtx(r)
+	n := utils.GetNotificationCtx(r)
 	if err := n.Delete(); err != nil {
 		utils.Render(w, r, utils.ErrInternalServer)
 		return

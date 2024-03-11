@@ -105,7 +105,7 @@ func CreateFAQ(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /faq/{id} [get]
 func GetFAQ(w http.ResponseWriter, r *http.Request) {
-	faq := GetFAQCtx(r)
+	faq := utils.GetFAQCtx(r)
 
 	utils.Render(w, r, NewFAQResponse(faq))
 }
@@ -146,7 +146,7 @@ func ListFAQ(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /faq/{id} [put]
 func UpdateFAQ(w http.ResponseWriter, r *http.Request) {
-	faq := GetFAQCtx(r)
+	faq := utils.GetFAQCtx(r)
 
 	data := &Request{}
 	if err := render.Bind(r, data); err != nil {
@@ -191,7 +191,7 @@ func UpdateFAQ(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /faq/{id} [patch]
 func PatchFAQ(w http.ResponseWriter, r *http.Request) {
-	faq := GetFAQCtx(r)
+	faq := utils.GetFAQCtx(r)
 
 	data := &Request{}
 	if err := render.Bind(r, data); err != nil {
@@ -235,7 +235,7 @@ func PatchFAQ(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /faq/{id} [delete]
 func DeleteFAQ(w http.ResponseWriter, r *http.Request) {
-	faq := GetFAQCtx(r)
+	faq := utils.GetFAQCtx(r)
 
 	if err := faq.Delete(); err != nil {
 		utils.Render(w, r, utils.ErrInternalServer)

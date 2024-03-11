@@ -45,7 +45,3 @@ func Ctx(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
-
-func GetFacilityLogCtx(r *http.Request) *models.FacilityLogEntry {
-	return r.Context().Value("facilityLog").(*models.FacilityLogEntry)
-}

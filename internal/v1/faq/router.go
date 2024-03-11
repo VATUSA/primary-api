@@ -45,7 +45,3 @@ func Ctx(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
-
-func GetFAQCtx(r *http.Request) *models.FAQ {
-	return r.Context().Value("faq").(*models.FAQ)
-}

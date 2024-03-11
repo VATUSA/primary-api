@@ -52,3 +52,27 @@ func GetActionLogCtx(r *http.Request) *models.ActionLogEntry {
 func GetDisciplinaryLogCtx(r *http.Request) *models.DisciplinaryLogEntry {
 	return r.Context().Value("disciplinaryLog").(*models.DisciplinaryLogEntry)
 }
+
+func GetDocumentCtx(r *http.Request) *models.Document {
+	return r.Context().Value("document").(*models.Document)
+}
+
+func GetFacilityLogCtx(r *http.Request) *models.FacilityLogEntry {
+	return r.Context().Value("facilityLog").(*models.FacilityLogEntry)
+}
+
+func GetFAQCtx(r *http.Request) *models.FAQ {
+	return r.Context().Value("faq").(*models.FAQ)
+}
+
+func GetFeedbackCtx(r *http.Request) *models.Feedback {
+	return r.Context().Value("feedback").(*models.Feedback)
+}
+
+func GetNewsCtx(r *http.Request) *models.News {
+	return r.Context().Value("news").(*models.News)
+}
+
+func GetNotificationCtx(r *http.Request) *models.Notification {
+	return r.Context().Value("notification").(*models.Notification)
+}

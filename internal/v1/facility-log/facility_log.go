@@ -99,7 +99,7 @@ func CreateFacilityLogEntry(w http.ResponseWriter, r *http.Request) {
 // @Failure 404 {object} utils.ErrResponse
 // @Router /facility-log/{id} [get]
 func GetFacilityLog(w http.ResponseWriter, r *http.Request) {
-	fle := GetFacilityLogCtx(r)
+	fle := utils.GetFacilityLogCtx(r)
 
 	utils.Render(w, r, NewFacilityLogEntryResponse(fle))
 }
@@ -141,7 +141,7 @@ func ListFacilityLog(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /facility-log/{id} [put]
 func UpdateFacilityLog(w http.ResponseWriter, r *http.Request) {
-	fle := GetFacilityLogCtx(r)
+	fle := utils.GetFacilityLogCtx(r)
 
 	data := &Request{}
 	if err := render.Bind(r, data); err != nil {
@@ -184,7 +184,7 @@ func UpdateFacilityLog(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /facility-log/{id} [patch]
 func PatchFacilityLog(w http.ResponseWriter, r *http.Request) {
-	fle := GetFacilityLogCtx(r)
+	fle := utils.GetFacilityLogCtx(r)
 
 	data := &Request{}
 	if err := render.Bind(r, data); err != nil {
@@ -223,7 +223,7 @@ func PatchFacilityLog(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /facility-log/{id} [delete]
 func DeleteFacilityLog(w http.ResponseWriter, r *http.Request) {
-	fle := GetFacilityLogCtx(r)
+	fle := utils.GetFacilityLogCtx(r)
 
 	if err := fle.Delete(); err != nil {
 		utils.Render(w, r, utils.ErrInternalServer)
