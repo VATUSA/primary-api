@@ -66,34 +66,34 @@ func NewRosterListResponse(r []models.Roster) []render.Renderer {
 func CreateRoster(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := data.Validate(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	user := utils.GetUserCtx(r)
 
 	if !models.IsValidUser(user.CID) {
-		render.Render(w, r, utils.ErrInvalidCID)
+		utils.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
 	if !models.IsValidFacility(data.Facility) {
-		render.Render(w, r, utils.ErrInvalidFacility)
+		utils.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
 
 	if !data.Home && !data.Visiting {
-		render.Render(w, r, utils.ErrInvalidRequest(errors.New("home and visiting cannot both be false")))
+		utils.Render(w, r, utils.ErrInvalidRequest(errors.New("home and visiting cannot both be false")))
 		return
 	}
 
 	if data.Home && data.Visiting {
-		render.Render(w, r, utils.ErrInvalidRequest(errors.New("home and visiting cannot both be true")))
+		utils.Render(w, r, utils.ErrInvalidRequest(errors.New("home and visiting cannot both be true")))
 		return
 	}
 
@@ -107,12 +107,12 @@ func CreateRoster(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := roster.Create(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	render.Status(r, http.StatusCreated)
-	render.Render(w, r, NewRosterResponse(roster))
+	utils.Render(w, r, NewRosterResponse(roster))
 }
 
 // GetRoster godoc
@@ -131,7 +131,7 @@ func CreateRoster(w http.ResponseWriter, r *http.Request) {
 func GetRoster(w http.ResponseWriter, r *http.Request) {
 	roster := utils.GetRosterCtx(r)
 
-	render.Render(w, r, NewRosterResponse(roster))
+	utils.Render(w, r, NewRosterResponse(roster))
 }
 
 // ListRoster godoc
@@ -150,12 +150,12 @@ func ListRoster(w http.ResponseWriter, r *http.Request) {
 
 	rosters, err := models.GetRostersByCID(user.CID)
 	if err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
 	if err := render.RenderList(w, r, NewRosterListResponse(rosters)); err != nil {
-		render.Render(w, r, utils.ErrRender(err))
+		utils.Render(w, r, utils.ErrRender(err))
 		return
 	}
 }
@@ -178,34 +178,34 @@ func UpdateRoster(w http.ResponseWriter, r *http.Request) {
 	roster := utils.GetRosterCtx(r)
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := data.Validate(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	user := utils.GetUserCtx(r)
 
 	if !models.IsValidUser(user.CID) {
-		render.Render(w, r, utils.ErrInvalidCID)
+		utils.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
 	if !models.IsValidFacility(data.Facility) {
-		render.Render(w, r, utils.ErrInvalidFacility)
+		utils.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
 
 	if !data.Home && !data.Visiting {
-		render.Render(w, r, utils.ErrInvalidRequest(errors.New("home and visiting cannot both be false")))
+		utils.Render(w, r, utils.ErrInvalidRequest(errors.New("home and visiting cannot both be false")))
 		return
 	}
 
 	if data.Home && data.Visiting {
-		render.Render(w, r, utils.ErrInvalidRequest(errors.New("home and visiting cannot both be true")))
+		utils.Render(w, r, utils.ErrInvalidRequest(errors.New("home and visiting cannot both be true")))
 		return
 	}
 

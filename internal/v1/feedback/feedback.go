@@ -67,22 +67,22 @@ func NewFeedbackListResponse(f []models.Feedback) []render.Renderer {
 func CreateFeedback(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := data.Validate(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if !models.IsValidUser(data.ControllerCID) {
-		render.Render(w, r, utils.ErrInvalidCID)
+		utils.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
 	if !models.IsValidFacility(data.Facility) {
-		render.Render(w, r, utils.ErrInvalidFacility)
+		utils.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
 
@@ -98,12 +98,12 @@ func CreateFeedback(w http.ResponseWriter, r *http.Request) {
 		Comment:       data.Comment,
 	}
 	if err := f.Create(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
 	render.Status(r, http.StatusCreated)
-	render.Render(w, r, NewFeedbackResponse(f))
+	utils.Render(w, r, NewFeedbackResponse(f))
 }
 
 // GetFeedback godoc
@@ -120,7 +120,7 @@ func CreateFeedback(w http.ResponseWriter, r *http.Request) {
 // @Router /feedback/{id} [get]
 func GetFeedback(w http.ResponseWriter, r *http.Request) {
 	f := GetFeedbackCtx(r)
-	render.Render(w, r, NewFeedbackResponse(f))
+	utils.Render(w, r, NewFeedbackResponse(f))
 }
 
 // ListFeedback godoc
@@ -136,12 +136,12 @@ func GetFeedback(w http.ResponseWriter, r *http.Request) {
 func ListFeedback(w http.ResponseWriter, r *http.Request) {
 	f, err := models.GetAllFeedback()
 	if err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
 	if err := render.RenderList(w, r, NewFeedbackListResponse(f)); err != nil {
-		render.Render(w, r, utils.ErrRender(err))
+		utils.Render(w, r, utils.ErrRender(err))
 		return
 	}
 }
@@ -161,22 +161,22 @@ func ListFeedback(w http.ResponseWriter, r *http.Request) {
 func UpdateFeedback(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := data.Validate(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if !models.IsValidUser(data.ControllerCID) {
-		render.Render(w, r, utils.ErrInvalidCID)
+		utils.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
 	if !models.IsValidFacility(data.Facility) {
-		render.Render(w, r, utils.ErrInvalidFacility)
+		utils.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
 
@@ -192,7 +192,7 @@ func UpdateFeedback(w http.ResponseWriter, r *http.Request) {
 	f.Comment = data.Comment
 
 	if err := f.Update(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
@@ -215,7 +215,7 @@ func PatchFeedback(w http.ResponseWriter, r *http.Request) {
 	f := GetFeedbackCtx(r)
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
@@ -227,7 +227,7 @@ func PatchFeedback(w http.ResponseWriter, r *http.Request) {
 	}
 	if data.ControllerCID != 0 {
 		if !models.IsValidUser(data.ControllerCID) {
-			render.Render(w, r, utils.ErrInvalidCID)
+			utils.Render(w, r, utils.ErrInvalidCID)
 			return
 		}
 		f.ControllerCID = data.ControllerCID
@@ -237,7 +237,7 @@ func PatchFeedback(w http.ResponseWriter, r *http.Request) {
 	}
 	if data.Facility != "" {
 		if !models.IsValidFacility(data.Facility) {
-			render.Render(w, r, utils.ErrInvalidFacility)
+			utils.Render(w, r, utils.ErrInvalidFacility)
 			return
 		}
 		f.Facility = data.Facility
@@ -256,7 +256,7 @@ func PatchFeedback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := f.Update(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
@@ -277,7 +277,7 @@ func PatchFeedback(w http.ResponseWriter, r *http.Request) {
 func DeleteFeedback(w http.ResponseWriter, r *http.Request) {
 	f := GetFeedbackCtx(r)
 	if err := f.Delete(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 

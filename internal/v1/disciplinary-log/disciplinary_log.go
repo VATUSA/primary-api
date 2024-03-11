@@ -60,19 +60,19 @@ func NewDisciplinaryLogEntryListResponse(dle []models.DisciplinaryLogEntry) []re
 func CreateDisciplinaryLogEntry(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := data.Validate(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	user := utils.GetUserCtx(r)
 
 	if !models.IsValidUser(user.CID) {
-		render.Render(w, r, utils.ErrInvalidCID)
+		utils.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
@@ -89,12 +89,12 @@ func CreateDisciplinaryLogEntry(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := dle.Create(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
 	render.Status(r, http.StatusCreated)
-	render.Render(w, r, NewDisciplinaryLogEntryResponse(dle))
+	utils.Render(w, r, NewDisciplinaryLogEntryResponse(dle))
 }
 
 // ListDisciplinaryLog godoc
@@ -118,18 +118,18 @@ func ListDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 
 	user := utils.GetUserCtx(r)
 	if !models.IsValidUser(user.CID) {
-		render.Render(w, r, utils.ErrInvalidCID)
+		utils.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
 	dle, err := models.GetAllDisciplinaryLogEntriesByCID(user.CID, vatUSA)
 	if err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
 	if err := render.RenderList(w, r, NewDisciplinaryLogEntryListResponse(dle)); err != nil {
-		render.Render(w, r, utils.ErrRender(err))
+		utils.Render(w, r, utils.ErrRender(err))
 		return
 	}
 }
@@ -150,12 +150,12 @@ func UpdateDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 	dle := utils.GetDisciplinaryLogCtx(r)
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := data.Validate(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
@@ -166,11 +166,11 @@ func UpdateDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := dle.Update(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
-	render.Render(w, r, NewDisciplinaryLogEntryResponse(dle))
+	utils.Render(w, r, NewDisciplinaryLogEntryResponse(dle))
 }
 
 // PatchDisciplinaryLog godoc
@@ -190,7 +190,7 @@ func PatchDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 	dle := utils.GetDisciplinaryLogCtx(r)
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
@@ -203,11 +203,11 @@ func PatchDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := dle.Update(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
-	render.Render(w, r, NewDisciplinaryLogEntryResponse(dle))
+	utils.Render(w, r, NewDisciplinaryLogEntryResponse(dle))
 }
 
 // DeleteDisciplinaryLog godoc
@@ -224,7 +224,7 @@ func PatchDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 func DeleteDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 	dle := utils.GetDisciplinaryLogCtx(r)
 	if err := dle.Delete(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 

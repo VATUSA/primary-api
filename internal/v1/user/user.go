@@ -70,12 +70,12 @@ func NewUserListResponse(users []models.User) []render.Renderer {
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	req := &Request{}
 	if err := render.Bind(r, req); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := req.Validate(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
@@ -91,7 +91,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		DiscordID:        req.DiscordID,
 	}
 	if err := user.Create(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
@@ -103,13 +103,13 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		NoTraining:     false,
 	}
 	if err := userflag.Create(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 
 	}
 
 	render.Status(r, http.StatusCreated)
-	render.Render(w, r, NewUserResponse(user))
+	utils.Render(w, r, NewUserResponse(user))
 }
 
 // GetUser godoc
@@ -126,7 +126,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 func GetUser(w http.ResponseWriter, r *http.Request) {
 	user := utils.GetUserCtx(r)
 
-	render.Render(w, r, NewUserResponse(user))
+	utils.Render(w, r, NewUserResponse(user))
 }
 
 // ListUsers godoc
@@ -143,12 +143,12 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 func ListUsers(w http.ResponseWriter, r *http.Request) {
 	users, err := models.GetAllUsers()
 	if err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
 	if err := render.RenderList(w, r, NewUserListResponse(users)); err != nil {
-		render.Render(w, r, utils.ErrRender(err))
+		utils.Render(w, r, utils.ErrRender(err))
 		return
 	}
 }
@@ -170,12 +170,12 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 	req := &Request{}
 	if err := render.Bind(r, req); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := req.Validate(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
@@ -190,11 +190,11 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	user.DiscordID = req.DiscordID
 
 	if err := user.Update(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
-	render.Render(w, r, NewUserResponse(user))
+	utils.Render(w, r, NewUserResponse(user))
 }
 
 // PatchUser godoc
@@ -214,7 +214,7 @@ func PatchUser(w http.ResponseWriter, r *http.Request) {
 
 	req := &Request{}
 	if err := render.Bind(r, req); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 

@@ -60,17 +60,17 @@ func NewFAQListResponse(faqs []models.FAQ) []render.Renderer {
 func CreateFAQ(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := render.Bind(r, data); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := data.Validate(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if !models.IsValidFacility(data.Facility) {
-		render.Render(w, r, utils.ErrInvalidFacility)
+		utils.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
 
@@ -83,12 +83,12 @@ func CreateFAQ(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := faq.Create(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
 	render.Status(r, http.StatusCreated)
-	render.Render(w, r, NewFAQResponse(faq))
+	utils.Render(w, r, NewFAQResponse(faq))
 
 }
 
@@ -107,7 +107,7 @@ func CreateFAQ(w http.ResponseWriter, r *http.Request) {
 func GetFAQ(w http.ResponseWriter, r *http.Request) {
 	faq := GetFAQCtx(r)
 
-	render.Render(w, r, NewFAQResponse(faq))
+	utils.Render(w, r, NewFAQResponse(faq))
 }
 
 // ListFAQ godoc
@@ -122,12 +122,12 @@ func GetFAQ(w http.ResponseWriter, r *http.Request) {
 func ListFAQ(w http.ResponseWriter, r *http.Request) {
 	faqs, err := models.GetAllFAQ()
 	if err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
 	if err := render.RenderList(w, r, NewFAQListResponse(faqs)); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 }
@@ -150,17 +150,17 @@ func UpdateFAQ(w http.ResponseWriter, r *http.Request) {
 
 	data := &Request{}
 	if err := render.Bind(r, data); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := data.Validate(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if !models.IsValidFacility(data.Facility) {
-		render.Render(w, r, utils.ErrInvalidFacility)
+		utils.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
 
@@ -170,7 +170,7 @@ func UpdateFAQ(w http.ResponseWriter, r *http.Request) {
 	faq.Category = data.Category
 
 	if err := faq.Update(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 

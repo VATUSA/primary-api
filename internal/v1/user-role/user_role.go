@@ -62,30 +62,30 @@ func NewUserRoleListResponse(r []models.UserRole) []render.Renderer {
 func CreateUserRoles(w http.ResponseWriter, r *http.Request) {
 	req := &Request{}
 	if err := req.Bind(*r); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := req.Validate(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	user := utils.GetUserCtx(r)
 
 	if !models.IsValidUser(user.CID) {
-		render.Render(w, r, utils.ErrInvalidCID)
+		utils.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
 	if !req.RoleID.IsValidRole() {
-		render.Render(w, r, utils.ErrInvalidRole)
+		utils.Render(w, r, utils.ErrInvalidRole)
 		return
 	}
 
 	roster, err := models.GetRosterByFacilityAndCID(req.FacilityID, user.CID)
 	if err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
@@ -97,12 +97,12 @@ func CreateUserRoles(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := userRole.Create(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	render.Status(r, http.StatusCreated)
-	render.Render(w, r, NewUserRoleResponse(userRole))
+	utils.Render(w, r, NewUserRoleResponse(userRole))
 }
 
 // GetUserRole godoc
@@ -120,7 +120,7 @@ func CreateUserRoles(w http.ResponseWriter, r *http.Request) {
 func GetUserRole(w http.ResponseWriter, r *http.Request) {
 	userRole := utils.GetUserRoleCtx(r)
 
-	render.Render(w, r, NewUserRoleResponse(userRole))
+	utils.Render(w, r, NewUserRoleResponse(userRole))
 }
 
 // ListUserRoles godoc
@@ -137,12 +137,12 @@ func GetUserRole(w http.ResponseWriter, r *http.Request) {
 func ListUserRoles(w http.ResponseWriter, r *http.Request) {
 	userRoles, err := models.GetAllUserRoles()
 	if err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := render.RenderList(w, r, NewUserRoleListResponse(userRoles)); err != nil {
-		render.Render(w, r, utils.ErrRender(err))
+		utils.Render(w, r, utils.ErrRender(err))
 		return
 	}
 }
@@ -163,7 +163,7 @@ func DeleteUserRole(w http.ResponseWriter, r *http.Request) {
 	userRole := utils.GetUserRoleCtx(r)
 
 	if err := userRole.Delete(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 

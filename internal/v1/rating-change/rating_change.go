@@ -61,19 +61,19 @@ func NewRatingChangeListResponse(rc []models.RatingChange) []render.Renderer {
 func CreateRatingChange(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := data.Validate(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	user := utils.GetUserCtx(r)
 
 	if !models.IsValidUser(user.CID) {
-		render.Render(w, r, utils.ErrInvalidCID)
+		utils.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
@@ -85,12 +85,12 @@ func CreateRatingChange(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := rc.Create(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	render.Status(r, http.StatusCreated)
-	render.Render(w, r, NewRatingChangeResponse(rc))
+	utils.Render(w, r, NewRatingChangeResponse(rc))
 }
 
 // ListRatingChanges godoc
@@ -107,12 +107,12 @@ func CreateRatingChange(w http.ResponseWriter, r *http.Request) {
 func ListRatingChanges(w http.ResponseWriter, r *http.Request) {
 	rc, err := models.GetAllRatingChangesByCID(utils.GetUserCtx(r).CID)
 	if err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := render.RenderList(w, r, NewRatingChangeListResponse(rc)); err != nil {
-		render.Render(w, r, utils.ErrRender(err))
+		utils.Render(w, r, utils.ErrRender(err))
 		return
 	}
 }
@@ -134,12 +134,12 @@ func ListRatingChanges(w http.ResponseWriter, r *http.Request) {
 func UpdateRatingChange(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := data.Validate(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
@@ -150,11 +150,11 @@ func UpdateRatingChange(w http.ResponseWriter, r *http.Request) {
 	rc.CreatedByCID = data.CreatedByCID
 
 	if err := rc.Update(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
-	render.Render(w, r, NewRatingChangeResponse(rc))
+	utils.Render(w, r, NewRatingChangeResponse(rc))
 }
 
 // PatchRatingChange godoc
@@ -175,7 +175,7 @@ func PatchRatingChange(w http.ResponseWriter, r *http.Request) {
 	rc := utils.GetRatingChangeCtx(r)
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
@@ -190,11 +190,11 @@ func PatchRatingChange(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := rc.Update(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
-	render.Render(w, r, NewRatingChangeResponse(rc))
+	utils.Render(w, r, NewRatingChangeResponse(rc))
 }
 
 // DeleteRatingChange godoc
@@ -211,7 +211,7 @@ func PatchRatingChange(w http.ResponseWriter, r *http.Request) {
 func DeleteRatingChange(w http.ResponseWriter, r *http.Request) {
 	rc := utils.GetRatingChangeCtx(r)
 	if err := rc.Delete(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 

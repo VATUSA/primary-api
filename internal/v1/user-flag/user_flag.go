@@ -66,7 +66,7 @@ func NewUserFlagListResponse(r []models.UserFlag) []render.Renderer {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /user/{cid}/user-flag [get]
 func GetUserFlag(w http.ResponseWriter, r *http.Request) {
-	render.Render(w, r, NewUserFlagResponse(utils.GetUserFlagCtx(r)))
+	utils.Render(w, r, NewUserFlagResponse(utils.GetUserFlagCtx(r)))
 }
 
 // UpdateUserFlag godoc
@@ -85,12 +85,12 @@ func GetUserFlag(w http.ResponseWriter, r *http.Request) {
 func UpdateUserFlag(w http.ResponseWriter, r *http.Request) {
 	req := &Request{}
 	if err := req.Bind(r); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := req.Validate(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
@@ -105,11 +105,11 @@ func UpdateUserFlag(w http.ResponseWriter, r *http.Request) {
 	userFlag.NoTrainingLogEntryID = req.NoTrainingLogEntryID
 
 	if err := userFlag.Update(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
-	render.Render(w, r, NewUserFlagResponse(userFlag))
+	utils.Render(w, r, NewUserFlagResponse(userFlag))
 }
 
 // PatchUserFlag godoc
@@ -128,7 +128,7 @@ func UpdateUserFlag(w http.ResponseWriter, r *http.Request) {
 func PatchUserFlag(w http.ResponseWriter, r *http.Request) {
 	req := &Request{}
 	if err := req.Bind(r); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
@@ -159,11 +159,11 @@ func PatchUserFlag(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := userFlag.Update(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
-	render.Render(w, r, NewUserFlagResponse(userFlag))
+	utils.Render(w, r, NewUserFlagResponse(userFlag))
 }
 
 // DeleteUserFlag godoc
@@ -180,7 +180,7 @@ func PatchUserFlag(w http.ResponseWriter, r *http.Request) {
 func DeleteUserFlag(w http.ResponseWriter, r *http.Request) {
 	userFlag := utils.GetUserFlagCtx(r)
 	if err := userFlag.Delete(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 

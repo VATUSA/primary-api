@@ -68,24 +68,24 @@ func NewDocumentListResponse(d []models.Document) []render.Renderer {
 func CreateDocument(w http.ResponseWriter, r *http.Request, endpoint string) {
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := data.Validate(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	currentDocs, err := models.GetAllDocumentsByFacilityAndCategory(data.Facility, types.DocumentCategory(data.Category))
 	if err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
 	for _, doc := range currentDocs {
 		if doc.Name == data.Name {
-			render.Render(w, r, utils.ErrInvalidRequest(fmt.Errorf("document with name %s already exists", data.Name)))
+			utils.Render(w, r, utils.ErrInvalidRequest(fmt.Errorf("document with name %s already exists", data.Name)))
 			return
 		}
 	}
@@ -103,7 +103,7 @@ func CreateDocument(w http.ResponseWriter, r *http.Request, endpoint string) {
 
 	// Put the file in the S3 bucket
 	if err := storage.PublicBucket.Upload(directory, filename, file); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
@@ -116,7 +116,7 @@ func CreateDocument(w http.ResponseWriter, r *http.Request, endpoint string) {
 	}
 
 	if err := document.Create(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 
 		err := storage.PublicBucket.Delete(directory, filename)
 		if err != nil {
@@ -126,7 +126,7 @@ func CreateDocument(w http.ResponseWriter, r *http.Request, endpoint string) {
 	}
 
 	render.Status(r, http.StatusCreated)
-	render.Render(w, r, NewDocumentResponse(document))
+	utils.Render(w, r, NewDocumentResponse(document))
 }
 
 // GetDocument godoc
@@ -143,7 +143,7 @@ func CreateDocument(w http.ResponseWriter, r *http.Request, endpoint string) {
 // @Router /documents/{id} [get]
 func GetDocument(w http.ResponseWriter, r *http.Request) {
 	doc := GetDocumentCtx(r)
-	render.Render(w, r, NewDocumentResponse(doc))
+	utils.Render(w, r, NewDocumentResponse(doc))
 }
 
 // ListDocuments godoc
@@ -159,12 +159,12 @@ func GetDocument(w http.ResponseWriter, r *http.Request) {
 func ListDocuments(w http.ResponseWriter, r *http.Request) {
 	docs, err := models.GetAllDocuments()
 	if err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
 	if err := render.RenderList(w, r, NewDocumentListResponse(docs)); err != nil {
-		render.Render(w, r, utils.ErrRender(err))
+		utils.Render(w, r, utils.ErrRender(err))
 		return
 	}
 }
@@ -190,12 +190,12 @@ func ListDocumentsByFac(w http.ResponseWriter, r *http.Request) {
 
 	docs, err := models.GetAllDocumentsByFacility(facId)
 	if err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
 	if err := render.RenderList(w, r, NewDocumentListResponse(docs)); err != nil {
-		render.Render(w, r, utils.ErrRender(err))
+		utils.Render(w, r, utils.ErrRender(err))
 		return
 	}
 }
@@ -223,12 +223,12 @@ func ListDocumentsByFacByCat(w http.ResponseWriter, r *http.Request) {
 
 	docs, err := models.GetAllDocumentsByFacilityAndCategory(facId, types.DocumentCategory(cat))
 	if err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
 	if err := render.RenderList(w, r, NewDocumentListResponse(docs)); err != nil {
-		render.Render(w, r, utils.ErrRender(err))
+		utils.Render(w, r, utils.ErrRender(err))
 		return
 	}
 }

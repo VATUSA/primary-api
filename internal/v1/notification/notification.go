@@ -63,29 +63,29 @@ func NewNotificationListResponse(n []models.Notification) []render.Renderer {
 func CreateNotification(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := data.Validate(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	expireAt, err := http.ParseTime(data.ExpireAt)
 	if err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	// Make sure expireAt is in the future
 	if expireAt.Before(time.Now()) {
-		render.Render(w, r, utils.ErrInvalidRequest(errors.New("expire_at must be in the future")))
+		utils.Render(w, r, utils.ErrInvalidRequest(errors.New("expire_at must be in the future")))
 		return
 	}
 
 	if !models.IsValidUser(data.CID) {
-		render.Render(w, r, utils.ErrInvalidCID)
+		utils.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
@@ -98,12 +98,12 @@ func CreateNotification(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := n.Create(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
 	render.Status(r, http.StatusCreated)
-	render.Render(w, r, NewNotificationResponse(n))
+	utils.Render(w, r, NewNotificationResponse(n))
 }
 
 // GetNotification godoc
@@ -119,7 +119,7 @@ func CreateNotification(w http.ResponseWriter, r *http.Request) {
 // @Router /notification/{id} [get]
 func GetNotification(w http.ResponseWriter, r *http.Request) {
 	n := GetNotificationCtx(r)
-	render.Render(w, r, NewNotificationResponse(n))
+	utils.Render(w, r, NewNotificationResponse(n))
 }
 
 // ListNotifications godoc
@@ -135,12 +135,12 @@ func GetNotification(w http.ResponseWriter, r *http.Request) {
 func ListNotifications(w http.ResponseWriter, r *http.Request) {
 	notifications, err := models.GetAllNotifications()
 	if err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
 	if err := render.RenderList(w, r, NewNotificationListResponse(notifications)); err != nil {
-		render.Render(w, r, utils.ErrRender(err))
+		utils.Render(w, r, utils.ErrRender(err))
 		return
 	}
 }
@@ -161,29 +161,29 @@ func UpdateNotification(w http.ResponseWriter, r *http.Request) {
 	n := GetNotificationCtx(r)
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := data.Validate(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	expireAt, err := http.ParseTime(data.ExpireAt)
 	if err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	// Make sure expireAt is in the future
 	if expireAt.Before(time.Now()) {
-		render.Render(w, r, utils.ErrInvalidRequest(errors.New("expire_at must be in the future")))
+		utils.Render(w, r, utils.ErrInvalidRequest(errors.New("expire_at must be in the future")))
 		return
 	}
 
 	if !models.IsValidUser(data.CID) {
-		render.Render(w, r, utils.ErrInvalidCID)
+		utils.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 

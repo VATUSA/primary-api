@@ -58,19 +58,19 @@ func NewActionLogEntryListResponse(ale []models.ActionLogEntry) []render.Rendere
 func CreateActionLogEntry(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := render.Bind(r, data); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := data.Validate(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	user := utils.GetUserCtx(r)
 
 	if !models.IsValidUser(user.CID) {
-		render.Render(w, r, utils.ErrInvalidCID)
+		utils.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
@@ -81,12 +81,12 @@ func CreateActionLogEntry(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := ale.Create(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
 	render.Status(r, http.StatusCreated)
-	render.Render(w, r, NewActionLogEntryResponse(ale))
+	utils.Render(w, r, NewActionLogEntryResponse(ale))
 }
 
 // ListActionLog godoc
@@ -103,12 +103,12 @@ func CreateActionLogEntry(w http.ResponseWriter, r *http.Request) {
 func ListActionLog(w http.ResponseWriter, r *http.Request) {
 	ale, err := models.GetAllActionLogEntriesByCID(utils.GetUserCtx(r).CID)
 	if err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
 	if err := render.RenderList(w, r, NewActionLogEntryListResponse(ale)); err != nil {
-		render.Render(w, r, utils.ErrRender(err))
+		utils.Render(w, r, utils.ErrRender(err))
 		return
 	}
 }
@@ -131,12 +131,12 @@ func UpdateActionLog(w http.ResponseWriter, r *http.Request) {
 
 	data := &Request{}
 	if err := render.Bind(r, data); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := data.Validate(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
@@ -144,11 +144,11 @@ func UpdateActionLog(w http.ResponseWriter, r *http.Request) {
 	ale.UpdatedBy = "System"
 
 	if err := ale.Update(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
-	render.Render(w, r, NewActionLogEntryResponse(ale))
+	utils.Render(w, r, NewActionLogEntryResponse(ale))
 }
 
 // PatchActionLog godoc
@@ -170,7 +170,7 @@ func PatchActionLog(w http.ResponseWriter, r *http.Request) {
 
 	data := &Request{}
 	if err := render.Bind(r, data); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
@@ -180,11 +180,11 @@ func PatchActionLog(w http.ResponseWriter, r *http.Request) {
 	ale.UpdatedBy = "System"
 
 	if err := ale.Update(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
-	render.Render(w, r, NewActionLogEntryResponse(ale))
+	utils.Render(w, r, NewActionLogEntryResponse(ale))
 }
 
 // DeleteActionLog godoc
@@ -203,7 +203,7 @@ func DeleteActionLog(w http.ResponseWriter, r *http.Request) {
 	ale := utils.GetActionLogCtx(r)
 
 	if err := ale.Delete(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 

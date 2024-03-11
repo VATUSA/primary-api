@@ -59,17 +59,17 @@ func NewFacilityLogEntryListResponse(fle []models.FacilityLogEntry) []render.Ren
 func CreateFacilityLogEntry(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := render.Bind(r, data); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := data.Validate(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if !models.IsValidFacility(data.Facility) {
-		render.Render(w, r, utils.ErrInvalidFacility)
+		utils.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
 
@@ -80,12 +80,12 @@ func CreateFacilityLogEntry(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := fle.Create(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
 	render.Status(r, http.StatusCreated)
-	render.Render(w, r, NewFacilityLogEntryResponse(fle))
+	utils.Render(w, r, NewFacilityLogEntryResponse(fle))
 }
 
 // GetFacilityLog godoc
@@ -101,7 +101,7 @@ func CreateFacilityLogEntry(w http.ResponseWriter, r *http.Request) {
 func GetFacilityLog(w http.ResponseWriter, r *http.Request) {
 	fle := GetFacilityLogCtx(r)
 
-	render.Render(w, r, NewFacilityLogEntryResponse(fle))
+	utils.Render(w, r, NewFacilityLogEntryResponse(fle))
 }
 
 // ListFacilityLog godoc
@@ -117,12 +117,12 @@ func GetFacilityLog(w http.ResponseWriter, r *http.Request) {
 func ListFacilityLog(w http.ResponseWriter, r *http.Request) {
 	fle, err := models.GetAllFacilityLogEntries()
 	if err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
 	if err := render.RenderList(w, r, NewFacilityLogEntryListResponse(fle)); err != nil {
-		render.Render(w, r, utils.ErrRender(err))
+		utils.Render(w, r, utils.ErrRender(err))
 		return
 	}
 }
@@ -145,17 +145,17 @@ func UpdateFacilityLog(w http.ResponseWriter, r *http.Request) {
 
 	data := &Request{}
 	if err := render.Bind(r, data); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := data.Validate(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if !models.IsValidFacility(data.Facility) {
-		render.Render(w, r, utils.ErrInvalidFacility)
+		utils.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
 
@@ -163,7 +163,7 @@ func UpdateFacilityLog(w http.ResponseWriter, r *http.Request) {
 	fle.Entry = data.Entry
 
 	if err := fle.Update(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 

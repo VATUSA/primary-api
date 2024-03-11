@@ -2,7 +2,6 @@ package news
 
 import (
 	"errors"
-	"fmt"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
@@ -61,18 +60,17 @@ func NewNewsListResponse(news []models.News) []render.Renderer {
 func CreateNews(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := render.Bind(r, data); err != nil {
-		fmt.Println(r.Body)
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := data.Validate(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if !models.IsValidFacility(data.Facility) {
-		render.Render(w, r, utils.ErrInvalidFacility)
+		utils.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
 
@@ -84,12 +82,12 @@ func CreateNews(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := news.Create(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
 	render.Status(r, http.StatusCreated)
-	render.Render(w, r, NewNewsResponse(news))
+	utils.Render(w, r, NewNewsResponse(news))
 }
 
 // GetNews godoc
@@ -106,7 +104,7 @@ func CreateNews(w http.ResponseWriter, r *http.Request) {
 // @Router /news/{id} [get]
 func GetNews(w http.ResponseWriter, r *http.Request) {
 	news := GetNewsCtx(r)
-	render.Render(w, r, NewNewsResponse(news))
+	utils.Render(w, r, NewNewsResponse(news))
 }
 
 // ListNews godoc
@@ -122,12 +120,12 @@ func GetNews(w http.ResponseWriter, r *http.Request) {
 func ListNews(w http.ResponseWriter, r *http.Request) {
 	news, err := models.GetAllNews()
 	if err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
 	if err := render.RenderList(w, r, NewNewsListResponse(news)); err != nil {
-		render.Render(w, r, utils.ErrRender(err))
+		utils.Render(w, r, utils.ErrRender(err))
 		return
 	}
 }
@@ -150,17 +148,17 @@ func UpdateNews(w http.ResponseWriter, r *http.Request) {
 
 	req := &Request{}
 	if err := render.Bind(r, req); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := req.Validate(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if !models.IsValidFacility(req.Facility) {
-		render.Render(w, r, utils.ErrInvalidRequest(errors.New("invalid facility")))
+		utils.Render(w, r, utils.ErrInvalidRequest(errors.New("invalid facility")))
 		return
 	}
 
@@ -170,11 +168,11 @@ func UpdateNews(w http.ResponseWriter, r *http.Request) {
 	news.UpdatedBy = "System"
 
 	if err := news.Update(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
-	render.Render(w, r, NewNewsResponse(news))
+	utils.Render(w, r, NewNewsResponse(news))
 }
 
 // PatchNews godoc
@@ -195,13 +193,13 @@ func PatchNews(w http.ResponseWriter, r *http.Request) {
 
 	req := &Request{}
 	if err := render.Bind(r, req); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if req.Facility != "" {
 		if !models.IsValidFacility(req.Facility) {
-			render.Render(w, r, utils.ErrInvalidRequest(errors.New("invalid facility")))
+			utils.Render(w, r, utils.ErrInvalidRequest(errors.New("invalid facility")))
 			return
 		}
 

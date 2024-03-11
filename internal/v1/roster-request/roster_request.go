@@ -63,24 +63,24 @@ func NewRosterRequestListResponse(r []models.RosterRequest) []render.Renderer {
 func CreateRosterRequest(w http.ResponseWriter, r *http.Request) {
 	req := &Request{}
 	if err := req.Bind(r); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := req.Validate(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	user := utils.GetUserCtx(r)
 
 	if !models.IsValidUser(user.CID) {
-		render.Render(w, r, utils.ErrInvalidCID)
+		utils.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
 	if !models.IsValidFacility(req.Facility) {
-		render.Render(w, r, utils.ErrInvalidFacility)
+		utils.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
 
@@ -93,12 +93,12 @@ func CreateRosterRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := rosterRequest.Create(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	render.Status(r, http.StatusCreated)
-	render.Render(w, r, NewRosterRequestResponse(rosterRequest))
+	utils.Render(w, r, NewRosterRequestResponse(rosterRequest))
 }
 
 // ListRosterRequest godoc
@@ -115,12 +115,12 @@ func CreateRosterRequest(w http.ResponseWriter, r *http.Request) {
 func ListRosterRequest(w http.ResponseWriter, r *http.Request) {
 	rosterRequests, err := models.GetAllRosterRequestsByCID(utils.GetUserCtx(r).CID)
 	if err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := render.RenderList(w, r, NewRosterRequestListResponse(rosterRequests)); err != nil {
-		render.Render(w, r, utils.ErrRender(err))
+		utils.Render(w, r, utils.ErrRender(err))
 		return
 	}
 }
@@ -141,17 +141,17 @@ func ListRosterRequest(w http.ResponseWriter, r *http.Request) {
 func UpdateRosterRequest(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := data.Validate(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if !models.IsValidFacility(data.Facility) {
-		render.Render(w, r, utils.ErrInvalidFacility)
+		utils.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
 
