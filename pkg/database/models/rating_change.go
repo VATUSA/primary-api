@@ -2,7 +2,6 @@ package models
 
 import (
 	"github.com/VATUSA/primary-api/pkg/database"
-	"gorm.io/gorm"
 	"time"
 )
 
@@ -37,7 +36,7 @@ func GetAllRatingChanges() ([]RatingChange, error) {
 	return ratingChanges, database.DB.Find(&ratingChanges).Error
 }
 
-func GetAllRatingChangesByCID(db *gorm.DB, cid uint) ([]RatingChange, error) {
+func GetAllRatingChangesByCID(cid uint) ([]RatingChange, error) {
 	var ratingChanges []RatingChange
 	return ratingChanges, database.DB.Where("cid = ?", cid).Find(&ratingChanges).Error
 }

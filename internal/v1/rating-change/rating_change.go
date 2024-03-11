@@ -10,7 +10,6 @@ import (
 )
 
 type Request struct {
-	CID          uint   `json:"cid" example:"1293257" validate:"required"`
 	OldRating    uint   `json:"old_rating" example:"1" validate:"required"`
 	NewRating    uint   `json:"new_rating" example:"2" validate:"required"`
 	CreatedByCID string `json:"created_by_cid" example:"1293257" validate:"required"`
@@ -53,11 +52,12 @@ func NewRatingChangeListResponse(rc []models.RatingChange) []render.Renderer {
 // @Tags rating-change
 // @Accept  json
 // @Produce  json
+// @Param cid path int true "CID"
 // @Param rating_change body Request true "Rating Change"
 // @Success 201 {object} Response
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /rating-change [post]
+// @Router /user/{cid}/rating-change [post]
 func CreateRatingChange(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
@@ -70,13 +70,15 @@ func CreateRatingChange(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(data.CID) {
+	user := utils.GetUserCtx(r)
+
+	if !models.IsValidUser(user.CID) {
 		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
 	rc := &models.RatingChange{
-		CID:          data.CID,
+		CID:          user.CID,
 		OldRating:    data.OldRating,
 		NewRating:    data.NewRating,
 		CreatedByCID: data.CreatedByCID,
@@ -91,36 +93,19 @@ func CreateRatingChange(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewRatingChangeResponse(rc))
 }
 
-// GetRatingChange godoc
-// @Summary Get a rating change
-// @Description Get a rating change
-// @Tags rating-change
-// @Accept  json
-// @Produce  json
-// @Param id path int true "Rating Change ID"
-// @Success 200 {object} Response
-// @Failure 400 {object} utils.ErrResponse
-// @Failure 404 {object} utils.ErrResponse
-// @Failure 500 {object} utils.ErrResponse
-// @Router /rating-change/{id} [get]
-func GetRatingChange(w http.ResponseWriter, r *http.Request) {
-	rc := GetRatingChangeCtx(r)
-
-	render.Render(w, r, NewRatingChangeResponse(rc))
-}
-
 // ListRatingChanges godoc
 // @Summary List rating changes
 // @Description List rating changes
 // @Tags rating-change
 // @Accept  json
 // @Produce  json
+// @Param cid path int true "CID"
 // @Success 200 {object} []Response
 // @Failure 422 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /rating-change [get]
+// @Router /user/{cid}/rating-change [get]
 func ListRatingChanges(w http.ResponseWriter, r *http.Request) {
-	rc, err := models.GetAllRatingChanges()
+	rc, err := models.GetAllRatingChangesByCID(utils.GetUserCtx(r).CID)
 	if err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
@@ -138,13 +123,14 @@ func ListRatingChanges(w http.ResponseWriter, r *http.Request) {
 // @Tags rating-change
 // @Accept  json
 // @Produce  json
+// @Param cid path int true "CID"
 // @Param id path int true "Rating Change ID"
 // @Param rating_change body Request true "Rating Change"
 // @Success 200 {object} Response
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 404 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /rating-change/{id} [put]
+// @Router /user/{cid}/rating-change/{id} [put]
 func UpdateRatingChange(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
@@ -157,14 +143,8 @@ func UpdateRatingChange(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rc := GetRatingChangeCtx(r)
+	rc := utils.GetRatingChangeCtx(r)
 
-	if !models.IsValidUser(data.CID) {
-		render.Render(w, r, utils.ErrInvalidCID)
-		return
-	}
-
-	rc.CID = data.CID
 	rc.OldRating = data.OldRating
 	rc.NewRating = data.NewRating
 	rc.CreatedByCID = data.CreatedByCID
@@ -183,28 +163,22 @@ func UpdateRatingChange(w http.ResponseWriter, r *http.Request) {
 // @Tags rating-change
 // @Accept  json
 // @Produce  json
+// @Param cid path int true "CID"
 // @Param id path int true "Rating Change ID"
 // @Param rating_change body Request true "Rating Change"
 // @Success 200 {object} Response
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 404 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /rating-change/{id} [patch]
+// @Router /user/{cid}/rating-change/{id} [patch]
 func PatchRatingChange(w http.ResponseWriter, r *http.Request) {
-	rc := GetRatingChangeCtx(r)
+	rc := utils.GetRatingChangeCtx(r)
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
-	if data.CID != 0 {
-		if !models.IsValidUser(data.CID) {
-			render.Render(w, r, utils.ErrInvalidCID)
-			return
-		}
-		rc.CID = data.CID
-	}
 	if data.OldRating != 0 {
 		rc.OldRating = data.OldRating
 	}
@@ -233,9 +207,9 @@ func PatchRatingChange(w http.ResponseWriter, r *http.Request) {
 // @Success 204
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /rating-change/{id} [delete]
+// @Router /user/{cid}/rating-change/{id} [delete]
 func DeleteRatingChange(w http.ResponseWriter, r *http.Request) {
-	rc := GetRatingChangeCtx(r)
+	rc := utils.GetRatingChangeCtx(r)
 	if err := rc.Delete(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return

@@ -14,7 +14,6 @@ func Router(r chi.Router) {
 
 	r.Route("/{DisciplinaryLogID}", func(r chi.Router) {
 		r.Use(Ctx)
-		r.Get("/", GetDisciplinaryLog)
 		r.Put("/", UpdateDisciplinaryLog)
 		r.Patch("/", PatchDisciplinaryLog)
 		r.Delete("/", DeleteDisciplinaryLog)
@@ -44,8 +43,4 @@ func Ctx(next http.Handler) http.Handler {
 		ctx := context.WithValue(r.Context(), "disciplinaryLog", disciplinaryLog)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
-}
-
-func GetDisciplinaryLogCtx(r *http.Request) *models.DisciplinaryLogEntry {
-	return r.Context().Value("disciplinaryLog").(*models.DisciplinaryLogEntry)
 }

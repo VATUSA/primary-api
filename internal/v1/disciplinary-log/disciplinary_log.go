@@ -10,7 +10,6 @@ import (
 )
 
 type Request struct {
-	CID        uint   `json:"cid" example:"1293257" validate:"required"`
 	Entry      string `json:"entry" example:"Changed Preferred OIs to RP" validate:"required"`
 	VATUSAOnly bool   `json:"vatusa_only" example:"true"`
 }
@@ -52,11 +51,12 @@ func NewDisciplinaryLogEntryListResponse(dle []models.DisciplinaryLogEntry) []re
 // @Tags disciplinary-log
 // @Accept  json
 // @Produce  json
+// @Param cid path string true "CID"
 // @Param disciplinary_log body Request true "Disciplinary Log Entry"
 // @Success 201 {object} Response
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /disciplinary-log [post]
+// @Router /user/{cid}/disciplinary-log [post]
 func CreateDisciplinaryLogEntry(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
@@ -69,13 +69,15 @@ func CreateDisciplinaryLogEntry(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(data.CID) {
+	user := utils.GetUserCtx(r)
+
+	if !models.IsValidUser(user.CID) {
 		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
 	dle := &models.DisciplinaryLogEntry{
-		CID:       data.CID,
+		CID:       user.CID,
 		Entry:     data.Entry,
 		CreatedBy: "System",
 	}
@@ -95,35 +97,32 @@ func CreateDisciplinaryLogEntry(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewDisciplinaryLogEntryResponse(dle))
 }
 
-// GetDisciplinaryLog godoc
-// @Summary Get a disciplinary log entry
-// @Description Get a disciplinary log entry
-// @Tags disciplinary-log
-// @Accept  json
-// @Produce  json
-// @Param id path string true "Disciplinary Log Entry ID"
-// @Success 200 {object} Response
-// @Failure 400 {object} utils.ErrResponse
-// @Failure 404 {object} utils.ErrResponse
-// @Failure 500 {object} utils.ErrResponse
-// @Router /disciplinary-log/{id} [get]
-func GetDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
-	dle := GetDisciplinaryLogCtx(r)
-	render.Render(w, r, NewDisciplinaryLogEntryResponse(dle))
-}
-
 // ListDisciplinaryLog godoc
 // @Summary List all disciplinary log entries
 // @Description List all disciplinary log entries
 // @Tags disciplinary-log
 // @Accept  json
 // @Produce  json
+// @Param cid path string true "CID"
+// @Param vatusa_only query boolean false "VATUSA Only"
 // @Success 200 {object} []Response
 // @Failure 422 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /disciplinary-log [get]
+// @Router /user/{cid}/disciplinary-log [get]
 func ListDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
-	dle, err := models.GetAllDisciplinaryLogEntries(true)
+	vatusaOnly := r.URL.Query().Get("vatusa_only")
+	vatUSA := false
+	if vatusaOnly == "true" {
+		vatUSA = true
+	}
+
+	user := utils.GetUserCtx(r)
+	if !models.IsValidUser(user.CID) {
+		render.Render(w, r, utils.ErrInvalidCID)
+		return
+	}
+
+	dle, err := models.GetAllDisciplinaryLogEntriesByCID(user.CID, vatUSA)
 	if err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return
@@ -146,9 +145,9 @@ func ListDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} Response
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /disciplinary-log/{id} [put]
+// @Router /user/{cid}/disciplinary-log/{id} [put]
 func UpdateDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
-	dle := GetDisciplinaryLogCtx(r)
+	dle := utils.GetDisciplinaryLogCtx(r)
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
@@ -160,12 +159,6 @@ func UpdateDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(data.CID) {
-		render.Render(w, r, utils.ErrInvalidCID)
-		return
-	}
-
-	dle.CID = data.CID
 	dle.Entry = data.Entry
 
 	if data.VATUSAOnly {
@@ -186,26 +179,19 @@ func UpdateDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 // @Tags disciplinary-log
 // @Accept  json
 // @Produce  json
+// @Param cid path string true "CID"
 // @Param id path string true "Disciplinary Log Entry ID"
 // @Param disciplinary_log body Request true "Disciplinary Log Entry"
 // @Success 200 {object} Response
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /disciplinary-log/{id} [patch]
+// @Router /user/{cid}/disciplinary-log/{id} [patch]
 func PatchDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
-	dle := GetDisciplinaryLogCtx(r)
+	dle := utils.GetDisciplinaryLogCtx(r)
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
-	}
-
-	if data.CID != 0 {
-		if !models.IsValidUser(data.CID) {
-			render.Render(w, r, utils.ErrInvalidCID)
-			return
-		}
-		dle.CID = data.CID
 	}
 
 	if data.Entry != "" {
@@ -230,12 +216,13 @@ func PatchDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 // @Tags disciplinary-log
 // @Accept  json
 // @Produce  json
+// @Param cid path string true "CID"
 // @Param id path string true "Disciplinary Log Entry ID"
 // @Success 204
 // @Failure 500 {object} utils.ErrResponse
-// @Router /disciplinary-log/{id} [delete]
+// @Router /user/{cid}/disciplinary-log/{id} [delete]
 func DeleteDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
-	dle := GetDisciplinaryLogCtx(r)
+	dle := utils.GetDisciplinaryLogCtx(r)
 	if err := dle.Delete(); err != nil {
 		render.Render(w, r, utils.ErrInternalServer)
 		return

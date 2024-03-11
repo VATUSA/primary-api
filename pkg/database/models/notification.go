@@ -2,7 +2,6 @@ package models
 
 import (
 	"github.com/VATUSA/primary-api/pkg/database"
-	"gorm.io/gorm"
 	"time"
 )
 
@@ -40,7 +39,7 @@ func GetAllNotifications() ([]Notification, error) {
 	return notifications, database.DB.Find(&notifications).Error
 }
 
-func GetAllActiveNotificationsByCID(db *gorm.DB, cid uint) ([]Notification, error) {
+func GetAllActiveNotificationsByCID(cid uint) ([]Notification, error) {
 	var notifications []Notification
 	return notifications, database.DB.Where("cid = ? AND expire_at > ?", cid, time.Now()).Find(&notifications).Error
 }

@@ -11,7 +11,6 @@ import (
 )
 
 type Request struct {
-	CID         uint              `json:"cid" example:"1293257" validate:"required"`
 	Facility    string            `json:"requested_facility" example:"ZDV" validate:"required,len=3"`
 	RequestType types.RequestType `json:"request_type" example:"visiting" validate:"required,oneof=visiting transferring"`
 	Status      types.StatusType  `json:"status" example:"pending" validate:"required,oneof=pending accepted rejected"`
@@ -55,11 +54,12 @@ func NewRosterRequestListResponse(r []models.RosterRequest) []render.Renderer {
 // @Tags roster-request
 // @Accept  json
 // @Produce  json
+// @Param cid path string true "CID"
 // @Param roster_request body Request true "Roster Request"
 // @Success 201 {object} Response
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /roster-request [post]
+// @Router /user/{cid}/roster-request [post]
 func CreateRosterRequest(w http.ResponseWriter, r *http.Request) {
 	req := &Request{}
 	if err := req.Bind(r); err != nil {
@@ -72,7 +72,9 @@ func CreateRosterRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(req.CID) {
+	user := utils.GetUserCtx(r)
+
+	if !models.IsValidUser(user.CID) {
 		render.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
@@ -83,7 +85,7 @@ func CreateRosterRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	rosterRequest := &models.RosterRequest{
-		CID:         req.CID,
+		CID:         user.CID,
 		Facility:    req.Facility,
 		RequestType: req.RequestType,
 		Status:      req.Status,
@@ -99,36 +101,19 @@ func CreateRosterRequest(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, NewRosterRequestResponse(rosterRequest))
 }
 
-// GetRosterRequest godoc
-// @Summary Get a roster request
-// @Description Get a roster request
-// @Tags roster-request
-// @Accept  json
-// @Produce  json
-// @Param id path string true "Roster Request ID"
-// @Success 200 {object} Response
-// @Failure 400 {object} utils.ErrResponse
-// @Failure 404 {object} utils.ErrResponse
-// @Failure 500 {object} utils.ErrResponse
-// @Router /roster-request/{id} [get]
-func GetRosterRequest(w http.ResponseWriter, r *http.Request) {
-	rosterRequest := GetRosterRequestCtx(r)
-
-	render.Render(w, r, NewRosterRequestResponse(rosterRequest))
-}
-
 // ListRosterRequest godoc
 // @Summary List all roster requests
 // @Description List all roster requests
 // @Tags roster-request
 // @Accept  json
 // @Produce  json
+// @Param cid path string true "CID"
 // @Success 200 {object} []Response
 // @Failure 422 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /roster-request [get]
+// @Router /user/{cid}/roster-request [get]
 func ListRosterRequest(w http.ResponseWriter, r *http.Request) {
-	rosterRequests, err := models.GetAllRosterRequests()
+	rosterRequests, err := models.GetAllRosterRequestsByCID(utils.GetUserCtx(r).CID)
 	if err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return
@@ -152,9 +137,8 @@ func ListRosterRequest(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 404 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /roster-request/{id} [put]
+// @Router /user/{cid}/roster-request/{id} [put]
 func UpdateRosterRequest(w http.ResponseWriter, r *http.Request) {
-	req := GetRosterRequestCtx(r)
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
@@ -166,19 +150,16 @@ func UpdateRosterRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !models.IsValidUser(req.CID) {
-		render.Render(w, r, utils.ErrInvalidCID)
-		return
-	}
-
-	if !models.IsValidFacility(req.Facility) {
+	if !models.IsValidFacility(data.Facility) {
 		render.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
 
+	req := utils.GetRosterRequestCtx(r)
+
 	if req.Status == types.Pending && data.Status == types.Accepted {
 		roster := &models.Roster{
-			CID:      data.CID,
+			CID:      req.CID,
 			Facility: data.Facility,
 			OIs:      "",
 			Home:     false,
@@ -198,7 +179,6 @@ func UpdateRosterRequest(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	req.CID = data.CID
 	req.Facility = data.Facility
 	req.RequestType = data.RequestType
 	req.Status = data.Status
@@ -218,13 +198,14 @@ func UpdateRosterRequest(w http.ResponseWriter, r *http.Request) {
 // @Tags roster-request
 // @Accept  json
 // @Produce  json
+// @Param cid path string true "CID"
 // @Param id path string true "Roster Request ID"
 // @Success 204
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /roster-request/{id} [delete]
+// @Router /user/{cid}/roster-request/{id} [delete]
 func DeleteRosterRequest(w http.ResponseWriter, r *http.Request) {
-	req := GetRosterRequestCtx(r)
+	req := utils.GetRosterRequestCtx(r)
 	if err := req.Delete(); err != nil {
 		render.Render(w, r, utils.ErrInvalidRequest(err))
 		return

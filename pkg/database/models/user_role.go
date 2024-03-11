@@ -3,7 +3,6 @@ package models
 import (
 	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database"
-	"gorm.io/gorm"
 	"time"
 )
 
@@ -38,17 +37,17 @@ func GetAllUserRoles() ([]UserRole, error) {
 	return userRoles, database.DB.Find(&userRoles).Error
 }
 
-func GetAllUserRolesByCID(db *gorm.DB, cid uint) ([]UserRole, error) {
+func GetAllUserRolesByCID(cid uint) ([]UserRole, error) {
 	var userRoles []UserRole
 	return userRoles, database.DB.Where("cid = ?", cid).Find(&userRoles).Error
 }
 
-func GetAllUserRolesByRoleID(db *gorm.DB, roleID string) ([]UserRole, error) {
+func GetAllUserRolesByRoleID(roleID string) ([]UserRole, error) {
 	var userRoles []UserRole
 	return userRoles, database.DB.Where("role_id = ?", roleID).Find(&userRoles).Error
 }
 
-func GetAllUserRolesByFacilityID(db *gorm.DB, facilityID string) ([]UserRole, error) {
+func GetAllUserRolesByFacilityID(facilityID string) ([]UserRole, error) {
 	var userRoles []UserRole
 	return userRoles, database.DB.Where("facility_id = ?", facilityID).Find(&userRoles).Error
 }

@@ -2,14 +2,10 @@ basePath: /internal/v1
 definitions:
   action_log.Request:
     properties:
-      cid:
-        example: 1293257
-        type: integer
       entry:
         example: Changed Preferred OIs to RP
         type: string
     required:
-    - cid
     - entry
     type: object
   action_log.Response:
@@ -142,9 +138,6 @@ definitions:
     - EmailUser
   disciplinary_log.Request:
     properties:
-      cid:
-        example: 1293257
-        type: integer
       entry:
         example: Changed Preferred OIs to RP
         type: string
@@ -152,7 +145,6 @@ definitions:
         example: true
         type: boolean
     required:
-    - cid
     - entry
     type: object
   disciplinary_log.Response:
@@ -629,9 +621,6 @@ definitions:
     type: object
   rating_change.Request:
     properties:
-      cid:
-        example: 1293257
-        type: integer
       created_by_cid:
         example: "1293257"
         type: string
@@ -642,7 +631,6 @@ definitions:
         example: 1
         type: integer
     required:
-    - cid
     - created_by_cid
     - new_rating
     - old_rating
@@ -738,9 +726,6 @@ definitions:
     type: object
   roster_request.Request:
     properties:
-      cid:
-        example: 1293257
-        type: integer
       reason:
         example: I want to transfer to ZDV
         type: string
@@ -763,7 +748,6 @@ definitions:
         - rejected
         example: pending
     required:
-    - cid
     - reason
     - request_type
     - requested_facility
@@ -1059,372 +1043,6 @@ info:
   title: VATUSA Internal
   version: "0.1"
 paths:
-  /action-log:
-    get:
-      consumes:
-      - application/json
-      description: List all action log entries
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/action_log.Response'
-            type: array
-        "422":
-          description: Unprocessable Entity
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: List all action log entries
-      tags:
-      - action-log
-    post:
-      consumes:
-      - application/json
-      description: Create a new action log entry
-      parameters:
-      - description: Action Log Entry
-        in: body
-        name: action_log
-        required: true
-        schema:
-          $ref: '#/definitions/action_log.Request'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/action_log.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Create a new action log entry
-      tags:
-      - action-log
-  /action-log/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete an action log entry
-      parameters:
-      - description: Action Log Entry ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Delete an action log entry
-      tags:
-      - action-log
-    get:
-      consumes:
-      - application/json
-      description: Get an action log entry
-      parameters:
-      - description: Action Log Entry ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/action_log.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Get an action log entry
-      tags:
-      - action-log
-    patch:
-      consumes:
-      - application/json
-      description: Patch an action log entry
-      parameters:
-      - description: Action Log Entry ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Action Log Entry
-        in: body
-        name: action_log
-        required: true
-        schema:
-          $ref: '#/definitions/action_log.Request'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/action_log.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Patch an action log entry
-      tags:
-      - action-log
-    put:
-      consumes:
-      - application/json
-      description: Update an action log entry
-      parameters:
-      - description: Action Log Entry ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Action Log Entry
-        in: body
-        name: action_log
-        required: true
-        schema:
-          $ref: '#/definitions/action_log.Request'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/action_log.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Update an action log entry
-      tags:
-      - action-log
-  /disciplinary-log:
-    get:
-      consumes:
-      - application/json
-      description: List all disciplinary log entries
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/disciplinary_log.Response'
-            type: array
-        "422":
-          description: Unprocessable Entity
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: List all disciplinary log entries
-      tags:
-      - disciplinary-log
-    post:
-      consumes:
-      - application/json
-      description: Create a new disciplinary log entry
-      parameters:
-      - description: Disciplinary Log Entry
-        in: body
-        name: disciplinary_log
-        required: true
-        schema:
-          $ref: '#/definitions/disciplinary_log.Request'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/disciplinary_log.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Create a new disciplinary log entry
-      tags:
-      - disciplinary-log
-  /disciplinary-log/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete a disciplinary log entry
-      parameters:
-      - description: Disciplinary Log Entry ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Delete a disciplinary log entry
-      tags:
-      - disciplinary-log
-    get:
-      consumes:
-      - application/json
-      description: Get a disciplinary log entry
-      parameters:
-      - description: Disciplinary Log Entry ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/disciplinary_log.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Get a disciplinary log entry
-      tags:
-      - disciplinary-log
-    patch:
-      consumes:
-      - application/json
-      description: Patch a disciplinary log entry
-      parameters:
-      - description: Disciplinary Log Entry ID
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: Disciplinary Log Entry
-        in: body
-        name: disciplinary_log
-        required: true
-        schema:
-          $ref: '#/definitions/disciplinary_log.Request'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/disciplinary_log.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Patch a disciplinary log entry
-      tags:
-      - disciplinary-log
-    put:
-      consumes:
-      - application/json
-      description: Update a disciplinary log entry
-      parameters:
-      - description: Disciplinary Log Entry ID
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: Disciplinary Log Entry
-        in: body
-        name: disciplinary_log
-        required: true
-        schema:
-          $ref: '#/definitions/disciplinary_log.Request'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/disciplinary_log.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Update a disciplinary log entry
-      tags:
-      - disciplinary-log
   /documents:
     get:
       consumes:
@@ -2654,346 +2272,6 @@ paths:
       summary: Update a notification
       tags:
       - notification
-  /rating-change:
-    get:
-      consumes:
-      - application/json
-      description: List rating changes
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/rating_change.Response'
-            type: array
-        "422":
-          description: Unprocessable Entity
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: List rating changes
-      tags:
-      - rating-change
-    post:
-      consumes:
-      - application/json
-      description: Create a new rating change
-      parameters:
-      - description: Rating Change
-        in: body
-        name: rating_change
-        required: true
-        schema:
-          $ref: '#/definitions/rating_change.Request'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/rating_change.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Create a new rating change
-      tags:
-      - rating-change
-  /rating-change/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete a rating change
-      parameters:
-      - description: Rating Change ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Delete a rating change
-      tags:
-      - rating-change
-    get:
-      consumes:
-      - application/json
-      description: Get a rating change
-      parameters:
-      - description: Rating Change ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/rating_change.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Get a rating change
-      tags:
-      - rating-change
-    patch:
-      consumes:
-      - application/json
-      description: Patch a rating change
-      parameters:
-      - description: Rating Change ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Rating Change
-        in: body
-        name: rating_change
-        required: true
-        schema:
-          $ref: '#/definitions/rating_change.Request'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/rating_change.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Patch a rating change
-      tags:
-      - rating-change
-    put:
-      consumes:
-      - application/json
-      description: Update a rating change
-      parameters:
-      - description: Rating Change ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Rating Change
-        in: body
-        name: rating_change
-        required: true
-        schema:
-          $ref: '#/definitions/rating_change.Request'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/rating_change.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Update a rating change
-      tags:
-      - rating-change
-  /roster-request:
-    get:
-      consumes:
-      - application/json
-      description: List all roster requests
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/roster_request.Response'
-            type: array
-        "422":
-          description: Unprocessable Entity
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: List all roster requests
-      tags:
-      - roster-request
-    post:
-      consumes:
-      - application/json
-      description: Create a new roster request
-      parameters:
-      - description: Roster Request
-        in: body
-        name: roster_request
-        required: true
-        schema:
-          $ref: '#/definitions/roster_request.Request'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/roster_request.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Create a new roster request
-      tags:
-      - roster-request
-  /roster-request/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete a roster request
-      parameters:
-      - description: Roster Request ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Delete a roster request
-      tags:
-      - roster-request
-    get:
-      consumes:
-      - application/json
-      description: Get a roster request
-      parameters:
-      - description: Roster Request ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/roster_request.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Get a roster request
-      tags:
-      - roster-request
-    put:
-      consumes:
-      - application/json
-      description: Update a roster request
-      parameters:
-      - description: Roster Request ID
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: Roster Request
-        in: body
-        name: roster_request
-        required: true
-        schema:
-          $ref: '#/definitions/roster_request.Request'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/roster_request.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Update a roster request
-      tags:
-      - roster-request
   /user:
     get:
       consumes:
@@ -3173,6 +2451,532 @@ paths:
       summary: Update a user
       tags:
       - user
+  /user/{cid}/action-log:
+    get:
+      consumes:
+      - application/json
+      description: List all action log entries
+      parameters:
+      - description: User CID
+        in: path
+        name: cid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/action_log.Response'
+            type: array
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: List all action log entries
+      tags:
+      - action-log
+    post:
+      consumes:
+      - application/json
+      description: Create a new action log entry
+      parameters:
+      - description: User CID
+        in: path
+        name: cid
+        required: true
+        type: integer
+      - description: Action Log Entry
+        in: body
+        name: action_log
+        required: true
+        schema:
+          $ref: '#/definitions/action_log.Request'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/action_log.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Create a new action log entry
+      tags:
+      - action-log
+  /user/{cid}/action-log/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an action log entry
+      parameters:
+      - description: User CID
+        in: path
+        name: cid
+        required: true
+        type: integer
+      - description: Action Log Entry ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Delete an action log entry
+      tags:
+      - action-log
+    patch:
+      consumes:
+      - application/json
+      description: Patch an action log entry
+      parameters:
+      - description: User CID
+        in: path
+        name: cid
+        required: true
+        type: integer
+      - description: Action Log Entry ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Action Log Entry
+        in: body
+        name: action_log
+        required: true
+        schema:
+          $ref: '#/definitions/action_log.Request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/action_log.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Patch an action log entry
+      tags:
+      - action-log
+    put:
+      consumes:
+      - application/json
+      description: Update an action log entry
+      parameters:
+      - description: Action Log Entry ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Action Log Entry
+        in: body
+        name: action_log
+        required: true
+        schema:
+          $ref: '#/definitions/action_log.Request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/action_log.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Update an action log entry
+      tags:
+      - action-log
+  /user/{cid}/disciplinary-log:
+    get:
+      consumes:
+      - application/json
+      description: List all disciplinary log entries
+      parameters:
+      - description: CID
+        in: path
+        name: cid
+        required: true
+        type: string
+      - description: VATUSA Only
+        in: query
+        name: vatusa_only
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/disciplinary_log.Response'
+            type: array
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: List all disciplinary log entries
+      tags:
+      - disciplinary-log
+    post:
+      consumes:
+      - application/json
+      description: Create a new disciplinary log entry
+      parameters:
+      - description: CID
+        in: path
+        name: cid
+        required: true
+        type: string
+      - description: Disciplinary Log Entry
+        in: body
+        name: disciplinary_log
+        required: true
+        schema:
+          $ref: '#/definitions/disciplinary_log.Request'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/disciplinary_log.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Create a new disciplinary log entry
+      tags:
+      - disciplinary-log
+  /user/{cid}/disciplinary-log/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a disciplinary log entry
+      parameters:
+      - description: CID
+        in: path
+        name: cid
+        required: true
+        type: string
+      - description: Disciplinary Log Entry ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Delete a disciplinary log entry
+      tags:
+      - disciplinary-log
+    patch:
+      consumes:
+      - application/json
+      description: Patch a disciplinary log entry
+      parameters:
+      - description: CID
+        in: path
+        name: cid
+        required: true
+        type: string
+      - description: Disciplinary Log Entry ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Disciplinary Log Entry
+        in: body
+        name: disciplinary_log
+        required: true
+        schema:
+          $ref: '#/definitions/disciplinary_log.Request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/disciplinary_log.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Patch a disciplinary log entry
+      tags:
+      - disciplinary-log
+    put:
+      consumes:
+      - application/json
+      description: Update a disciplinary log entry
+      parameters:
+      - description: Disciplinary Log Entry ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Disciplinary Log Entry
+        in: body
+        name: disciplinary_log
+        required: true
+        schema:
+          $ref: '#/definitions/disciplinary_log.Request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/disciplinary_log.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Update a disciplinary log entry
+      tags:
+      - disciplinary-log
+  /user/{cid}/rating-change:
+    get:
+      consumes:
+      - application/json
+      description: List rating changes
+      parameters:
+      - description: CID
+        in: path
+        name: cid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/rating_change.Response'
+            type: array
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: List rating changes
+      tags:
+      - rating-change
+    post:
+      consumes:
+      - application/json
+      description: Create a new rating change
+      parameters:
+      - description: CID
+        in: path
+        name: cid
+        required: true
+        type: integer
+      - description: Rating Change
+        in: body
+        name: rating_change
+        required: true
+        schema:
+          $ref: '#/definitions/rating_change.Request'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/rating_change.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Create a new rating change
+      tags:
+      - rating-change
+  /user/{cid}/rating-change/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a rating change
+      parameters:
+      - description: Rating Change ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Delete a rating change
+      tags:
+      - rating-change
+    patch:
+      consumes:
+      - application/json
+      description: Patch a rating change
+      parameters:
+      - description: CID
+        in: path
+        name: cid
+        required: true
+        type: integer
+      - description: Rating Change ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Rating Change
+        in: body
+        name: rating_change
+        required: true
+        schema:
+          $ref: '#/definitions/rating_change.Request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/rating_change.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Patch a rating change
+      tags:
+      - rating-change
+    put:
+      consumes:
+      - application/json
+      description: Update a rating change
+      parameters:
+      - description: CID
+        in: path
+        name: cid
+        required: true
+        type: integer
+      - description: Rating Change ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Rating Change
+        in: body
+        name: rating_change
+        required: true
+        schema:
+          $ref: '#/definitions/rating_change.Request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/rating_change.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Update a rating change
+      tags:
+      - rating-change
   /user/{cid}/role:
     get:
       consumes:
@@ -3368,6 +3172,141 @@ paths:
       summary: Create a new roster
       tags:
       - roster
+  /user/{cid}/roster-request:
+    get:
+      consumes:
+      - application/json
+      description: List all roster requests
+      parameters:
+      - description: CID
+        in: path
+        name: cid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/roster_request.Response'
+            type: array
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: List all roster requests
+      tags:
+      - roster-request
+    post:
+      consumes:
+      - application/json
+      description: Create a new roster request
+      parameters:
+      - description: CID
+        in: path
+        name: cid
+        required: true
+        type: string
+      - description: Roster Request
+        in: body
+        name: roster_request
+        required: true
+        schema:
+          $ref: '#/definitions/roster_request.Request'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/roster_request.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Create a new roster request
+      tags:
+      - roster-request
+  /user/{cid}/roster-request/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a roster request
+      parameters:
+      - description: CID
+        in: path
+        name: cid
+        required: true
+        type: string
+      - description: Roster Request ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Delete a roster request
+      tags:
+      - roster-request
+    put:
+      consumes:
+      - application/json
+      description: Update a roster request
+      parameters:
+      - description: Roster Request ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Roster Request
+        in: body
+        name: roster_request
+        required: true
+        schema:
+          $ref: '#/definitions/roster_request.Request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/roster_request.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Update a roster request
+      tags:
+      - roster-request
   /user/{cid}/roster/{id}:
     delete:
       consumes:

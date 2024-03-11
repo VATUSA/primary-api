@@ -2,7 +2,6 @@ package models
 
 import (
 	"github.com/VATUSA/primary-api/pkg/database"
-	"gorm.io/gorm"
 	"time"
 )
 
@@ -44,7 +43,7 @@ func GetAllFacilityLogEntries() ([]FacilityLogEntry, error) {
 	return fle, database.DB.Find(&fle).Error
 }
 
-func GetAllFacilityLogEntriesByFacility(db *gorm.DB, facility string) ([]FacilityLogEntry, error) {
+func GetAllFacilityLogEntriesByFacility(facility string) ([]FacilityLogEntry, error) {
 	var fle []FacilityLogEntry
 	return fle, database.DB.Where("facility = ?", facility).Find(&fle).Error
 }

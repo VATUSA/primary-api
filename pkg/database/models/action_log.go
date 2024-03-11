@@ -2,7 +2,6 @@ package models
 
 import (
 	"github.com/VATUSA/primary-api/pkg/database"
-	"gorm.io/gorm"
 	"time"
 )
 
@@ -43,7 +42,7 @@ func GetAllActionLogEntries() ([]ActionLogEntry, error) {
 	return ale, database.DB.Find(&ale).Error
 }
 
-func GetAllActionLogEntriesByCID(db *gorm.DB, cid uint) ([]ActionLogEntry, error) {
+func GetAllActionLogEntriesByCID(cid uint) ([]ActionLogEntry, error) {
 	var ale []ActionLogEntry
 	return ale, database.DB.Where("cid = ?", cid).Find(&ale).Error
 }

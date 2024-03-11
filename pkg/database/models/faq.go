@@ -2,7 +2,6 @@ package models
 
 import (
 	"github.com/VATUSA/primary-api/pkg/database"
-	"gorm.io/gorm"
 	"time"
 )
 
@@ -39,12 +38,12 @@ func GetAllFAQ() ([]FAQ, error) {
 	return faq, database.DB.Find(&faq).Error
 }
 
-func GetAllFAQByCategory(db *gorm.DB, category string) ([]FAQ, error) {
+func GetAllFAQByCategory(category string) ([]FAQ, error) {
 	var faq []FAQ
 	return faq, database.DB.Where("category = ?", category).Find(&faq).Error
 }
 
-func GetAllFAQByFacility(db *gorm.DB, facility string) ([]FAQ, error) {
+func GetAllFAQByFacility(facility string) ([]FAQ, error) {
 	var faq []FAQ
 	return faq, database.DB.Where("facility = ?", facility).Find(&faq).Error
 }

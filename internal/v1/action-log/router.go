@@ -14,7 +14,6 @@ func Router(r chi.Router) {
 
 	r.Route("/{ActionLogID}", func(r chi.Router) {
 		r.Use(Ctx)
-		r.Get("/", GetActionLog)
 		r.Put("/", UpdateActionLog)
 		r.Patch("/", PatchActionLog)
 		r.Delete("/", DeleteActionLog)
@@ -44,8 +43,4 @@ func Ctx(next http.Handler) http.Handler {
 		ctx := context.WithValue(r.Context(), "actionLog", actionLog)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
-}
-
-func GetActionLogCtx(r *http.Request) *models.ActionLogEntry {
-	return r.Context().Value("actionLog").(*models.ActionLogEntry)
 }

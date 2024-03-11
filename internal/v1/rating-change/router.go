@@ -14,7 +14,6 @@ func Router(r chi.Router) {
 
 	r.Route("/{RatingChangeID}", func(r chi.Router) {
 		r.Use(Ctx)
-		r.Get("/", GetRatingChange)
 		r.Put("/", UpdateRatingChange)
 		r.Patch("/", PatchRatingChange)
 		r.Delete("/", DeleteRatingChange)
@@ -44,8 +43,4 @@ func Ctx(next http.Handler) http.Handler {
 		ctx := context.WithValue(r.Context(), "ratingChange", ratingChange)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
-}
-
-func GetRatingChangeCtx(r *http.Request) *models.RatingChange {
-	return r.Context().Value("ratingChange").(*models.RatingChange)
 }

@@ -3,7 +3,6 @@ package models
 import (
 	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/types"
-	"gorm.io/gorm"
 	"time"
 )
 
@@ -39,32 +38,32 @@ func GetAllRosterRequests() ([]RosterRequest, error) {
 	return rosterRequests, database.DB.Find(&rosterRequests).Error
 }
 
-func GetAllRosterRequestsByCID(db *gorm.DB, cid uint) ([]RosterRequest, error) {
+func GetAllRosterRequestsByCID(cid uint) ([]RosterRequest, error) {
 	var rosterRequests []RosterRequest
 	return rosterRequests, database.DB.Where("cid = ?", cid).Find(&rosterRequests).Error
 }
 
-func GetAllRosterRequestsByFacility(db *gorm.DB, facility string) ([]RosterRequest, error) {
+func GetAllRosterRequestsByFacility(facility string) ([]RosterRequest, error) {
 	var rosterRequests []RosterRequest
 	return rosterRequests, database.DB.Where("requested_facility = ?", facility).Find(&rosterRequests).Error
 }
 
-func GetAllPendingVisitingRequestsByCID(db *gorm.DB, cid uint) ([]RosterRequest, error) {
+func GetAllPendingVisitingRequestsByCID(cid uint) ([]RosterRequest, error) {
 	var rosterRequests []RosterRequest
 	return rosterRequests, database.DB.Where("cid = ? AND request_type = ? AND status = ?", cid, types.Visiting, types.Pending).Find(&rosterRequests).Error
 }
 
-func GetAllPendingTransferringRequestsByCID(db *gorm.DB, cid uint) ([]RosterRequest, error) {
+func GetAllPendingTransferringRequestsByCID(cid uint) ([]RosterRequest, error) {
 	var rosterRequests []RosterRequest
 	return rosterRequests, database.DB.Where("cid = ? AND request_type = ? AND status = ?", cid, types.Transferring, types.Pending).Find(&rosterRequests).Error
 }
 
-func GetAllPendingVisitingRequestsByFacility(db *gorm.DB, facility string) ([]RosterRequest, error) {
+func GetAllPendingVisitingRequestsByFacility(facility string) ([]RosterRequest, error) {
 	var rosterRequests []RosterRequest
-	return rosterRequests, db.Where("requested_facility = ? AND request_type = ? AND status = ?", facility, types.Visiting, types.Pending).Find(&rosterRequests).Error
+	return rosterRequests, database.DB.Where("requested_facility = ? AND request_type = ? AND status = ?", facility, types.Visiting, types.Pending).Find(&rosterRequests).Error
 }
 
-func GetAllPendingTransferringRequestsByFacility(db *gorm.DB, facility string) ([]RosterRequest, error) {
+func GetAllPendingTransferringRequestsByFacility(facility string) ([]RosterRequest, error) {
 	var rosterRequests []RosterRequest
-	return rosterRequests, db.Where("requested_facility = ? AND request_type = ? AND status = ?", facility, types.Transferring, types.Pending).Find(&rosterRequests).Error
+	return rosterRequests, database.DB.Where("requested_facility = ? AND request_type = ? AND status = ?", facility, types.Transferring, types.Pending).Find(&rosterRequests).Error
 }

@@ -36,3 +36,19 @@ func GetFacilityCtx(r *http.Request) (*models.Facility, error) {
 func GetUserRoleCtx(r *http.Request) *models.UserRole {
 	return r.Context().Value("userRole").(*models.UserRole)
 }
+
+func GetRosterRequestCtx(r *http.Request) *models.RosterRequest {
+	return r.Context().Value("rosterRequest").(*models.RosterRequest)
+}
+
+func GetRatingChangeCtx(r *http.Request) *models.RatingChange {
+	return r.Context().Value("ratingChange").(*models.RatingChange)
+}
+
+func GetActionLogCtx(r *http.Request) *models.ActionLogEntry {
+	return r.Context().Value("actionLog").(*models.ActionLogEntry)
+}
+
+func GetDisciplinaryLogCtx(r *http.Request) *models.DisciplinaryLogEntry {
+	return r.Context().Value("disciplinaryLog").(*models.DisciplinaryLogEntry)
+}
