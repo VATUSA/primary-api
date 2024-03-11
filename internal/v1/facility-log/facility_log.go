@@ -167,7 +167,7 @@ func UpdateFacilityLog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	render.Render(w, r, NewFacilityLogEntryResponse(fle))
+	utils.Render(w, r, NewFacilityLogEntryResponse(fle))
 }
 
 // PatchFacilityLog godoc
@@ -188,13 +188,13 @@ func PatchFacilityLog(w http.ResponseWriter, r *http.Request) {
 
 	data := &Request{}
 	if err := render.Bind(r, data); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if data.Facility != "" {
 		if !models.IsValidFacility(data.Facility) {
-			render.Render(w, r, utils.ErrInvalidFacility)
+			utils.Render(w, r, utils.ErrInvalidFacility)
 			return
 		}
 		fle.Facility = data.Facility
@@ -205,11 +205,11 @@ func PatchFacilityLog(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := fle.Update(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
-	render.Render(w, r, NewFacilityLogEntryResponse(fle))
+	utils.Render(w, r, NewFacilityLogEntryResponse(fle))
 }
 
 // DeleteFacilityLog godoc
@@ -226,7 +226,7 @@ func DeleteFacilityLog(w http.ResponseWriter, r *http.Request) {
 	fle := GetFacilityLogCtx(r)
 
 	if err := fle.Delete(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 

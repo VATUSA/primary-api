@@ -194,11 +194,11 @@ func UpdateNotification(w http.ResponseWriter, r *http.Request) {
 	n.ExpireAt = expireAt
 
 	if err := n.Update(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
-	render.Render(w, r, NewNotificationResponse(n))
+	utils.Render(w, r, NewNotificationResponse(n))
 }
 
 // PatchNotification godoc
@@ -217,13 +217,13 @@ func PatchNotification(w http.ResponseWriter, r *http.Request) {
 	n := GetNotificationCtx(r)
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if data.CID != 0 {
 		if !models.IsValidUser(data.CID) {
-			render.Render(w, r, utils.ErrInvalidCID)
+			utils.Render(w, r, utils.ErrInvalidCID)
 			return
 		}
 		n.CID = data.CID
@@ -240,13 +240,13 @@ func PatchNotification(w http.ResponseWriter, r *http.Request) {
 	if data.ExpireAt != "" {
 		expireAt, err := http.ParseTime(data.ExpireAt)
 		if err != nil {
-			render.Render(w, r, utils.ErrInvalidRequest(err))
+			utils.Render(w, r, utils.ErrInvalidRequest(err))
 			return
 		}
 
 		// Make sure expireAt is in the future
 		if expireAt.Before(time.Now()) {
-			render.Render(w, r, utils.ErrInvalidRequest(errors.New("expire_at must be in the future")))
+			utils.Render(w, r, utils.ErrInvalidRequest(errors.New("expire_at must be in the future")))
 			return
 		}
 
@@ -254,11 +254,11 @@ func PatchNotification(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := n.Update(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
-	render.Render(w, r, NewNotificationResponse(n))
+	utils.Render(w, r, NewNotificationResponse(n))
 }
 
 // DeleteNotification godoc
@@ -274,7 +274,7 @@ func PatchNotification(w http.ResponseWriter, r *http.Request) {
 func DeleteNotification(w http.ResponseWriter, r *http.Request) {
 	n := GetNotificationCtx(r)
 	if err := n.Delete(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 }

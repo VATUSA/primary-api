@@ -238,11 +238,11 @@ func PatchUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := user.Update(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
-	render.Render(w, r, NewUserResponse(user))
+	utils.Render(w, r, NewUserResponse(user))
 }
 
 // DeleteUser godoc
@@ -260,7 +260,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	user := utils.GetUserCtx(r)
 
 	if err := user.Delete(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 

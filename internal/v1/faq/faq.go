@@ -174,7 +174,7 @@ func UpdateFAQ(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	render.Render(w, r, NewFAQResponse(faq))
+	utils.Render(w, r, NewFAQResponse(faq))
 }
 
 // PatchFAQ godoc
@@ -195,13 +195,13 @@ func PatchFAQ(w http.ResponseWriter, r *http.Request) {
 
 	data := &Request{}
 	if err := render.Bind(r, data); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if data.Facility != "" {
 		if !models.IsValidFacility(data.Facility) {
-			render.Render(w, r, utils.ErrInvalidFacility)
+			utils.Render(w, r, utils.ErrInvalidFacility)
 			return
 		}
 		faq.Facility = data.Facility
@@ -217,11 +217,11 @@ func PatchFAQ(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := faq.Update(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
-	render.Render(w, r, NewFAQResponse(faq))
+	utils.Render(w, r, NewFAQResponse(faq))
 }
 
 // DeleteFAQ godoc
@@ -238,7 +238,7 @@ func DeleteFAQ(w http.ResponseWriter, r *http.Request) {
 	faq := GetFAQCtx(r)
 
 	if err := faq.Delete(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 

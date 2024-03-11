@@ -216,7 +216,7 @@ func UpdateRoster(w http.ResponseWriter, r *http.Request) {
 	roster.Status = data.Status
 
 	if err := roster.Update(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
@@ -239,7 +239,7 @@ func DeleteRoster(w http.ResponseWriter, r *http.Request) {
 	roster := utils.GetRosterCtx(r)
 
 	if err := roster.Delete(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
@@ -261,7 +261,7 @@ func DeleteRoster(w http.ResponseWriter, r *http.Request) {
 func GetRosterByFacility(w http.ResponseWriter, r *http.Request) {
 	fac, err := utils.GetFacilityCtx(r)
 	if err != nil {
-		render.Render(w, r, utils.ErrInvalidFacility)
+		utils.Render(w, r, utils.ErrInvalidFacility)
 		return
 	}
 
@@ -270,12 +270,12 @@ func GetRosterByFacility(w http.ResponseWriter, r *http.Request) {
 	if rosterType == "" {
 		rosters, err := models.GetRostersByFacility(fac.ID)
 		if err != nil {
-			render.Render(w, r, utils.ErrInternalServer)
+			utils.Render(w, r, utils.ErrInternalServer)
 			return
 		}
 
 		if err := render.RenderList(w, r, NewRosterListResponse(rosters)); err != nil {
-			render.Render(w, r, utils.ErrRender(err))
+			utils.Render(w, r, utils.ErrRender(err))
 			return
 		}
 		return
@@ -283,12 +283,12 @@ func GetRosterByFacility(w http.ResponseWriter, r *http.Request) {
 
 	rosters, err := models.GetRostersByFacilityAndType(fac.ID, strings.ToLower(rosterType))
 	if err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := render.RenderList(w, r, NewRosterListResponse(rosters)); err != nil {
-		render.Render(w, r, utils.ErrRender(err))
+		utils.Render(w, r, utils.ErrRender(err))
 		return
 	}
 }

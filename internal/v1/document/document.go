@@ -251,12 +251,12 @@ func UpdateDocument(w http.ResponseWriter, r *http.Request) {
 
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
 	if err := data.Validate(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
@@ -268,11 +268,11 @@ func UpdateDocument(w http.ResponseWriter, r *http.Request) {
 	doc.Category = types.DocumentCategory(data.Category)
 
 	if err := doc.Update(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
-	render.Render(w, r, NewDocumentResponse(doc))
+	utils.Render(w, r, NewDocumentResponse(doc))
 }
 
 // PatchDocument godoc
@@ -293,7 +293,7 @@ func PatchDocument(w http.ResponseWriter, r *http.Request) {
 
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
@@ -313,11 +313,11 @@ func PatchDocument(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := doc.Update(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
-	render.Render(w, r, NewDocumentResponse(doc))
+	utils.Render(w, r, NewDocumentResponse(doc))
 }
 
 // DeleteDocument godoc
@@ -338,12 +338,12 @@ func DeleteDocument(w http.ResponseWriter, r *http.Request) {
 	directory := path.Join(doc.Facility, string(doc.Category))
 	filename := strings.ReplaceAll(doc.Name, " ", "-") + path.Ext(doc.URL)
 	if err := storage.PublicBucket.Delete(directory, filename); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
 	if err := doc.Delete(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
@@ -370,7 +370,7 @@ func UploadDocument(w http.ResponseWriter, r *http.Request, endpoint string) {
 	directory := path.Join(data.Facility, string(data.Category))
 	filename := strings.ReplaceAll(data.Name, " ", "-") + path.Ext(data.URL)
 	if err := storage.PublicBucket.Delete(directory, filename); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 
 	}
@@ -388,14 +388,14 @@ func UploadDocument(w http.ResponseWriter, r *http.Request, endpoint string) {
 
 	// Put the file in the S3 bucket
 	if err := storage.PublicBucket.Upload(directory, filename, file); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
 	// Update the URL in the database
 	data.URL = path.Join(endpoint, directory, filename)
 	if err := data.Update(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 

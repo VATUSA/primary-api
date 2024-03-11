@@ -215,11 +215,11 @@ func PatchNews(w http.ResponseWriter, r *http.Request) {
 	news.UpdatedBy = "System"
 
 	if err := news.Update(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
-	render.Render(w, r, NewNewsResponse(news))
+	utils.Render(w, r, NewNewsResponse(news))
 }
 
 // DeleteNews godoc
@@ -235,7 +235,7 @@ func PatchNews(w http.ResponseWriter, r *http.Request) {
 func DeleteNews(w http.ResponseWriter, r *http.Request) {
 	news := GetNewsCtx(r)
 	if err := news.Delete(); err != nil {
-		render.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 

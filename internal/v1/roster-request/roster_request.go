@@ -174,7 +174,7 @@ func UpdateRosterRequest(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if err := roster.Create(); err != nil {
-			render.Render(w, r, utils.ErrInvalidRequest(err))
+			utils.Render(w, r, utils.ErrInvalidRequest(err))
 			return
 		}
 	}
@@ -185,11 +185,11 @@ func UpdateRosterRequest(w http.ResponseWriter, r *http.Request) {
 	req.Reason = data.Reason
 
 	if err := req.Update(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
-	render.Render(w, r, NewRosterRequestResponse(req))
+	utils.Render(w, r, NewRosterRequestResponse(req))
 }
 
 // DeleteRosterRequest godoc
@@ -207,7 +207,7 @@ func UpdateRosterRequest(w http.ResponseWriter, r *http.Request) {
 func DeleteRosterRequest(w http.ResponseWriter, r *http.Request) {
 	req := utils.GetRosterRequestCtx(r)
 	if err := req.Delete(); err != nil {
-		render.Render(w, r, utils.ErrInvalidRequest(err))
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return
 	}
 
