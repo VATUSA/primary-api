@@ -3,6 +3,7 @@ package roster_request
 import (
 	"context"
 	"github.com/VATUSA/primary-api/pkg/database/models"
+	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/chi/v5"
 	"net/http"
 	"strconv"
@@ -38,7 +39,7 @@ func Ctx(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), "rosterRequest", rosterRequest)
+		ctx := context.WithValue(r.Context(), utils.RosterRequestKey{}, rosterRequest)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

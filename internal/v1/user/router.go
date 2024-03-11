@@ -79,7 +79,7 @@ func Ctx(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), "user", user)
+		ctx := context.WithValue(r.Context(), utils.UserKey{}, user)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

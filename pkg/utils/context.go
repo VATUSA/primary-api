@@ -6,21 +6,26 @@ import (
 	"net/http"
 )
 
-// These functions grab the {cid} or {id} in the given route and return the associated object
-func GetUserCtx(r *http.Request) *models.User {
-	return r.Context().Value("user").(*models.User)
+type AleKey struct{}
+
+func GetActionLogCtx(r *http.Request) *models.ActionLogEntry {
+	return r.Context().Value(AleKey{}).(*models.ActionLogEntry)
 }
 
-func GetUserFlagCtx(r *http.Request) *models.UserFlag {
-	return r.Context().Value("userFlag").(*models.UserFlag)
+type DleKey struct{}
+
+func GetDisciplinaryLogCtx(r *http.Request) *models.DisciplinaryLogEntry {
+	return r.Context().Value(DleKey{}).(*models.DisciplinaryLogEntry)
 }
 
-func GetRosterCtx(r *http.Request) *models.Roster {
-	return r.Context().Value("roster").(*models.Roster)
+type DocumentKey struct{}
+
+func GetDocumentCtx(r *http.Request) *models.Document {
+	return r.Context().Value(DocumentKey{}).(*models.Document)
 }
 
 func GetFacilityCtx(r *http.Request) (*models.Facility, error) {
-	id := chi.URLParam(r, "FacilityID")
+	id := chi.URLParam(r, "facilityID")
 
 	fac := &models.Facility{
 		ID: id,
@@ -33,46 +38,68 @@ func GetFacilityCtx(r *http.Request) (*models.Facility, error) {
 	return fac, nil
 }
 
-func GetUserRoleCtx(r *http.Request) *models.UserRole {
-	return r.Context().Value("userRole").(*models.UserRole)
-}
-
-func GetRosterRequestCtx(r *http.Request) *models.RosterRequest {
-	return r.Context().Value("rosterRequest").(*models.RosterRequest)
-}
-
-func GetRatingChangeCtx(r *http.Request) *models.RatingChange {
-	return r.Context().Value("ratingChange").(*models.RatingChange)
-}
-
-func GetActionLogCtx(r *http.Request) *models.ActionLogEntry {
-	return r.Context().Value("actionLog").(*models.ActionLogEntry)
-}
-
-func GetDisciplinaryLogCtx(r *http.Request) *models.DisciplinaryLogEntry {
-	return r.Context().Value("disciplinaryLog").(*models.DisciplinaryLogEntry)
-}
-
-func GetDocumentCtx(r *http.Request) *models.Document {
-	return r.Context().Value("document").(*models.Document)
-}
+type FacilityLogKey struct{}
 
 func GetFacilityLogCtx(r *http.Request) *models.FacilityLogEntry {
-	return r.Context().Value("facilityLog").(*models.FacilityLogEntry)
+	return r.Context().Value(FacilityLogKey{}).(*models.FacilityLogEntry)
 }
+
+type FAQKey struct{}
 
 func GetFAQCtx(r *http.Request) *models.FAQ {
-	return r.Context().Value("faq").(*models.FAQ)
+	return r.Context().Value(FAQKey{}).(*models.FAQ)
 }
+
+type FeedbackKey struct{}
 
 func GetFeedbackCtx(r *http.Request) *models.Feedback {
-	return r.Context().Value("feedback").(*models.Feedback)
+	return r.Context().Value(FeedbackKey{}).(*models.Feedback)
 }
+
+type NewsKey struct{}
 
 func GetNewsCtx(r *http.Request) *models.News {
-	return r.Context().Value("news").(*models.News)
+	return r.Context().Value(NewsKey{}).(*models.News)
 }
 
+type NotificationKey struct{}
+
 func GetNotificationCtx(r *http.Request) *models.Notification {
-	return r.Context().Value("notification").(*models.Notification)
+	return r.Context().Value(NotificationKey{}).(*models.Notification)
+}
+
+type UserKey struct{}
+
+func GetUserCtx(r *http.Request) *models.User {
+	return r.Context().Value(UserKey{}).(*models.User)
+}
+
+type RosterKey struct{}
+
+func GetRosterCtx(r *http.Request) *models.Roster {
+	return r.Context().Value(RosterKey{}).(*models.Roster)
+}
+
+type RatingChangeKey struct{}
+
+func GetRatingChangeCtx(r *http.Request) *models.RatingChange {
+	return r.Context().Value(RatingChangeKey{}).(*models.RatingChange)
+}
+
+type RosterRequestKey struct{}
+
+func GetRosterRequestCtx(r *http.Request) *models.RosterRequest {
+	return r.Context().Value(RosterRequestKey{}).(*models.RosterRequest)
+}
+
+type UserFlagKey struct{}
+
+func GetUserFlagCtx(r *http.Request) *models.UserFlag {
+	return r.Context().Value(UserFlagKey{}).(*models.UserFlag)
+}
+
+type UserRoleKey struct{}
+
+func GetUserRoleCtx(r *http.Request) *models.UserRole {
+	return r.Context().Value(UserRoleKey{}).(*models.UserRole)
 }

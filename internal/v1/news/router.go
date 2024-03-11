@@ -42,7 +42,7 @@ func Ctx(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), "news", news)
+		ctx := context.WithValue(r.Context(), utils.NewsKey{}, news)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

@@ -25,7 +25,7 @@ func Ctx(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), "userFlag", userFlag)
+		ctx := context.WithValue(r.Context(), utils.UserFlagKey{}, userFlag)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

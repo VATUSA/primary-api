@@ -3,6 +3,7 @@ package facility_log
 import (
 	"context"
 	"github.com/VATUSA/primary-api/pkg/database/models"
+	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/chi/v5"
 	"net/http"
 	"strconv"
@@ -41,7 +42,7 @@ func Ctx(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), "facilityLog", facilityLog)
+		ctx := context.WithValue(r.Context(), utils.FacilityLogKey{}, facilityLog)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

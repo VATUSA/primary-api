@@ -3,6 +3,7 @@ package feedback
 import (
 	"context"
 	"github.com/VATUSA/primary-api/pkg/database/models"
+	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/chi/v5"
 	"net/http"
 	"strconv"
@@ -41,7 +42,7 @@ func Ctx(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), "feedback", feedback)
+		ctx := context.WithValue(r.Context(), utils.FeedbackKey{}, feedback)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
