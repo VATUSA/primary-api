@@ -18,11 +18,11 @@ jobs:
       - name: Build the Docker image
         run: docker build . --file ./deploy/docker/Dockerfile --tag $(cat APP_NAME):${{ github.sha }}
       - name: Tag the image to commit
-        run: docker tag $(cat APP_NAME):${{ github.sha }} registry.digitalocean.com/$(cat APP_NAME):${{ github.sha }}
+        run: docker tag $(cat APP_NAME):${{ github.sha }} $(cat APP_NAME):${{ github.sha }}
       - name: Docker Login
-        run: docker login -u ${{ secrets.DOCKER_EMAIL }} -p ${{ secrets.DOCKER_PASS }} registry.digitalocean.com
+        run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
       - name: Image push
-        run: docker push registry.digitalocean.com/$(cat APP_NAME):${{ github.sha }}
+        run: docker push $(cat APP_NAME):${{ github.sha }}
 #  deploy-dev:
 #    name: Deploy dev to ArgoCD
 #    runs-on: ubuntu-latest
