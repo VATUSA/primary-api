@@ -1,6 +1,7 @@
 package models
 
 import (
+	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database"
 	"strings"
 	"time"
@@ -15,7 +16,7 @@ type User struct {
 	Email                string                 `json:"email" example:"vatusa6@vatusa.net"`
 	PreferredOIs         string                 `json:"preferred_ois" example:"RP"`
 	PilotRating          uint                   `json:"pilot_rating" example:"1"`
-	ControllerRating     uint                   `json:"controller_rating" example:"1"`
+	ControllerRating     constants.ATCRating    `json:"controller_rating" example:"1"`
 	DiscordID            string                 `json:"discord_id" example:"1234567890"`
 	LastLogin            time.Time              `json:"last_login" example:"2021-01-01T00:00:00Z"`
 	LastCertSync         time.Time              `json:"last_cert_sync" example:"2021-01-01T00:00:00Z"`

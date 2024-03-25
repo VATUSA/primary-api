@@ -2,6 +2,7 @@ package rating_change
 
 import (
 	"errors"
+	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
@@ -10,9 +11,9 @@ import (
 )
 
 type Request struct {
-	OldRating    uint   `json:"old_rating" example:"1" validate:"required"`
-	NewRating    uint   `json:"new_rating" example:"2" validate:"required"`
-	CreatedByCID string `json:"created_by_cid" example:"1293257" validate:"required"`
+	OldRating    constants.ATCRating `json:"old_rating" example:"1" validate:"required"`
+	NewRating    constants.ATCRating `json:"new_rating" example:"2" validate:"required"`
+	CreatedByCID string              `json:"created_by_cid" example:"1293257" validate:"required"`
 }
 
 func (req *Request) Validate() error {
