@@ -2,6 +2,7 @@ package user
 
 import (
 	"errors"
+	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
@@ -11,16 +12,16 @@ import (
 )
 
 type Request struct {
-	CID              uint      `json:"cid" example:"1293257" validate:"required"`
-	FirstName        string    `json:"first_name" example:"Raaj" validate:"required"`
-	LastName         string    `json:"last_name" example:"Patel" validate:"required"`
-	PreferredName    string    `json:"preferred_name" example:"Raaj"`
-	Email            string    `json:"email" example:"vatusa6@vatusa.net" validate:"required,email"`
-	PreferredOIs     string    `json:"preferred_ois" example:"RP"`
-	PilotRating      uint      `json:"pilot_rating" example:"1" validate:"required"`
-	ControllerRating uint      `json:"controller_rating" example:"1" validate:"required"`
-	DiscordID        string    `json:"discord_id" example:"1234567890"`
-	LastCertSync     time.Time `json:"last_cert_sync" example:"2021-01-01T00:00:00Z"`
+	CID              uint                `json:"cid" example:"1293257" validate:"required"`
+	FirstName        string              `json:"first_name" example:"Raaj" validate:"required"`
+	LastName         string              `json:"last_name" example:"Patel" validate:"required"`
+	PreferredName    string              `json:"preferred_name" example:"Raaj"`
+	Email            string              `json:"email" example:"vatusa6@vatusa.net" validate:"required,email"`
+	PreferredOIs     string              `json:"preferred_ois" example:"RP"`
+	PilotRating      uint                `json:"pilot_rating" example:"1" validate:"required"`
+	ControllerRating constants.ATCRating `json:"controller_rating" example:"1" validate:"required"`
+	DiscordID        string              `json:"discord_id" example:"1234567890"`
+	LastCertSync     time.Time           `json:"last_cert_sync" example:"2021-01-01T00:00:00Z"`
 }
 
 func (req *Request) Validate() error {
