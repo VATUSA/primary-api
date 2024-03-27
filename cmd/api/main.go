@@ -27,5 +27,5 @@ func main() {
 
 	r := gochi.New(cfg)
 	internal.Router(r, cfg)
-	log.Fatalf("Err starting http server: %s", http.ListenAndServe(":8080", r))
+	log.Fatalf("Err starting http server: %s", http.ListenAndServe(":3000", r))
 }
