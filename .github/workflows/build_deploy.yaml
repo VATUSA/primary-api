@@ -39,7 +39,7 @@ jobs:
       - name: Update manifests
         run: |
           cd $GITHUB_WORKSPACE/gitops/overlays/dev
-          kustomize edit set image vatusa/${{ secrets.REPOSITORY_NAME }}=${{ secrets.DOCKER_USER }}/${{ secrets.REPOSITORY_NAME }}:${{ github.sha }}
+          kustomize edit set image vatusa/${{ secrets.REPOSITORY_NAME }}=vatusa/${{ secrets.REPOSITORY_NAME }}:${{ github.sha }}
       - name: Commit and push changes
         run: |
           cd $GITHUB_WORKSPACE/gitops
@@ -68,7 +68,7 @@ jobs:
 #      - name: Update manifests
 #        run: |
 #          cd $GITHUB_WORKSPACE/gitops/overlays/prod
-#          kustomize edit set image vatusa/${{ secrets.REPOSITORY_NAME }}=${{ secrets.DOCKER_USER }}/${{ secrets.REPOSITORY_NAME }}:${{ github.sha }}
+#          kustomize edit set image vatusa/${{ secrets.REPOSITORY_NAME }}=vatusa/${{ secrets.REPOSITORY_NAME }}:${{ github.sha }}
 #      - name: Commit and push changes
 #        run: |
 #          cd $GITHUB_WORKSPACE/gitops
