@@ -5054,7 +5054,8 @@ const docTemplate = `{
                     "example": false
                 },
                 "no_transferring_log_entry_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "no_visiting": {
                     "type": "boolean",

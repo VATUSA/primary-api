@@ -933,6 +933,7 @@ definitions:
         example: false
         type: boolean
       no_transferring_log_entry_id:
+        example: 1
         type: integer
       no_visiting:
         example: false
