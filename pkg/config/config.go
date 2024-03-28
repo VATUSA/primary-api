@@ -3,9 +3,14 @@ package config
 import "os"
 
 type Config struct {
+	API      *APIConfig
 	Database *DBConfig
 	Cors     *CorsConfig
 	S3       *S3Config
+}
+
+type APIConfig struct {
+	Port string
 }
 
 type DBConfig struct {
@@ -27,6 +32,12 @@ type S3Config struct {
 	AccessKey string
 	SecretKey string
 	Bucket    string
+}
+
+func NewAPIConfig() *APIConfig {
+	return &APIConfig{
+		Port: os.Getenv("PORT"),
+	}
 }
 
 func NewDBConfig() *DBConfig {
@@ -58,6 +69,7 @@ func NewS3Config() *S3Config {
 
 func New() *Config {
 	return &Config{
+		API:      NewAPIConfig(),
 		Database: NewDBConfig(),
 		Cors:     NewCorsConfig(),
 		S3:       NewS3Config(),

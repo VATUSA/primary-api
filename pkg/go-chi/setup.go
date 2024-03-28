@@ -6,6 +6,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	"github.com/go-chi/render"
+	"net/http"
 )
 
 func New(cfg *config.Config) *chi.Mux {
@@ -18,6 +19,12 @@ func New(cfg *config.Config) *chi.Mux {
 	r.Use(render.SetContentType(render.ContentTypeJSON))
 
 	r.Use(cors.Handler(NewCors(cfg)))
+
+	r.Route("/ping", func(r chi.Router) {
+		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+			w.Write([]byte("pong"))
+		})
+	})
 
 	return r
 }

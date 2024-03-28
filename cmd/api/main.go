@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/VATUSA/primary-api/internal"
 	"github.com/VATUSA/primary-api/pkg/config"
 	"github.com/VATUSA/primary-api/pkg/database"
@@ -27,5 +28,5 @@ func main() {
 
 	r := gochi.New(cfg)
 	internal.Router(r, cfg)
-	log.Fatalf("Err starting http server: %s", http.ListenAndServe(":3000", r))
+	log.Fatalf("Err starting http server: %s", http.ListenAndServe(fmt.Sprintf(":%s", cfg.API.Port), r))
 }
