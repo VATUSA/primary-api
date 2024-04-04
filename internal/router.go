@@ -20,9 +20,9 @@ import (
 // @license.name  Apache 2.0
 // @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host      api.vatusa.local
+// @host      api.vatusa.dev
 // @BasePath  /internal/v1
-// @schemes http
+// @schemes https
 
 func Router(r chi.Router, cfg *config.Config) {
 	r.Route("/internal", func(r chi.Router) {

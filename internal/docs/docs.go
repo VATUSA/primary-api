@@ -3846,6 +3846,37 @@ const docTemplate = `{
                 }
             }
         },
+        "constants.ATCRating": {
+            "type": "integer",
+            "enum": [
+                -1,
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                7,
+                8,
+                10,
+                11,
+                12
+            ],
+            "x-enum-varnames": [
+                "InactiveRating",
+                "SuspendedRating",
+                "ObserverRating",
+                "Student1Rating",
+                "Student2Rating",
+                "Student3Rating",
+                "ControllerRating",
+                "SeniorControllerRating",
+                "InstructorRating",
+                "SeniorInstructorRating",
+                "SupervisorRating",
+                "AdministratorRating"
+            ]
+        },
         "constants.FacilityID": {
             "type": "string",
             "enum": [
@@ -4351,7 +4382,11 @@ const docTemplate = `{
                     "example": 1293257
                 },
                 "controller_rating": {
-                    "type": "integer",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/constants.ATCRating"
+                        }
+                    ],
                     "example": 1
                 },
                 "created_at": {
@@ -4641,11 +4676,19 @@ const docTemplate = `{
                     "example": "1293257"
                 },
                 "new_rating": {
-                    "type": "integer",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/constants.ATCRating"
+                        }
+                    ],
                     "example": 2
                 },
                 "old_rating": {
-                    "type": "integer",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/constants.ATCRating"
+                        }
+                    ],
                     "example": 1
                 }
             }
@@ -4670,11 +4713,19 @@ const docTemplate = `{
                     "example": 1
                 },
                 "new_rating": {
-                    "type": "integer",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/constants.ATCRating"
+                        }
+                    ],
                     "example": 2
                 },
                 "old_rating": {
-                    "type": "integer",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/constants.ATCRating"
+                        }
+                    ],
                     "example": 1
                 },
                 "updated_at": {
@@ -4926,7 +4977,11 @@ const docTemplate = `{
                     "example": 1293257
                 },
                 "controller_rating": {
-                    "type": "integer",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/constants.ATCRating"
+                        }
+                    ],
                     "example": 1
                 },
                 "discord_id": {
@@ -4971,7 +5026,11 @@ const docTemplate = `{
                     "example": 1293257
                 },
                 "controller_rating": {
-                    "type": "integer",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/constants.ATCRating"
+                        }
+                    ],
                     "example": 1
                 },
                 "created_at": {
@@ -5205,9 +5264,9 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "0.1",
-	Host:             "api.vatusa.local",
+	Host:             "api.vatusa.dev",
 	BasePath:         "/internal/v1",
-	Schemes:          []string{"http"},
+	Schemes:          []string{"https"},
 	Title:            "VATUSA Internal",
 	Description:      "VATUSAs internal API for use by other internal VATUSA services.",
 	InfoInstanceName: "swagger",

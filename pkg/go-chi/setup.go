@@ -22,7 +22,7 @@ func New(cfg *config.Config) *chi.Mux {
 
 	r.Route("/ping", func(r chi.Router) {
 		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-			w.Write([]byte("pong"))
+			render.Status(r, http.StatusNoContent)
 		})
 	})
 

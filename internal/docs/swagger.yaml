@@ -32,6 +32,34 @@ definitions:
         example: '''1234567'' or ''System'''
         type: string
     type: object
+  constants.ATCRating:
+    enum:
+    - -1
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 7
+    - 8
+    - 10
+    - 11
+    - 12
+    type: integer
+    x-enum-varnames:
+    - InactiveRating
+    - SuspendedRating
+    - ObserverRating
+    - Student1Rating
+    - Student2Rating
+    - Student3Rating
+    - ControllerRating
+    - SeniorControllerRating
+    - InstructorRating
+    - SeniorInstructorRating
+    - SupervisorRating
+    - AdministratorRating
   constants.FacilityID:
     enum:
     - ZAE
@@ -418,8 +446,9 @@ definitions:
         example: 1293257
         type: integer
       controller_rating:
+        allOf:
+        - $ref: '#/definitions/constants.ATCRating'
         example: 1
-        type: integer
       created_at:
         example: "2021-01-01T00:00:00Z"
         type: string
@@ -625,11 +654,13 @@ definitions:
         example: "1293257"
         type: string
       new_rating:
+        allOf:
+        - $ref: '#/definitions/constants.ATCRating'
         example: 2
-        type: integer
       old_rating:
+        allOf:
+        - $ref: '#/definitions/constants.ATCRating'
         example: 1
-        type: integer
     required:
     - created_by_cid
     - new_rating
@@ -650,11 +681,13 @@ definitions:
         example: 1
         type: integer
       new_rating:
+        allOf:
+        - $ref: '#/definitions/constants.ATCRating'
         example: 2
-        type: integer
       old_rating:
+        allOf:
+        - $ref: '#/definitions/constants.ATCRating'
         example: 1
-        type: integer
       updated_at:
         example: "2021-01-01T00:00:00Z"
         type: string
@@ -832,8 +865,9 @@ definitions:
         example: 1293257
         type: integer
       controller_rating:
+        allOf:
+        - $ref: '#/definitions/constants.ATCRating'
         example: 1
-        type: integer
       discord_id:
         example: "1234567890"
         type: string
@@ -872,8 +906,9 @@ definitions:
         example: 1293257
         type: integer
       controller_rating:
+        allOf:
+        - $ref: '#/definitions/constants.ATCRating'
         example: 1
-        type: integer
       created_at:
         example: "2021-01-01T00:00:00Z"
         type: string
@@ -1030,7 +1065,7 @@ definitions:
         description: user-level status message
         type: string
     type: object
-host: api.vatusa.local
+host: api.vatusa.dev
 info:
   contact:
     email: vatusa6@vatusa.net
@@ -3554,5 +3589,5 @@ paths:
       tags:
       - user-flag
 schemes:
-- http
+- https
 swagger: "2.0"
