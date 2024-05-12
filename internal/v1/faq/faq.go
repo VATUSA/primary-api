@@ -1,6 +1,7 @@
 package faq
 
 import (
+	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
@@ -9,10 +10,10 @@ import (
 )
 
 type Request struct {
-	Facility string `json:"facility" validate:"required,len=3"`
-	Question string `json:"question" validate:"required"`
-	Answer   string `json:"answer" validate:"required"`
-	Category string `json:"category" validate:"required,oneof=membership training technology misc"`
+	Facility constants.FacilityID `json:"facility" validate:"required,len=3"`
+	Question string               `json:"question" validate:"required"`
+	Answer   string               `json:"answer" validate:"required"`
+	Category string               `json:"category" validate:"required,oneof=membership training technology misc"`
 }
 
 func (req *Request) Validate() error {

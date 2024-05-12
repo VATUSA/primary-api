@@ -2,6 +2,7 @@ package roster_request
 
 import (
 	"errors"
+	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/database/types"
 	"github.com/VATUSA/primary-api/pkg/utils"
@@ -11,10 +12,10 @@ import (
 )
 
 type Request struct {
-	Facility    string            `json:"requested_facility" example:"ZDV" validate:"required,len=3"`
-	RequestType types.RequestType `json:"request_type" example:"visiting" validate:"required,oneof=visiting transferring"`
-	Status      types.StatusType  `json:"status" example:"pending" validate:"required,oneof=pending accepted rejected"`
-	Reason      string            `json:"reason" example:"I want to transfer to ZDV" validate:"required"`
+	Facility    constants.FacilityID `json:"requested_facility" example:"ZDV" validate:"required,len=3"`
+	RequestType types.RequestType    `json:"request_type" example:"visiting" validate:"required,oneof=visiting transferring"`
+	Status      types.StatusType     `json:"status" example:"pending" validate:"required,oneof=pending accepted rejected"`
+	Reason      string               `json:"reason" example:"I want to transfer to ZDV" validate:"required"`
 }
 
 func (req *Request) Validate() error {

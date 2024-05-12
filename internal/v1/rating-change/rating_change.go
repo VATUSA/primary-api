@@ -13,7 +13,7 @@ import (
 type Request struct {
 	OldRating    constants.ATCRating `json:"old_rating" example:"1" validate:"required"`
 	NewRating    constants.ATCRating `json:"new_rating" example:"2" validate:"required"`
-	CreatedByCID string              `json:"created_by_cid" example:"1293257" validate:"required"`
+	CreatedByCID uint                `json:"created_by_cid" example:"1293257" validate:"required"`
 }
 
 func (req *Request) Validate() error {
@@ -186,7 +186,7 @@ func PatchRatingChange(w http.ResponseWriter, r *http.Request) {
 	if data.NewRating != 0 {
 		rc.NewRating = data.NewRating
 	}
-	if data.CreatedByCID != "" {
+	if data.CreatedByCID != 0 {
 		rc.CreatedByCID = data.CreatedByCID
 	}
 

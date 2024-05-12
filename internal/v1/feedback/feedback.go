@@ -2,6 +2,7 @@ package feedback
 
 import (
 	"errors"
+	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/database/types"
 	"github.com/VATUSA/primary-api/pkg/utils"
@@ -15,7 +16,7 @@ type Request struct {
 	Callsign      string               `json:"callsign" example:"DAL123" validate:"required"`
 	ControllerCID uint                 `json:"controller_cid" example:"1293257" validate:"required"`
 	Position      string               `json:"position" example:"DEN_I_APP" validate:"required"`
-	Facility      string               `json:"facility" example:"ZDV" validate:"required,len=3"`
+	Facility      constants.FacilityID `json:"facility" example:"ZDV" validate:"required,len=3"`
 	Rating        types.FeedbackRating `json:"rating" example:"good" validate:"required,oneof=unsatisfactory poor fair good excellent"`
 	Notes         string               `json:"notes" example:"Raaj was the best controller I've ever flown under." validate:"required"`
 	Status        types.StatusType     `json:"status" example:"pending" validate:"required,oneof=pending approved denied"`

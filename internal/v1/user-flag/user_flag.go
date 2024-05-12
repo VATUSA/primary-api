@@ -18,6 +18,7 @@ type Request struct {
 	NoTransferringLogEntryID uint `json:"no_transferring_log_entry_id" example:"1"`
 	NoTraining               bool `json:"no_training" example:"false"`
 	NoTrainingLogEntryID     uint `json:"no_training_log_entry_id" example:"1"`
+	UsedTransferOverride     bool `json:"used_transfer_override" example:"false"`
 }
 
 func (req *Request) Validate() error {
@@ -103,6 +104,7 @@ func UpdateUserFlag(w http.ResponseWriter, r *http.Request) {
 	userFlag.NoTransferringLogEntryID = req.NoTransferringLogEntryID
 	userFlag.NoTraining = req.NoTraining
 	userFlag.NoTrainingLogEntryID = req.NoTrainingLogEntryID
+	userFlag.UsedTransferOverride = req.UsedTransferOverride
 
 	if err := userFlag.Update(); err != nil {
 		utils.Render(w, r, utils.ErrInvalidRequest(err))
@@ -156,6 +158,9 @@ func PatchUserFlag(w http.ResponseWriter, r *http.Request) {
 	}
 	if req.NoTrainingLogEntryID != 0 {
 		userFlag.NoTrainingLogEntryID = req.NoTrainingLogEntryID
+	}
+	if req.UsedTransferOverride {
+		userFlag.UsedTransferOverride = req.UsedTransferOverride
 	}
 
 	if err := userFlag.Update(); err != nil {

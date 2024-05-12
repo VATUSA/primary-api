@@ -3,6 +3,7 @@ package document
 import (
 	"errors"
 	"fmt"
+	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/database/types"
 	"github.com/VATUSA/primary-api/pkg/storage"
@@ -16,10 +17,10 @@ import (
 )
 
 type Request struct {
-	Facility    string `json:"facility" example:"ZDV" validate:"required,len=3"`
-	Name        string `json:"name" example:"DP001" validate:"required"`
-	Description string `json:"description" example:"General Division Policy" validate:"required"`
-	Category    string `json:"category" example:"general" validate:"required,oneof=general training information_technology sops loas misc"`
+	Facility    constants.FacilityID `json:"facility" example:"ZDV" validate:"required,len=3"`
+	Name        string               `json:"name" example:"DP001" validate:"required"`
+	Description string               `json:"description" example:"General Division Policy" validate:"required"`
+	Category    string               `json:"category" example:"general" validate:"required,oneof=general training information_technology sops loas misc"`
 }
 
 func (req *Request) Validate() error {
@@ -98,7 +99,7 @@ func CreateDocument(w http.ResponseWriter, r *http.Request, endpoint string) {
 	}
 
 	extension := path.Ext(fileHeader.Filename)
-	directory := path.Join(data.Facility, data.Category)
+	directory := path.Join(string(data.Facility), data.Category)
 	filename := strings.ReplaceAll(data.Name, " ", "-") + extension
 
 	// Put the file in the S3 bucket
@@ -188,7 +189,7 @@ func ListDocumentsByFac(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	docs, err := models.GetAllDocumentsByFacility(facId)
+	docs, err := models.GetAllDocumentsByFacility(constants.FacilityID(facId))
 	if err != nil {
 		utils.Render(w, r, utils.ErrInternalServer)
 		return
@@ -221,7 +222,7 @@ func ListDocumentsByFacByCat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	docs, err := models.GetAllDocumentsByFacilityAndCategory(facId, types.DocumentCategory(cat))
+	docs, err := models.GetAllDocumentsByFacilityAndCategory(constants.FacilityID(facId), types.DocumentCategory(cat))
 	if err != nil {
 		utils.Render(w, r, utils.ErrInternalServer)
 		return
@@ -335,7 +336,7 @@ func DeleteDocument(w http.ResponseWriter, r *http.Request) {
 	doc := utils.GetDocumentCtx(r)
 
 	// Delete the file from the S3 bucket
-	directory := path.Join(doc.Facility, string(doc.Category))
+	directory := path.Join(string(doc.Facility), string(doc.Category))
 	filename := strings.ReplaceAll(doc.Name, " ", "-") + path.Ext(doc.URL)
 	if err := storage.PublicBucket.Delete(directory, filename); err != nil {
 		utils.Render(w, r, utils.ErrInternalServer)
@@ -367,7 +368,7 @@ func UploadDocument(w http.ResponseWriter, r *http.Request, endpoint string) {
 	data := utils.GetDocumentCtx(r)
 
 	// Delete the file from the S3 bucket
-	directory := path.Join(data.Facility, string(data.Category))
+	directory := path.Join(string(data.Facility), string(data.Category))
 	filename := strings.ReplaceAll(data.Name, " ", "-") + path.Ext(data.URL)
 	if err := storage.PublicBucket.Delete(directory, filename); err != nil {
 		utils.Render(w, r, utils.ErrInternalServer)
@@ -383,7 +384,7 @@ func UploadDocument(w http.ResponseWriter, r *http.Request, endpoint string) {
 	}
 
 	extension := path.Ext(fileHeader.Filename)
-	directory = path.Join(data.Facility, string(data.Category))
+	directory = path.Join(string(data.Facility), string(data.Category))
 	filename = strings.ReplaceAll(data.Name, " ", "-") + extension
 
 	// Put the file in the S3 bucket

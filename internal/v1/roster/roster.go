@@ -2,6 +2,7 @@ package roster
 
 import (
 	"errors"
+	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
@@ -11,11 +12,11 @@ import (
 )
 
 type Request struct {
-	Facility string `json:"facility" example:"ZDV" validate:"required,len=3"`
-	OIs      string `json:"operating_initials" example:"RP" validate:"required"`
-	Home     bool   `json:"home" example:"true"`
-	Visiting bool   `json:"visiting" example:"false"`
-	Status   string `json:"status" example:"Active" validate:"required,oneof=active loa"` // Active, LOA
+	Facility constants.FacilityID `json:"facility" example:"ZDV" validate:"required,len=3"`
+	OIs      string               `json:"operating_initials" example:"RP" validate:"required"`
+	Home     bool                 `json:"home" example:"true"`
+	Visiting bool                 `json:"visiting" example:"false"`
+	Status   string               `json:"status" example:"Active" validate:"required,oneof=active loa"` // Active, LOA
 }
 
 func (req *Request) Validate() error {

@@ -1,6 +1,7 @@
 package models
 
 import (
+	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database"
 	"time"
 )
@@ -13,13 +14,13 @@ import (
 // - Changes to gSuite Email (for given Facility)
 
 type FacilityLogEntry struct {
-	ID        uint      `json:"id" gorm:"primaryKey" example:"1"`
-	Facility  string    `json:"facility" example:"ZDV"`
-	Entry     string    `json:"entry" example:"Change URL from 'denartcc.org' to 'zdvartcc.org'"`
-	CreatedAt time.Time `json:"created_at" example:"2021-01-01T00:00:00Z"`
-	CreatedBy string    `json:"created_by" example:"'1234567' or 'System'"`
-	UpdatedAt time.Time `json:"updated_at" example:"2021-01-01T00:00:00Z"`
-	UpdatedBy string    `json:"updated_by" example:"'1234567' or 'System'"`
+	ID        uint                 `json:"id" gorm:"primaryKey" example:"1"`
+	Facility  constants.FacilityID `json:"facility" example:"ZDV"`
+	Entry     string               `json:"entry" example:"Change URL from 'denartcc.org' to 'zdvartcc.org'"`
+	CreatedAt time.Time            `json:"created_at" example:"2021-01-01T00:00:00Z"`
+	CreatedBy string               `json:"created_by" example:"'1234567' or 'System'"`
+	UpdatedAt time.Time            `json:"updated_at" example:"2021-01-01T00:00:00Z"`
+	UpdatedBy string               `json:"updated_by" example:"'1234567' or 'System'"`
 }
 
 func (fle *FacilityLogEntry) Create() error {
@@ -43,7 +44,7 @@ func GetAllFacilityLogEntries() ([]FacilityLogEntry, error) {
 	return fle, database.DB.Find(&fle).Error
 }
 
-func GetAllFacilityLogEntriesByFacility(facility string) ([]FacilityLogEntry, error) {
+func GetAllFacilityLogEntriesByFacility(facility constants.FacilityID) ([]FacilityLogEntry, error) {
 	var fle []FacilityLogEntry
 	return fle, database.DB.Where("facility = ?", facility).Find(&fle).Error
 }

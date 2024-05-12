@@ -24,7 +24,7 @@ const (
 )
 
 var (
-	ratingMap = map[ATCRating]atcRating{
+	atcRatingMap = map[ATCRating]atcRating{
 		InactiveRating: {
 			Short: "AFK",
 			Long:  "Inactive",
@@ -77,7 +77,7 @@ var (
 )
 
 func (r ATCRating) IsValidRating() bool {
-	_, ok := ratingMap[r]
+	_, ok := atcRatingMap[r]
 	return ok
 }
 
@@ -86,7 +86,7 @@ func (r ATCRating) Int() int {
 }
 
 func (r ATCRating) Short() string {
-	val, ok := ratingMap[r]
+	val, ok := atcRatingMap[r]
 	if ok {
 		return val.Short
 	}
@@ -94,7 +94,7 @@ func (r ATCRating) Short() string {
 }
 
 func (r ATCRating) Long() string {
-	val, ok := ratingMap[r]
+	val, ok := atcRatingMap[r]
 	if ok {
 		return val.Long
 	}

@@ -66,6 +66,11 @@ var (
 	}
 )
 
+func (fac FacilityID) IsValidFacility() bool {
+	_, ok := FacilityDisplayNameMap[fac]
+	return ok
+}
+
 func (f FacilityID) DisplayName() string {
 	return FacilityDisplayNameMap[f]
 }

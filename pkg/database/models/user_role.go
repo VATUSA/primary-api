@@ -73,7 +73,7 @@ func HasRole(user *User, role constants.RoleID) bool {
 	return false
 }
 
-func HasRoleAtFacility(user *User, role constants.RoleID, facility string) bool {
+func HasRoleAtFacility(user *User, role constants.RoleID, facility constants.FacilityID) bool {
 	for _, roster := range user.Roster {
 		if roster.Facility == facility {
 			for _, r := range roster.Roles {

@@ -1,6 +1,7 @@
 package external
 
 import (
+	v3 "github.com/VATUSA/primary-api/external/v3"
 	"github.com/VATUSA/primary-api/pkg/config"
 	"github.com/go-chi/chi/v5"
 	httpSwagger "github.com/swaggo/http-swagger"
@@ -19,14 +20,13 @@ import (
 // @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
 
 // @host      api.vatusa.net
-// @BasePath  /v1
-// @schemes http
+// @BasePath  /v3
+// @schemes https
 
 func Router(r chi.Router, cfg *config.Config) {
-	r.Route("/v1", func(r chi.Router) {
+	v3.Router(r, cfg)
 
-		r.Get("/swagger/*", httpSwagger.Handler(
-			httpSwagger.URL("http://api.vatusa.net/v1/swagger/doc.json"),
-		))
-	})
+	r.Get("/swagger/*", httpSwagger.Handler(
+		httpSwagger.URL("https://api.vatusa.dev/v3/swagger/doc.json"),
+	))
 }

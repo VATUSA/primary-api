@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/go-chi/chi/v5"
 	"net/http"
@@ -28,7 +29,7 @@ func GetFacilityCtx(r *http.Request) (*models.Facility, error) {
 	id := chi.URLParam(r, "facilityID")
 
 	fac := &models.Facility{
-		ID: id,
+		ID: constants.FacilityID(id),
 	}
 
 	if err := fac.Get(); err != nil {
@@ -102,4 +103,16 @@ type UserRoleKey struct{}
 
 func GetUserRoleCtx(r *http.Request) *models.UserRole {
 	return r.Context().Value(UserRoleKey{}).(*models.UserRole)
+}
+
+type XUser struct{}
+
+func GetXUser(r *http.Request) *models.User {
+	return r.Context().Value(XUser{}).(*models.User)
+}
+
+type XGuest struct{}
+
+func GetXGuest(r *http.Request) bool {
+	return r.Context().Value(XGuest{}).(bool)
 }

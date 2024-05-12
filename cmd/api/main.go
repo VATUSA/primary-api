@@ -7,6 +7,7 @@ import (
 	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	gochi "github.com/VATUSA/primary-api/pkg/go-chi"
+	"github.com/VATUSA/primary-api/pkg/oauth"
 	"github.com/VATUSA/primary-api/pkg/storage"
 	"github.com/joho/godotenv"
 	"log"
@@ -15,18 +16,20 @@ import (
 
 func main() {
 	_ = godotenv.Load(".env")
-	cfg := config.New()
+	config.Cfg = config.New()
 
-	bucket, err := storage.NewS3Client(cfg.S3)
+	oauth.OAuthConfig = oauth.Initialize(config.Cfg)
+
+	bucket, err := storage.NewS3Client(config.Cfg.S3)
 	if err != nil {
 		panic(err)
 	}
 
 	storage.PublicBucket = bucket
-	database.DB = database.Connect(cfg.Database)
+	database.DB = database.Connect(config.Cfg.Database)
 	models.AutoMigrate()
 
-	r := gochi.New(cfg)
-	internal.Router(r, cfg)
-	log.Fatalf("Err starting http server: %s", http.ListenAndServe(fmt.Sprintf(":%s", cfg.API.Port), r))
+	r := gochi.New(config.Cfg)
+	internal.Router(r, config.Cfg)
+	log.Fatalf("Err starting http server: %s", http.ListenAndServe(fmt.Sprintf(":%s", config.Cfg.API.Port), r))
 }

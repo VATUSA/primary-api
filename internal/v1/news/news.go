@@ -2,6 +2,7 @@ package news
 
 import (
 	"errors"
+	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
@@ -10,9 +11,9 @@ import (
 )
 
 type Request struct {
-	Facility    string `json:"facility" example:"ZDV" validate:"required,len=3"`
-	Title       string `json:"title" example:"DP001 Revision 3 Released" validate:"required"`
-	Description string `json:"description" example:"DP001 has been revised to include new information regarding the new VATSIM Code of Conduct" validate:"required"`
+	Facility    constants.FacilityID `json:"facility" example:"ZDV" validate:"required,len=3"`
+	Title       string               `json:"title" example:"DP001 Revision 3 Released" validate:"required"`
+	Description string               `json:"description" example:"DP001 has been revised to include new information regarding the new VATSIM Code of Conduct" validate:"required"`
 }
 
 func (req *Request) Validate() error {

@@ -1,16 +1,25 @@
 package config
 
-import "os"
+import (
+	"fmt"
+	"github.com/gorilla/securecookie"
+	"os"
+)
+
+var Cfg *Config
 
 type Config struct {
 	API      *APIConfig
 	Database *DBConfig
 	Cors     *CorsConfig
+	Cookie   *Cookie
 	S3       *S3Config
+	OAuth    *OAuth
 }
 
 type APIConfig struct {
-	Port string
+	BaseURL string
+	Port    string
 }
 
 type DBConfig struct {
@@ -26,6 +35,12 @@ type CorsConfig struct {
 	AllowedOrigins string
 }
 
+type Cookie struct {
+	HashKey  []byte
+	BlockKey []byte
+	Domain   string
+}
+
 type S3Config struct {
 	Endpoint  string
 	Region    string
@@ -36,7 +51,8 @@ type S3Config struct {
 
 func NewAPIConfig() *APIConfig {
 	return &APIConfig{
-		Port: os.Getenv("PORT"),
+		BaseURL: os.Getenv("API_BASE_URL"),
+		Port:    os.Getenv("API_PORT"),
 	}
 }
 
@@ -57,6 +73,22 @@ func NewCorsConfig() *CorsConfig {
 	}
 }
 
+func NewCookie() *Cookie {
+	c := &Cookie{
+		HashKey:  []byte(os.Getenv("COOKIE_HASH_KEY")),
+		BlockKey: []byte(os.Getenv("COOKIE_BLOCK_KEY")),
+		Domain:   os.Getenv("COOKIE_DOMAIN"),
+	}
+
+	if len(c.HashKey) == 0 || len(c.BlockKey) == 0 {
+		fmt.Println("No cookie keys found, generating new keys...")
+		c.HashKey = securecookie.GenerateRandomKey(64)
+		c.BlockKey = securecookie.GenerateRandomKey(32)
+	}
+
+	return c
+}
+
 func NewS3Config() *S3Config {
 	return &S3Config{
 		Endpoint:  os.Getenv("S3_ENDPOINT"),
@@ -72,6 +104,8 @@ func New() *Config {
 		API:      NewAPIConfig(),
 		Database: NewDBConfig(),
 		Cors:     NewCorsConfig(),
+		Cookie:   NewCookie(),
 		S3:       NewS3Config(),
+		OAuth:    NewOAuth(),
 	}
 }

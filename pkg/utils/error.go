@@ -50,6 +50,8 @@ var (
 	ErrNotFound        = &ErrResponse{HTTPStatusCode: 404, StatusText: "Resource not found."}
 	ErrBadRequest      = &ErrResponse{HTTPStatusCode: 400, StatusText: "Bad request"}
 	ErrInternalServer  = &ErrResponse{HTTPStatusCode: 500, StatusText: "Internal Server Error"}
+	ErrUnauthorized    = &ErrResponse{HTTPStatusCode: 401, StatusText: "Unauthorized"}
+	ErrForbidden       = &ErrResponse{HTTPStatusCode: 403, StatusText: "Forbidden"}
 	ErrInvalidFacility = &ErrResponse{HTTPStatusCode: 400, StatusText: "Invalid facility"}
 	ErrInvalidRole     = &ErrResponse{HTTPStatusCode: 400, StatusText: "Invalid role"}
 	ErrInvalidCID      = &ErrResponse{HTTPStatusCode: 400, StatusText: "Invalid CID"}

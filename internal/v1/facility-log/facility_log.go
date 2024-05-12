@@ -2,6 +2,7 @@ package facility_log
 
 import (
 	"errors"
+	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
@@ -10,8 +11,8 @@ import (
 )
 
 type Request struct {
-	Facility string `json:"facility" example:"ZDV" validate:"required,len=3"`
-	Entry    string `json:"entry" example:"Changed Preferred OIs to RP" validate:"required"`
+	Facility constants.FacilityID `json:"facility" example:"ZDV" validate:"required,len=3"`
+	Entry    string               `json:"entry" example:"Changed Preferred OIs to RP" validate:"required"`
 }
 
 func (req *Request) Validate() error {

@@ -14,8 +14,8 @@ type User struct {
 	PreferredName        string                 `json:"preferred_name" example:"Raaj" gorm:"index:idx_pref_name"`
 	PrefNameEnabled      bool                   `json:"pref_name_enabled" example:"true"`
 	Email                string                 `json:"email" example:"vatusa6@vatusa.net"`
-	PreferredOIs         string                 `json:"preferred_ois" example:"RP"`
-	PilotRating          uint                   `json:"pilot_rating" example:"1"`
+	PreferredOIs         string                 `json:"preferred_ois" gorm:"column:preferred_ois" example:"RP"`
+	PilotRating          constants.PilotRating  `json:"pilot_rating" example:"1"`
 	ControllerRating     constants.ATCRating    `json:"controller_rating" example:"1"`
 	DiscordID            string                 `json:"discord_id" example:"1234567890"`
 	LastLogin            time.Time              `json:"last_login" example:"2021-01-01T00:00:00Z"`
@@ -53,7 +53,7 @@ func (u *User) Get() error {
 		return database.DB.Where("discord_id = ?", u.DiscordID).First(u).Error
 	}
 
-	return database.DB.Where("c_id = ?", u.CID).First(u).Error
+	return database.DB.First(u, u.CID).Error
 }
 
 func GetAllUsers() ([]User, error) {
@@ -82,7 +82,7 @@ func SearchUsersByName(query string) ([]User, error) {
 
 func IsValidUser(cid uint) bool {
 	var user User
-	if err := database.DB.Where("c_id = ?", cid).First(&user).Error; err != nil {
+	if err := database.DB.Where("cid = ?", cid).First(&user).Error; err != nil {
 		return false
 	}
 	return true
