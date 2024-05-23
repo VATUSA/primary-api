@@ -1,9 +1,7 @@
 package utils
 
 import (
-	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database/models"
-	"github.com/go-chi/chi/v5"
 	"net/http"
 )
 
@@ -25,18 +23,10 @@ func GetDocumentCtx(r *http.Request) *models.Document {
 	return r.Context().Value(DocumentKey{}).(*models.Document)
 }
 
-func GetFacilityCtx(r *http.Request) (*models.Facility, error) {
-	id := chi.URLParam(r, "facilityID")
+type FacilityKey struct{}
 
-	fac := &models.Facility{
-		ID: constants.FacilityID(id),
-	}
-
-	if err := fac.Get(); err != nil {
-		return nil, err
-	}
-
-	return fac, nil
+func GetFacilityCtx(r *http.Request) *models.Facility {
+	return r.Context().Value(FacilityKey{}).(*models.Facility)
 }
 
 type FacilityLogKey struct{}

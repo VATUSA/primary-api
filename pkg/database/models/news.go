@@ -37,3 +37,8 @@ func GetAllNews() ([]News, error) {
 	var news []News
 	return news, database.DB.Find(&news).Error
 }
+
+func GetNewsByFacility(facility constants.FacilityID) ([]News, error) {
+	var news []News
+	return news, database.DB.Where("facility = ?", facility).Find(&news).Error
+}

@@ -42,7 +42,17 @@ func (f *Feedback) Get() error {
 	return database.DB.Where("id = ?", f.ID).First(f).Error
 }
 
-func GetAllFeedback() ([]Feedback, error) {
+func GetAllFeedback(status types.StatusType) ([]Feedback, error) {
 	var feedback []Feedback
 	return feedback, database.DB.Find(&feedback).Error
+}
+
+func GetFeedbackByFacility(facility constants.FacilityID, status types.StatusType) ([]Feedback, error) {
+	var feedback []Feedback
+	return feedback, database.DB.Where("facility = ?", facility).Find(&feedback).Error
+}
+
+func GetFeedbackByFacilityAndCID(facility constants.FacilityID, controllerCID uint, status types.StatusType) ([]Feedback, error) {
+	var feedback []Feedback
+	return feedback, database.DB.Where("facility = ? AND controller_cid = ?", facility, controllerCID).Find(&feedback).Error
 }

@@ -49,22 +49,17 @@ func GetAllRosterRequestsByFacility(facility constants.FacilityID) ([]RosterRequ
 	return rosterRequests, database.DB.Where("requested_facility = ?", facility).Find(&rosterRequests).Error
 }
 
-func GetAllPendingVisitingRequestsByCID(cid uint) ([]RosterRequest, error) {
+func GetRosterRequestsByType(facility constants.FacilityID, reqType types.RequestType) ([]RosterRequest, error) {
 	var rosterRequests []RosterRequest
-	return rosterRequests, database.DB.Where("cid = ? AND request_type = ? AND status = ?", cid, types.Visiting, types.Pending).Find(&rosterRequests).Error
+	return rosterRequests, database.DB.Where("requested_facility = ? AND request_type = ?", facility, reqType).Find(&rosterRequests).Error
 }
 
-func GetAllPendingTransferringRequestsByCID(cid uint) ([]RosterRequest, error) {
+func GetRosterRequestsByStatus(facility constants.FacilityID, status types.StatusType) ([]RosterRequest, error) {
 	var rosterRequests []RosterRequest
-	return rosterRequests, database.DB.Where("cid = ? AND request_type = ? AND status = ?", cid, types.Transferring, types.Pending).Find(&rosterRequests).Error
+	return rosterRequests, database.DB.Where("requested_facility = ? AND status = ?", facility, status).Find(&rosterRequests).Error
 }
 
-func GetAllPendingVisitingRequestsByFacility(facility constants.FacilityID) ([]RosterRequest, error) {
+func GetRosterRequestsByTypeAndStatus(facility constants.FacilityID, reqType types.RequestType, status types.StatusType) ([]RosterRequest, error) {
 	var rosterRequests []RosterRequest
-	return rosterRequests, database.DB.Where("requested_facility = ? AND request_type = ? AND status = ?", facility, types.Visiting, types.Pending).Find(&rosterRequests).Error
-}
-
-func GetAllPendingTransferringRequestsByFacility(facility constants.FacilityID) ([]RosterRequest, error) {
-	var rosterRequests []RosterRequest
-	return rosterRequests, database.DB.Where("requested_facility = ? AND request_type = ? AND status = ?", facility, types.Transferring, types.Pending).Find(&rosterRequests).Error
+	return rosterRequests, database.DB.Where("requested_facility = ? AND request_type = ? AND status = ?", facility, reqType, status).Find(&rosterRequests).Error
 }

@@ -260,11 +260,7 @@ func DeleteRoster(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /facility/{facility}/roster [get]
 func GetRosterByFacility(w http.ResponseWriter, r *http.Request) {
-	fac, err := utils.GetFacilityCtx(r)
-	if err != nil {
-		utils.Render(w, r, utils.ErrInvalidFacility)
-		return
-	}
+	fac := utils.GetFacilityCtx(r)
 
 	rosterType := r.URL.Query().Get("type")
 

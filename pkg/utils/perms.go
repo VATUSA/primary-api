@@ -18,7 +18,7 @@ func IsVATUSAStaff(user *models.User) bool {
 func IsSeniorStaff(user *models.User) bool {
 	for _, roster := range user.Roster {
 		for _, roles := range roster.Roles {
-			if roles.RoleID == "ATM" || roles.RoleID == "DATM" || roles.RoleID == "TA" {
+			if roles.RoleID == constants.AirTrafficManagerRole || roles.RoleID == constants.DeputyAirTrafficManagerRole || roles.RoleID == constants.TrainingAdministratorRole {
 				return true
 			}
 		}
@@ -31,7 +31,7 @@ func IsFacilitySeniorStaff(user *models.User, facility constants.FacilityID) boo
 	for _, roster := range user.Roster {
 		if roster.Facility == facility {
 			for _, roles := range roster.Roles {
-				if roles.RoleID == "ATM" || roles.RoleID == "DATM" || roles.RoleID == "TA" {
+				if roles.RoleID == constants.AirTrafficManagerRole || roles.RoleID == constants.DeputyAirTrafficManagerRole || roles.RoleID == constants.TrainingAdministratorRole {
 					return true
 				}
 			}
@@ -45,7 +45,7 @@ func IsFacilityStaff(user *models.User, facility constants.FacilityID) bool {
 	for _, roster := range user.Roster {
 		if roster.Facility == facility {
 			for _, roles := range roster.Roles {
-				if roles.RoleID == "FE" || roles.RoleID == "WM" || roles.RoleID == "EC" || IsFacilitySeniorStaff(user, facility) {
+				if roles.RoleID == constants.FacilityEngineerRole || roles.RoleID == constants.WebMasterRole || roles.RoleID == constants.EventCoordinatorRole || IsFacilitySeniorStaff(user, facility) {
 					return true
 				}
 			}
@@ -101,7 +101,7 @@ func CanEditFacility(user *models.User, targetFacility *models.Facility) bool {
 	for _, roster := range user.Roster {
 		if roster.Facility == targetFacility.ID {
 			for _, roles := range roster.Roles {
-				if roles.RoleID == "ATM" || roles.RoleID == "DATM" || roles.RoleID == "WM" {
+				if roles.RoleID == constants.AirTrafficManagerRole || roles.RoleID == constants.DeputyAirTrafficManagerRole || roles.RoleID == constants.WebMasterRole {
 					return true
 				}
 			}
@@ -122,4 +122,18 @@ func CanAddRole(user *models.User, roleId constants.RoleID, facilityId constants
 	}
 
 	return constants.CanAddRole(userRoles, roleId)
+}
+
+func IsInstructor(user *models.User, facility constants.FacilityID) bool {
+	for _, roster := range user.Roster {
+		if roster.Facility == facility {
+			for _, roles := range roster.Roles {
+				if roles.RoleID == constants.TrainingAdministratorRole || roles.RoleID == constants.InstructorRole {
+					return user.ControllerRating == constants.InstructorRating || user.ControllerRating == constants.SeniorInstructorRating
+				}
+			}
+		}
+	}
+
+	return false
 }

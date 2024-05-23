@@ -2,7 +2,6 @@ package facility
 
 import (
 	"github.com/VATUSA/primary-api/pkg/database/models"
-	middleware "github.com/VATUSA/primary-api/pkg/go-chi/middleware/auth"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
 	"net/http"
@@ -79,11 +78,7 @@ func GetFacilities(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /facility/{FacilityID} [get]
 func GetFacility(w http.ResponseWriter, r *http.Request) {
-	fac, err := utils.GetFacilityCtx(r)
-	if err != nil {
-		utils.Render(w, r, utils.ErrNotFound)
-		return
-	}
+	fac := utils.GetFacilityCtx(r)
 
 	utils.Render(w, r, NewFacilityResponse(fac))
 }
@@ -102,17 +97,7 @@ func GetFacility(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /facility/{FacilityID} [put]
 func UpdateFacility(w http.ResponseWriter, r *http.Request) {
-	fac, err := utils.GetFacilityCtx(r)
-	if err != nil {
-		utils.Render(w, r, utils.ErrNotFound)
-		return
-	}
-
-	user := middleware.GetSelfUser(r)
-	if !utils.CanEditFacility(user, fac) {
-		utils.Render(w, r, utils.ErrForbidden)
-		return
-	}
+	fac := utils.GetFacilityCtx(r)
 
 	req := &Request{}
 	if err := render.Bind(r, req); err != nil {
@@ -150,17 +135,7 @@ func UpdateFacility(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /facility/{FacilityID} [patch]
 func PatchFacility(w http.ResponseWriter, r *http.Request) {
-	fac, err := utils.GetFacilityCtx(r)
-	if err != nil {
-		utils.Render(w, r, utils.ErrNotFound)
-		return
-	}
-
-	user := middleware.GetSelfUser(r)
-	if !utils.CanEditFacility(user, fac) {
-		utils.Render(w, r, utils.ErrForbidden)
-		return
-	}
+	fac := utils.GetFacilityCtx(r)
 
 	req := &Request{}
 	if err := render.Bind(r, req); err != nil {

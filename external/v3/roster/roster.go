@@ -1,0 +1,177 @@
+package roster
+
+import (
+	"errors"
+	"github.com/VATUSA/primary-api/pkg/database/models"
+	"github.com/VATUSA/primary-api/pkg/utils"
+	"github.com/go-chi/render"
+	"github.com/go-playground/validator/v10"
+	"net/http"
+	"strings"
+)
+
+type Request struct {
+	CID      uint   `json:"cid" example:"123456" validate:"required"`
+	OIs      string `json:"operating_initials" example:"RP" validate:"required"`
+	Home     bool   `json:"home" example:"true"`
+	Visiting bool   `json:"visiting" example:"false"`
+	Status   string `json:"status" example:"Active" validate:"required,oneof=active loa"` // Active, LOA
+}
+
+func (req *Request) Validate() error {
+	return validator.New().Struct(req)
+}
+
+func (req *Request) Bind(r *http.Request) error {
+	return nil
+}
+
+type Response struct {
+	*models.Roster
+}
+
+func NewRosterResponse(r *models.Roster) *Response {
+	return &Response{Roster: r}
+}
+
+func (res *Response) Render(w http.ResponseWriter, r *http.Request) error {
+	if res.Roster == nil {
+		return errors.New("roster not found")
+	}
+
+	return nil
+}
+
+func NewRosterListResponse(r []models.Roster) []render.Renderer {
+	list := []render.Renderer{}
+	for _, d := range r {
+		list = append(list, NewRosterResponse(&d))
+	}
+
+	return list
+}
+
+// CreateRoster godoc
+// @Summary Create a new roster
+// @Description Create a new roster
+// @Tags roster
+// @Accept  json
+// @Produce  json
+// @Param facility path string true "Facility"
+// @Param roster body Request true "Roster"
+// @Success 201 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /facility/{facility}/roster [post]
+func CreateRoster(w http.ResponseWriter, r *http.Request) {
+	data := &Request{}
+	if err := data.Bind(r); err != nil {
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
+		return
+	}
+
+	if err := data.Validate(); err != nil {
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
+		return
+	}
+
+	if !models.IsValidUser(data.CID) {
+		utils.Render(w, r, utils.ErrInvalidCID)
+		return
+	}
+
+	fac := utils.GetFacilityCtx(r)
+
+	if !data.Home && !data.Visiting {
+		utils.Render(w, r, utils.ErrInvalidRequest(errors.New("home and visiting cannot both be false")))
+		return
+	}
+
+	if data.Home && data.Visiting {
+		utils.Render(w, r, utils.ErrInvalidRequest(errors.New("home and visiting cannot both be true")))
+		return
+	}
+
+	roster := &models.Roster{
+		CID:      data.CID,
+		Facility: fac.ID,
+		OIs:      data.OIs,
+		Home:     data.Home,
+		Visiting: data.Visiting,
+		Status:   data.Status,
+	}
+
+	if err := roster.Create(); err != nil {
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
+		return
+	}
+
+	render.Status(r, http.StatusCreated)
+	utils.Render(w, r, NewRosterResponse(roster))
+}
+
+// GetRosterByFacility godoc
+// @Summary Get rosters by facility
+// @Description Get rosters by facility
+// @Tags roster
+// @Accept  json
+// @Produce  json
+// @Param facility path string true "Facility"
+// @Param type query string false "Type" Enums(home,visiting)
+// @Success 200 {object} []Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /facility/{facility}/roster [get]
+func GetRosterByFacility(w http.ResponseWriter, r *http.Request) {
+	fac := utils.GetFacilityCtx(r)
+
+	rosterType := r.URL.Query().Get("type")
+
+	if rosterType == "" {
+		rosters, err := models.GetRostersByFacility(fac.ID)
+		if err != nil {
+			utils.Render(w, r, utils.ErrInternalServer)
+			return
+		}
+
+		if err := render.RenderList(w, r, NewRosterListResponse(rosters)); err != nil {
+			utils.Render(w, r, utils.ErrRender(err))
+			return
+		}
+		return
+	}
+
+	rosters, err := models.GetRostersByFacilityAndType(fac.ID, strings.ToLower(rosterType))
+	if err != nil {
+		utils.Render(w, r, utils.ErrInvalidRequest(err))
+		return
+	}
+
+	if err := render.RenderList(w, r, NewRosterListResponse(rosters)); err != nil {
+		utils.Render(w, r, utils.ErrRender(err))
+		return
+	}
+}
+
+// DeleteRoster godoc
+// @Summary Delete a roster
+// @Description Delete a roster
+// @Tags roster
+// @Accept  json
+// @Produce  json
+// @Param facility path string true "Facility"
+// @Param id path int true "Roster ID"
+// @Success 204
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /facility/{facility}/roster/{id} [delete]
+func DeleteRoster(w http.ResponseWriter, r *http.Request) {
+	roster := utils.GetRosterCtx(r)
+
+	if err := roster.Delete(); err != nil {
+		utils.Render(w, r, utils.ErrInternalServer)
+		return
+	}
+
+	render.Status(r, http.StatusNoContent)
+}

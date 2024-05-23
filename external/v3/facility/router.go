@@ -2,7 +2,9 @@ package facility
 
 import (
 	"context"
+	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database/models"
+	middleware "github.com/VATUSA/primary-api/pkg/go-chi/middleware/auth"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/chi/v5"
 	"net/http"
@@ -15,8 +17,8 @@ func Router(r chi.Router) {
 		r.Use(Ctx)
 
 		r.Get("/", GetFacility)
-		r.Put("/", UpdateFacility)
-		r.Patch("/", PatchFacility)
+		r.With(middleware.CanEditFacility).Put("/", UpdateFacility)
+		r.With(middleware.CanEditFacility).Patch("/", PatchFacility)
 	})
 }
 
@@ -28,14 +30,14 @@ func Ctx(next http.Handler) http.Handler {
 			return
 		}
 
-		fac := &models.Facility{ID: facilityID}
+		fac := &models.Facility{ID: constants.FacilityID(facilityID)}
 		err := fac.Get()
 		if err != nil {
 			utils.Render(w, r, utils.ErrNotFound)
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), utils.FacilityLogKey{}, fac)
+		ctx := context.WithValue(r.Context(), utils.FacilityKey{}, fac)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
