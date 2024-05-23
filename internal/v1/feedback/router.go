@@ -10,7 +10,6 @@ import (
 )
 
 func Router(r chi.Router) {
-	r.Get("/", ListFeedback)
 	r.Post("/", CreateFeedback)
 
 	r.Route("/{FeedbackID}", func(r chi.Router) {

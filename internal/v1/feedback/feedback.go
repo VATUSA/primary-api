@@ -124,29 +124,6 @@ func GetFeedback(w http.ResponseWriter, r *http.Request) {
 	utils.Render(w, r, NewFeedbackResponse(f))
 }
 
-// ListFeedback godoc
-// @Summary List feedback entries
-// @Description List feedback entries
-// @Tags feedback
-// @Accept  json
-// @Produce  json
-// @Success 200 {object} []Response
-// @Failure 422 {object} utils.ErrResponse
-// @Failure 500 {object} utils.ErrResponse
-// @Router /feedback [get]
-func ListFeedback(w http.ResponseWriter, r *http.Request) {
-	f, err := models.GetAllFeedback()
-	if err != nil {
-		utils.Render(w, r, utils.ErrInternalServer)
-		return
-	}
-
-	if err := render.RenderList(w, r, NewFeedbackListResponse(f)); err != nil {
-		utils.Render(w, r, utils.ErrRender(err))
-		return
-	}
-}
-
 // UpdateFeedback godoc
 // @Summary Update a feedback entry
 // @Description Update a feedback entry
