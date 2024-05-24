@@ -12,8 +12,8 @@ func Initialize(config *config.Config) *oauth2.Config {
 		ClientID:     config.OAuth.ClientID,
 		ClientSecret: config.OAuth.ClientSecret,
 		Endpoint: oauth2.Endpoint{
-			AuthURL:  config.OAuth.BaseURL + "/authorize",
-			TokenURL: config.OAuth.BaseURL + "/token",
+			AuthURL:  config.OAuth.BaseURL + "/oauth/authorize",
+			TokenURL: config.OAuth.BaseURL + "/oauth/token",
 		},
 		RedirectURL: config.API.BaseURL + "/v3/user/login/callback",
 		Scopes:      []string{"identify", "email"},
