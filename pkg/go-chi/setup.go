@@ -2,6 +2,8 @@ package go_chi
 
 import (
 	"github.com/VATUSA/primary-api/pkg/config"
+	"github.com/VATUSA/primary-api/pkg/go-chi/middleware/logger"
+	"github.com/VATUSA/primary-api/pkg/logging"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
@@ -12,7 +14,7 @@ import (
 func New(cfg *config.Config) *chi.Mux {
 	r := chi.NewRouter()
 
-	r.Use(middleware.Logger)
+	r.Use(logger.Logger(logging.ZL.With().Str("component", "access").Logger()))
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.RealIP)
 

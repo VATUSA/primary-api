@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/VATUSA/primary-api/pkg/config"
 	"github.com/VATUSA/primary-api/pkg/cookie"
+	logger "github.com/VATUSA/primary-api/pkg/logging"
 	"github.com/VATUSA/primary-api/pkg/oauth"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	gonanoid "github.com/matoous/go-nanoid"
@@ -80,17 +81,20 @@ func GetLogin(w http.ResponseWriter, r *http.Request) {
 func GetLoginCallback(w http.ResponseWriter, r *http.Request) {
 	sessionCookie, err := r.Cookie("session")
 	if err != nil {
+		logger.ErrorWithErr(err, "Error getting session cookie")
 		utils.Render(w, r, utils.ErrForbidden)
 		return
 	}
 
 	session := make(map[string]string)
 	if err := cookie.CookieStore.Decode("session", sessionCookie.Value, &session); err != nil {
+		logger.ErrorWithErr(err, "Error decoding session cookie")
 		utils.Render(w, r, utils.ErrForbidden)
 		return
 	}
 
 	if r.URL.Query().Get("state") != session["state"] {
+		logger.Error("State mismatch on login/callback")
 		utils.Render(w, r, utils.ErrForbidden)
 		return
 	}
