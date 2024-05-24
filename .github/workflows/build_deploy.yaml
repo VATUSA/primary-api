@@ -17,7 +17,7 @@ jobs:
       - name: Build the Docker image
         run: docker build . --file ./Dockerfile --tag $(cat APP_NAME):${{ github.sha }}
       - name: Tag the image to commit
-        run: docker tag $(cat APP_NAME):${{ github.sha }} $(cat APP_NAME):${{ github.sha }}
+        run: docker tag $(cat APP_NAME):${{ github.sha }} $(cat APP_NAME):$(cat TAG)
       - name: Docker Login
         run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
       - name: Image push
@@ -34,7 +34,7 @@ jobs:
       - name: Build the Docker image
         run: docker build . --file ./Dockerfile_internal --tag $(cat APP_NAME):${{ github.sha }}
       - name: Tag the image to commit
-        run: docker tag $(cat APP_NAME):${{ github.sha }} $(cat APP_NAME):${{ github.sha }}
+        run: docker tag $(cat APP_NAME):${{ github.sha }} $(cat APP_NAME):$(cat TAG)
       - name: Docker Login
         run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
       - name: Image push
