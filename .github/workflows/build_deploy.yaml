@@ -54,16 +54,17 @@ jobs:
         uses: imranismail/setup-kustomize@v2
       - name: Update manifests
         run: |
+          echo "$(echo ${{ github.sha }} | cut -c1-7)" > TAG
           cd $GITHUB_WORKSPACE/gitops/overlays/dev
-          kustomize edit set image vatusa/${{ secrets.REPOSITORY_NAME }}=vatusa/${{ secrets.REPOSITORY_NAME }}:${{ github.sha }}
+          kustomize edit set image vatusa/${{ secrets.REPOSITORY_NAME }}=vatusa/${{ secrets.REPOSITORY_NAME }}:$(cat TAG)
       - name: Commit and push changes
         run: |
           cd $GITHUB_WORKSPACE/gitops
           git config --global user.email "vatusa6@vatusa.net"
           git config --global user.name "VATUSA6"
-          echo ${{ github.sha }}
+          echo $(cat TAG)
           git add .
-          git commit -m "Update primary-api image tag to ${{ github.sha }}"
+          git commit -m "Update primary-api image tag to $(cat TAG)"
       - name: Push to gitops repo
         run: |
           cd $GITHUB_WORKSPACE/gitops
