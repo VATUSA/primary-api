@@ -14,7 +14,7 @@ import (
 func New(cfg *config.Config) *chi.Mux {
 	r := chi.NewRouter()
 
-	r.Use(logger.Logger(logging.ZL.With().Str("component", "access").Logger()))
+	r.Use(logger.Logger(logging.ZL.With().Str("component", "Chi").Logger()))
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.RealIP)
 

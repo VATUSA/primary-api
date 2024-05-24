@@ -87,19 +87,11 @@ type RequestLoggerEntry struct {
 }
 
 func (l *RequestLoggerEntry) Write(status, bytes int, header http.Header, elapsed time.Duration, extra interface{}) {
-	responseLog := map[string]interface{}{
-		"status":       status,
-		"bytes":        bytes,
-		"elapsed":      elapsed.String(), // in milliseconds
-		"content-type": header.Get("Content-Type"),
-		"body":         string(extra.([]byte)),
-	}
-
 	l.Logger.WithLevel(statusLevel(status)).Fields(map[string]interface{}{
-		"httpResponse": responseLog,
+		"status":  status,
+		"elapsed": fmt.Sprintf("%dms", elapsed.Milliseconds()),
 	}).Msgf("")
 }
-
 func (l *RequestLoggerEntry) Panic(v interface{}, stack []byte) {
 	stacktrace := "#"
 
@@ -114,31 +106,10 @@ func (l *RequestLoggerEntry) Panic(v interface{}, stack []byte) {
 }
 
 func requestLogFields(r *http.Request) map[string]interface{} {
-	scheme := "http"
-	if r.TLS != nil {
-		scheme = "https"
-	}
-	requestURL := fmt.Sprintf("%s://%s%s", scheme, r.Host, r.RequestURI)
-
-	requestFields := map[string]interface{}{
-		"requestURL":    requestURL,
-		"requestMethod": r.Method,
-		"requestPath":   r.URL.Path,
-		"remoteIP":      r.RemoteAddr,
-		"proto":         r.Proto,
-	}
-	if reqID := middleware.GetReqID(r.Context()); reqID != "" {
-		requestFields["requestID"] = reqID
-	}
-
-	requestFields["scheme"] = scheme
-
-	if len(r.Header) > 0 {
-		requestFields["header"] = headerLogField(r.Header)
-	}
-
 	return map[string]interface{}{
-		"httpRequest": requestFields,
+		"remoteIP":      r.RemoteAddr,
+		"requestMethod": r.Method,
+		"requestURL":    r.URL.Path,
 	}
 }
 
