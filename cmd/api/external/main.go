@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/VATUSA/primary-api/external"
 	"github.com/VATUSA/primary-api/pkg/config"
+	"github.com/VATUSA/primary-api/pkg/cookie"
 	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	gochi "github.com/VATUSA/primary-api/pkg/go-chi"
@@ -27,6 +28,7 @@ func main() {
 
 	storage.PublicBucket = bucket
 	database.DB = database.Connect(config.Cfg.Database)
+	cookie.CookieStore = cookie.New(config.Cfg)
 	models.AutoMigrate()
 
 	r := gochi.New(config.Cfg)
