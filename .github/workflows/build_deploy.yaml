@@ -15,7 +15,7 @@ jobs:
           echo "vatusa/${{ secrets.REPOSITORY_NAME }}" > APP_NAME
           echo "$(echo ${{ github.sha }} | cut -c1-7)" > TAG
       - name: Build the Docker image
-        run: docker build . --file ./Dockerfile --tag $(cat APP_NAME):$(cat TAG)
+        run: docker build . --file ./Dockerfile --tag $(cat APP_NAME):${{ github.sha }}
       - name: Tag the image to commit
         run: docker tag $(cat APP_NAME):${{ github.sha }} $(cat APP_NAME):${{ github.sha }}
       - name: Docker Login
@@ -32,7 +32,7 @@ jobs:
           echo "vatusa/${{ secrets.REPOSITORY_NAME }}" > APP_NAME
           echo "$(echo ${{ github.sha }} | cut -c1-7)"-internal > TAG
       - name: Build the Docker image
-        run: docker build . --file ./Dockerfile_internal --tag $(cat APP_NAME):$(cat TAG)
+        run: docker build . --file ./Dockerfile_internal --tag $(cat APP_NAME):${{ github.sha }}
       - name: Tag the image to commit
         run: docker tag $(cat APP_NAME):${{ github.sha }} $(cat APP_NAME):${{ github.sha }}
       - name: Docker Login
