@@ -99,7 +99,6 @@ func main() {
 	MigrateUsers(oldDbConn)
 
 	fmt.Println("Migration Complete.")
-	return
 }
 
 func MigrateFacilities(oldDbConn *gorm.DB) {
@@ -259,7 +258,7 @@ func MigrateUsers(oldDbConn *gorm.DB) {
 			oldDbConn.Table("roles").Where("cid = ?", user.CID).Find(&roles)
 			for _, role := range roles {
 				if !constants.FacilityID(role.Facility).IsValidFacility() {
-					fmt.Sprintf("Facility %s is not a valid facility", role.Facility)
+					fmt.Printf("Facility %s is not a valid facility", role.Facility)
 					continue
 				}
 				newRole := &models.UserRole{

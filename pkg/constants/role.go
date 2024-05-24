@@ -441,7 +441,7 @@ func (r RoleID) DisplayName() string {
 
 func (g GroupID) RolesInGroup() []RoleID {
 	rolesInGroup := []RoleID{}
-	for role, _ := range Roles {
+	for role := range Roles {
 		if role.InGroup(g) {
 			rolesInGroup = append(rolesInGroup, role)
 		}
