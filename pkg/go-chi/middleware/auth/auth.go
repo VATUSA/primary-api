@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"context"
+	"errors"
 	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/cookie"
 	"github.com/VATUSA/primary-api/pkg/database/models"
@@ -13,10 +14,11 @@ import (
 func Auth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authCookie, err := r.Cookie("VATUSA")
-		if err != nil {
+		if errors.Is(err, http.ErrNoCookie) {
 			// Set x-guest context to true
 			ctx := context.WithValue(r.Context(), utils.XGuest{}, true)
 			next.ServeHTTP(w, r.WithContext(ctx))
+			return
 		}
 
 		auth := make(map[string]string)

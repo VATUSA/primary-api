@@ -8,7 +8,6 @@ import (
 	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	gochi "github.com/VATUSA/primary-api/pkg/go-chi"
-	logger "github.com/VATUSA/primary-api/pkg/logging"
 	"github.com/VATUSA/primary-api/pkg/oauth"
 	"github.com/VATUSA/primary-api/pkg/storage"
 	"github.com/joho/godotenv"
@@ -30,7 +29,6 @@ func main() {
 	storage.PublicBucket = bucket
 	database.DB = database.Connect(config.Cfg.Database)
 	cookie.CookieStore = cookie.New(config.Cfg)
-	logger.New("info")
 	models.AutoMigrate()
 
 	r := gochi.New(config.Cfg)
