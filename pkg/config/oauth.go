@@ -1,9 +1,5 @@
 package config
 
-import (
-	"os"
-)
-
 type OAuth struct {
 	BaseURL      string
 	ClientID     string
@@ -13,9 +9,9 @@ type OAuth struct {
 
 func NewOAuth() *OAuth {
 	return &OAuth{
-		BaseURL:      os.Getenv("OAUTH_BASE_URL"),
-		ClientID:     os.Getenv("OAUTH_CLIENT_ID"),
-		ClientSecret: os.Getenv("OAUTH_CLIENT_SECRET"),
-		UserInfoURL:  os.Getenv("OAUTH_USER_INFO_URL"),
+		BaseURL:      EnvOrDefault("OAUTH_BASE_URL", defaultCfg.OAuth.BaseURL),
+		ClientID:     EnvOrDefault("OAUTH_CLIENT_ID", defaultCfg.OAuth.ClientID),
+		ClientSecret: EnvOrDefault("OAUTH_CLIENT_SECRET", defaultCfg.OAuth.ClientSecret),
+		UserInfoURL:  EnvOrDefault("OAUTH_USER_INFO_URL", defaultCfg.OAuth.UserInfoURL),
 	}
 }
