@@ -90,10 +90,14 @@ func GetLoginCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fmt.Println("Decoded Session Cookie")
+
 	if r.URL.Query().Get("state") != session["state"] {
 		utils.Render(w, r, utils.ErrForbidden)
 		return
 	}
+
+	fmt.Println("State Matched")
 
 	token, err := oauth.OAuthConfig.Exchange(r.Context(), r.URL.Query().Get("code"))
 	if err != nil {
@@ -120,6 +124,8 @@ func GetLoginCallback(w http.ResponseWriter, r *http.Request) {
 		_ = resp.Body.Close()
 	}()
 
+	fmt.Println("Got User Info")
+
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		utils.Render(w, r, utils.ErrInternalServer)
@@ -130,6 +136,8 @@ func GetLoginCallback(w http.ResponseWriter, r *http.Request) {
 		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
+
+	fmt.Println(body)
 
 	user := &VATSIMUser{}
 	if err := json.Unmarshal(body, user); err != nil {
