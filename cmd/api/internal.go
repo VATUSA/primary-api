@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/VATUSA/primary-api/external"
+	"github.com/VATUSA/primary-api/internal"
 	"github.com/VATUSA/primary-api/pkg/config"
 	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
@@ -30,6 +30,6 @@ func main() {
 	models.AutoMigrate()
 
 	r := gochi.New(config.Cfg)
-	external.Router(r, config.Cfg)
+	internal.Router(r, config.Cfg)
 	log.Fatalf("Err starting http server: %s", http.ListenAndServe(fmt.Sprintf(":%s", config.Cfg.API.Port), r))
 }

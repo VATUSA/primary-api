@@ -29,4 +29,5 @@ func Router(r chi.Router, cfg *config.Config) {
 	r.Get("/swagger/*", httpSwagger.Handler(
 		httpSwagger.URL("https://api.vatusa.dev/v3/swagger/doc.json"),
 	))
+
 }
