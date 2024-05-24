@@ -16,7 +16,7 @@ jobs:
           echo "vatusa/${{ secrets.REPOSITORY_NAME }}" > APP_NAME
           echo "$GITHUB_SHA" > TAG
       - name: Build the Docker image
-        run: docker build . --file ./deploy/docker/Dockerfile --tag $(cat APP_NAME):${{ github.sha }}
+        run: docker build . --file ./Dockerfile --tag $(cat APP_NAME):${{ github.sha }}
       - name: Tag the image to commit
         run: docker tag $(cat APP_NAME):${{ github.sha }} $(cat APP_NAME):${{ github.sha }}
       - name: Docker Login

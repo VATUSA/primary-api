@@ -37,6 +37,8 @@ func CanEditUser(next http.Handler) http.Handler {
 	})
 }
 
+// FIXME - This is a copy of the request struct in the user_role.go file. This should be moved to a shared location and imported.
+
 type UserRoleRequest struct {
 	RoleID     constants.RoleID     `json:"role_id" example:"ATM" validate:"required"`
 	FacilityID constants.FacilityID `json:"facility_id" example:"ZDV" validate:"required"`
