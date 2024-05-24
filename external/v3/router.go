@@ -13,9 +13,7 @@ func Router(r chi.Router, cfg *config.Config) {
 			r.Get("/logout", user.GetLogout)
 			r.Get("/login", user.GetLogin)
 			r.Get("/login/callback", user.GetLoginCallback)
-		})
 
-		r.Route("/user", func(r chi.Router) {
 			user.Router(r)
 		})
 
