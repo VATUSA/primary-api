@@ -11,7 +11,7 @@ import (
 )
 
 func Router(r chi.Router) {
-	r.Get("/", GetSelf)
+	r.With(middleware.NotGuest).Get("/", GetSelf)
 
 	r.Route("/{CID}", func(r chi.Router) {
 		r.Use(Ctx)
