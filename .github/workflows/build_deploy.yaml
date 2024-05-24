@@ -6,23 +6,39 @@ on:
 
 jobs:
   build:
-    name: Build and push Docker image
+    name: Build and push Primary API Docker image
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Set Tag in env variable
         run: |
-          echo "sha_short=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_ENV
           echo "vatusa/${{ secrets.REPOSITORY_NAME }}" > APP_NAME
-          echo "$GITHUB_SHA" > TAG
+          echo "$(echo ${{ github.sha }} | cut -c1-7)" > TAG
       - name: Build the Docker image
-        run: docker build . --file ./Dockerfile --tag $(cat APP_NAME):${{ github.sha }}
+        run: docker build . --file ./Dockerfile --tag $(cat APP_NAME):$(cat TAG)
       - name: Tag the image to commit
         run: docker tag $(cat APP_NAME):${{ github.sha }} $(cat APP_NAME):${{ github.sha }}
       - name: Docker Login
         run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
       - name: Image push
-        run: docker push $(cat APP_NAME):${{ github.sha }}
+        run: docker push $(cat APP_NAME):$(cat TAG)
+  build-internal:
+    name: Build and push internal API Docker image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set Tag in env variable
+        run: |
+          echo "vatusa/${{ secrets.REPOSITORY_NAME }}" > APP_NAME
+          echo "$(echo ${{ github.sha }} | cut -c1-7)"-internal > TAG
+      - name: Build the Docker image
+        run: docker build . --file ./Dockerfile_internal --tag $(cat APP_NAME):$(cat TAG)
+      - name: Tag the image to commit
+        run: docker tag $(cat APP_NAME):${{ github.sha }} $(cat APP_NAME):${{ github.sha }}
+      - name: Docker Login
+        run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
+      - name: Image push
+        run: docker push $(cat APP_NAME):$(cat TAG)
   deploy-dev:
     name: Deploy dev to ArgoCD
     runs-on: ubuntu-latest
