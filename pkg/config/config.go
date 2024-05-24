@@ -48,7 +48,7 @@ func defaultConfig() *Config {
 			User:        "root",
 			Password:    "",
 			Database:    "vatusa",
-			LoggerLevel: "info",
+			LoggerLevel: "warn",
 		},
 		Cors: &CorsConfig{
 			AllowedOrigins: "https://my.vatusa.net",
