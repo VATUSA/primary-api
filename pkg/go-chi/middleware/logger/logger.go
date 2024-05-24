@@ -174,21 +174,6 @@ func statusLevel(status int) zerolog.Level {
 	}
 }
 
-func statusLabel(status int) string {
-	switch {
-	case status >= 100 && status < 300:
-		return "OK"
-	case status >= 300 && status < 400:
-		return "Redirect"
-	case status >= 400 && status < 500:
-		return "Client Error"
-	case status >= 500:
-		return "Server Error"
-	default:
-		return "Unknown"
-	}
-}
-
 func LogEntry(ctx context.Context) zerolog.Logger {
 	entry, ok := ctx.Value(middleware.LogEntryCtxKey).(*RequestLoggerEntry)
 	if !ok || entry == nil {
