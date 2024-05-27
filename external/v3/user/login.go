@@ -225,17 +225,19 @@ func GetLoginCallback(w http.ResponseWriter, r *http.Request) {
 
 		// Create user flags if they don't exist (due to old data migration)
 		dbUserFlag := &models.UserFlag{
-			CID:                  dbUser.CID,
-			NoStaffRole:          false,
-			NoVisiting:           false,
-			NoTransferring:       false,
-			NoTraining:           false,
-			UsedTransferOverride: false,
+			CID: dbUser.CID,
 		}
 
-		if err := dbUserFlag.Create(); err != nil {
-			utils.Render(w, r, utils.ErrInternalServerWithErr(err))
-			return
+		if err := dbUserFlag.Get(); err != nil {
+			dbUserFlag.NoStaffRole = false
+			dbUserFlag.NoVisiting = false
+			dbUserFlag.NoTransferring = false
+			dbUserFlag.NoTraining = false
+			dbUserFlag.UsedTransferOverride = false
+			if err := dbUserFlag.Create(); err != nil {
+				utils.Render(w, r, utils.ErrInternalServerWithErr(err))
+				return
+			}
 		}
 	}
 
