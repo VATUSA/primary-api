@@ -79,9 +79,7 @@ func GetSelfRoles(w http.ResponseWriter, r *http.Request) {
 
 	roles := []models.UserRole{}
 	for _, roster := range user.Roster {
-		for _, role := range roster.Roles {
-			roles = append(roles, role)
-		}
+		roles = append(roles, roster.Roles...)
 	}
 
 	if err := render.RenderList(w, r, NewUserRoleListResponse(roles)); err != nil {
