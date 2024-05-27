@@ -1,15 +1,22 @@
 package user
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/VATUSA/primary-api/pkg/config"
+	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/cookie"
+	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/oauth"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	gonanoid "github.com/matoous/go-nanoid"
+	"golang.org/x/oauth2"
 	"io"
 	"net/http"
+	"net/url"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -90,33 +97,38 @@ func GetLoginCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("Decoded Session Cookie")
-
 	if r.URL.Query().Get("state") != session["state"] {
 		utils.Render(w, r, utils.ErrForbidden)
 		return
 	}
 
-	fmt.Println("State Matched")
-
-	token, err := oauth.OAuthConfig.Exchange(r.Context(), r.URL.Query().Get("code"))
+	token, err := exchangeToken(r.Context(), oauth.OAuthConfig, r.URL.Query().Get("code"))
 	if err != nil {
+		fmt.Printf("Error: %s\n", err)
 		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
-	res, err := http.NewRequest("GET", config.Cfg.OAuth.UserInfoURL, nil)
+
+	//token, err := oauth.OAuthConfig.Exchange(r.Context(), r.URL.Query().Get("code"))
+	//if err != nil {
+	//	fmt.Printf("Error: %s\n", err)
+	//	utils.Render(w, r, utils.ErrInternalServer)
+	//	return
+	//}
+
+	res, err := http.NewRequest("GET", fmt.Sprintf("%s%s", config.Cfg.OAuth.BaseURL, config.Cfg.OAuth.UserInfoURL), nil)
 	res.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token.AccessToken))
 	res.Header.Add("Accept", "application/json")
 	res.Header.Add("User-Agent", "usa-primary-api")
 	if err != nil {
-		utils.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServerWithErr(err))
 		return
 	}
 
 	client := &http.Client{}
 	resp, err := client.Do(res)
 	if err != nil {
-		utils.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServerWithErr(err))
 		return
 	}
 
@@ -124,24 +136,22 @@ func GetLoginCallback(w http.ResponseWriter, r *http.Request) {
 		_ = resp.Body.Close()
 	}()
 
-	fmt.Println("Got User Info")
-
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		utils.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServerWithErr(err))
 		return
 	}
 
 	if resp.StatusCode >= 299 {
+		fmt.Println("Error Code:", resp.StatusCode)
+		fmt.Println("Error Body:", string(body))
 		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
 
-	fmt.Println(body)
-
 	user := &VATSIMUser{}
 	if err := json.Unmarshal(body, user); err != nil {
-		utils.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServerWithErr(err))
 		return
 	}
 
@@ -159,8 +169,74 @@ func GetLoginCallback(w http.ResponseWriter, r *http.Request) {
 
 		http.SetCookie(w, cookie)
 	} else {
-		utils.Render(w, r, utils.ErrInternalServer)
+		utils.Render(w, r, utils.ErrInternalServerWithErr(err))
 		return
+	}
+
+	// Create user if they don't exist
+	intCID, err := strconv.ParseInt(user.CID, 10, 64)
+	if err != nil {
+		utils.Render(w, r, utils.ErrInternalServerWithErr(err))
+		return
+	}
+	dbUser := &models.User{
+		CID: uint(intCID),
+	}
+
+	if err := dbUser.Get(); err != nil {
+		dbUser.FirstName = user.Personal.FirstName
+		dbUser.LastName = user.Personal.LastName
+		dbUser.Email = user.Personal.Email
+		dbUser.PilotRating = constants.PilotRating(user.VATSIM.PilotRating.ID)
+		dbUser.ControllerRating = constants.ATCRating(user.VATSIM.ControllerRating.ID)
+		dbUser.LastLogin = time.Now()
+		dbUser.LastCertSync = time.Now()
+		if err := dbUser.Create(); err != nil {
+			utils.Render(w, r, utils.ErrInternalServerWithErr(err))
+			return
+		}
+
+		// Create user flags
+		dbUserFlag := &models.UserFlag{
+			CID:                  dbUser.CID,
+			NoStaffRole:          false,
+			NoVisiting:           false,
+			NoTransferring:       false,
+			NoTraining:           false,
+			UsedTransferOverride: false,
+		}
+
+		if err := dbUserFlag.Create(); err != nil {
+			utils.Render(w, r, utils.ErrInternalServerWithErr(err))
+			return
+		}
+	} else {
+		dbUser.FirstName = user.Personal.FirstName
+		dbUser.LastName = user.Personal.LastName
+		dbUser.Email = user.Personal.Email
+		dbUser.PilotRating = constants.PilotRating(user.VATSIM.PilotRating.ID)
+		dbUser.ControllerRating = constants.ATCRating(user.VATSIM.ControllerRating.ID)
+		dbUser.LastLogin = time.Now()
+		dbUser.LastCertSync = time.Now()
+		if err := dbUser.Update(); err != nil {
+			utils.Render(w, r, utils.ErrInternalServerWithErr(err))
+			return
+		}
+
+		// Create user flags if they don't exist (due to old data migration)
+		dbUserFlag := &models.UserFlag{
+			CID:                  dbUser.CID,
+			NoStaffRole:          false,
+			NoVisiting:           false,
+			NoTransferring:       false,
+			NoTraining:           false,
+			UsedTransferOverride: false,
+		}
+
+		if err := dbUserFlag.Create(); err != nil {
+			utils.Render(w, r, utils.ErrInternalServerWithErr(err))
+			return
+		}
 	}
 
 	redirect := session["redirect"]
@@ -180,6 +256,65 @@ func GetLoginCallback(w http.ResponseWriter, r *http.Request) {
 	})
 
 	utils.TempRedirect(w, r, redirect)
+}
+
+func exchangeToken(ctx context.Context, oauthConfig *oauth2.Config, code string) (*oauth2.Token, error) {
+	tokenURL := oauthConfig.Endpoint.TokenURL
+
+	// Prepare form data
+	data := url.Values{
+		"grant_type":   {"authorization_code"},
+		"code":         {code},
+		"redirect_uri": {oauthConfig.RedirectURL},
+	}
+
+	if oauthConfig.ClientSecret != "" {
+		data.Set("client_id", oauthConfig.ClientID)
+		data.Set("client_secret", oauthConfig.ClientSecret)
+	}
+
+	reqBody := strings.NewReader(data.Encode())
+
+	// Create the request
+	req, err := http.NewRequestWithContext(ctx, "POST", tokenURL, reqBody)
+	if err != nil {
+		return nil, fmt.Errorf("error creating token request: %w", err)
+	}
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	// Send the request (using the default client or a custom one)
+	client := http.DefaultClient // Or use your custom client
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error sending token request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("unexpected token response status: %s", resp.Status)
+	}
+
+	// Parse the response (adjust for your actual response structure)
+	var tokenResponse struct {
+		AccessToken string `json:"access_token"`
+		TokenType   string `json:"token_type"`
+		ExpiresIn   int    `json:"expires_in"`
+	}
+
+	err = json.NewDecoder(resp.Body).Decode(&tokenResponse)
+	if err != nil {
+		return nil, fmt.Errorf("error decoding token response: %w", err)
+	}
+
+	// Create the OAuth2 token
+	token := &oauth2.Token{
+		AccessToken: tokenResponse.AccessToken,
+		TokenType:   tokenResponse.TokenType,
+		Expiry:      time.Now().Add(time.Duration(tokenResponse.ExpiresIn) * time.Second),
+	}
+
+	return token, nil
 }
 
 func GetLogout(w http.ResponseWriter, r *http.Request) {

@@ -68,7 +68,7 @@ func defaultConfig() *Config {
 		},
 		OAuth: &OAuth{
 			BaseURL:      "https://auth.vatusa.net",
-			UserInfoURL:  "/api/v3/user",
+			UserInfoURL:  "/oauth/userinfo",
 			ClientID:     "",
 			ClientSecret: "",
 		},
