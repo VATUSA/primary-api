@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"github.com/VATUSA/primary-api/external/v3/roster"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/go-chi/middleware/auth"
 	"github.com/VATUSA/primary-api/pkg/utils"
@@ -19,6 +20,8 @@ func Router(r chi.Router) {
 		r.With(middleware.CanViewUser).Get("/", GetUser)
 		r.With(middleware.CanEditUser).Put("/", UpdateUser)
 		r.With(middleware.CanEditUser).Patch("/", PatchUser)
+
+		r.With(middleware.CanViewUser).Get("/roster", roster.GetUserRosters)
 	})
 }
 

@@ -42,10 +42,10 @@ func (res *Response) Render(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func NewRosterListResponse(r []models.Roster) []render.Renderer {
+func NewRosterListResponse(rosters []models.Roster) []render.Renderer {
 	list := []render.Renderer{}
-	for _, d := range r {
-		list = append(list, NewRosterResponse(&d))
+	for idx := range rosters {
+		list = append(list, NewRosterResponse(&rosters[idx]))
 	}
 
 	return list
@@ -174,4 +174,30 @@ func DeleteRoster(w http.ResponseWriter, r *http.Request) {
 	}
 
 	render.Status(r, http.StatusNoContent)
+}
+
+// GetUserRosters godoc
+// @Summary Get rosters by user
+// @Description Get rosters by user
+// @Tags roster
+// @Accept  json
+// @Produce  json
+// @Param cid path int true "CID"
+// @Success 200 {object} []Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /user/{cid}/roster [get]
+func GetUserRosters(w http.ResponseWriter, r *http.Request) {
+	user := utils.GetUserCtx(r)
+
+	rosters, err := models.GetRostersByCID(user.CID)
+	if err != nil {
+		utils.Render(w, r, utils.ErrInternalServer)
+		return
+	}
+
+	if err := render.RenderList(w, r, NewRosterListResponse(rosters)); err != nil {
+		utils.Render(w, r, utils.ErrRender(err))
+		return
+	}
 }

@@ -43,8 +43,8 @@ func (res *Response) Render(w http.ResponseWriter, r *http.Request) error {
 
 func NewNotificationListResponse(n []models.Notification) []render.Renderer {
 	list := []render.Renderer{}
-	for _, d := range n {
-		list = append(list, NewNotificationResponse(&d))
+	for idx := range n {
+		list = append(list, NewNotificationResponse(&n[idx]))
 	}
 	return list
 }

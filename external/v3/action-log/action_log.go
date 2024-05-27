@@ -39,8 +39,8 @@ func (res *Response) Render(w http.ResponseWriter, r *http.Request) error {
 
 func NewActionLogEntryListResponse(ale []models.ActionLogEntry) []render.Renderer {
 	list := []render.Renderer{}
-	for _, a := range ale {
-		list = append(list, NewActionLogEntryResponse(&a))
+	for idx := range ale {
+		list = append(list, NewActionLogEntryResponse(&ale[idx]))
 	}
 	return list
 }

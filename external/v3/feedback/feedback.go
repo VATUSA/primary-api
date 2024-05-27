@@ -45,10 +45,10 @@ func (res *Response) Render(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func NewFeedbackListResponse(f []models.Feedback) []render.Renderer {
+func NewFeedbackListResponse(feedback []models.Feedback) []render.Renderer {
 	list := []render.Renderer{}
-	for _, d := range f {
-		list = append(list, NewFeedbackResponse(&d))
+	for idx := range feedback {
+		list = append(list, NewFeedbackResponse(&feedback[idx]))
 	}
 	return list
 }

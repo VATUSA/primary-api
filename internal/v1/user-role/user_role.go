@@ -39,10 +39,10 @@ func (res *Response) Render(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func NewUserRoleListResponse(r []models.UserRole) []render.Renderer {
+func NewUserRoleListResponse(userRoles []models.UserRole) []render.Renderer {
 	list := []render.Renderer{}
-	for _, d := range r {
-		list = append(list, NewUserRoleResponse(&d))
+	for idx := range userRoles {
+		list = append(list, NewUserRoleResponse(&userRoles[idx]))
 	}
 	return list
 }

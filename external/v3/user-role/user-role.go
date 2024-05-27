@@ -55,10 +55,10 @@ func (res *Response) Render(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func NewUserListResponse(resp []Response) []render.Renderer {
+func NewUserRoleListResponse(userRoles []models.UserRole) []render.Renderer {
 	list := []render.Renderer{}
-	for _, userRole := range resp {
-		list = append(list, &userRole)
+	for idx := range userRoles {
+		list = append(list, NewUserRoleResponse(userRoles[idx].RoleID, userRoles[idx].FacilityID, userRoles[idx].CreatedAt))
 	}
 	return list
 }
@@ -77,14 +77,14 @@ func NewUserListResponse(resp []Response) []render.Renderer {
 func GetSelfRoles(w http.ResponseWriter, r *http.Request) {
 	user := middleware.GetSelfUser(r)
 
-	roles := []Response{}
+	roles := []models.UserRole{}
 	for _, roster := range user.Roster {
 		for _, role := range roster.Roles {
-			roles = append(roles, *NewUserRoleResponse(role.RoleID, roster.Facility, role.CreatedAt))
+			roles = append(roles, role)
 		}
 	}
 
-	if err := render.RenderList(w, r, NewUserListResponse(roles)); err != nil {
+	if err := render.RenderList(w, r, NewUserRoleListResponse(roles)); err != nil {
 		utils.Render(w, r, utils.ErrInternalServer)
 	}
 }

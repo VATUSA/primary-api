@@ -41,8 +41,8 @@ func (res *Response) Render(w http.ResponseWriter, r *http.Request) error {
 
 func NewRatingChangeListResponse(rc []models.RatingChange) []render.Renderer {
 	list := []render.Renderer{}
-	for _, d := range rc {
-		list = append(list, NewRatingChangeResponse(&d))
+	for idx := range rc {
+		list = append(list, NewRatingChangeResponse(&rc[idx]))
 	}
 	return list
 }

@@ -41,8 +41,8 @@ func (res *Response) Render(w http.ResponseWriter, r *http.Request) error {
 
 func NewFAQListResponse(faqs []models.FAQ) []render.Renderer {
 	list := []render.Renderer{}
-	for _, f := range faqs {
-		list = append(list, NewFAQResponse(&f))
+	for idx := range faqs {
+		list = append(list, NewFAQResponse(&faqs[idx]))
 	}
 	return list
 }

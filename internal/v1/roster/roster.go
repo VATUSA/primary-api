@@ -43,10 +43,10 @@ func (res *Response) Render(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func NewRosterListResponse(r []models.Roster) []render.Renderer {
+func NewRosterListResponse(rosters []models.Roster) []render.Renderer {
 	list := []render.Renderer{}
-	for _, d := range r {
-		list = append(list, NewRosterResponse(&d))
+	for idx := range rosters {
+		list = append(list, NewRosterResponse(&rosters[idx]))
 	}
 
 	return list

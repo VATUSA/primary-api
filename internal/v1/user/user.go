@@ -51,8 +51,8 @@ func (res *Response) Render(w http.ResponseWriter, r *http.Request) error {
 
 func NewUserListResponse(users []models.User) []render.Renderer {
 	list := []render.Renderer{}
-	for _, user := range users {
-		list = append(list, NewUserResponse(&user))
+	for idx := range users {
+		list = append(list, NewUserResponse(&users[idx]))
 	}
 	return list
 }

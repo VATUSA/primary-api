@@ -40,8 +40,8 @@ func (res *Response) Render(w http.ResponseWriter, r *http.Request) error {
 
 func NewNewsListResponse(news []models.News) []render.Renderer {
 	list := []render.Renderer{}
-	for _, n := range news {
-		list = append(list, NewNewsResponse(&n))
+	for idx := range news {
+		list = append(list, NewNewsResponse(&news[idx]))
 	}
 	return list
 }

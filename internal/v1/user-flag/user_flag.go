@@ -45,10 +45,10 @@ func (res *Response) Render(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func NewUserFlagListResponse(r []models.UserFlag) []render.Renderer {
+func NewUserFlagListResponse(userFlags []models.UserFlag) []render.Renderer {
 	list := []render.Renderer{}
-	for _, d := range r {
-		list = append(list, NewUserFlagResponse(&d))
+	for idx := range userFlags {
+		list = append(list, NewUserFlagResponse(&userFlags[idx]))
 	}
 
 	return list

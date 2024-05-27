@@ -46,10 +46,10 @@ func (res *Response) Render(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func NewDocumentListResponse(d []models.Document) []render.Renderer {
+func NewDocumentListResponse(docs []models.Document) []render.Renderer {
 	list := []render.Renderer{}
-	for _, doc := range d {
-		list = append(list, NewDocumentResponse(&doc))
+	for idx := range docs {
+		list = append(list, NewDocumentResponse(&docs[idx]))
 	}
 	return list
 }

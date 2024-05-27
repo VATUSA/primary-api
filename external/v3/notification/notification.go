@@ -40,10 +40,10 @@ func (res *Response) Render(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func NewNotificationListResponse(n []models.Notification) []render.Renderer {
+func NewNotificationListResponse(notifications []models.Notification) []render.Renderer {
 	list := []render.Renderer{}
-	for _, d := range n {
-		list = append(list, NewNotificationResponse(&d))
+	for idx := range notifications {
+		list = append(list, NewNotificationResponse(&notifications[idx]))
 	}
 	return list
 }

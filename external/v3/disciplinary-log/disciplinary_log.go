@@ -40,8 +40,8 @@ func (res *Response) Render(w http.ResponseWriter, r *http.Request) error {
 
 func NewDisciplinaryLogEntryListResponse(dle []models.DisciplinaryLogEntry) []render.Renderer {
 	list := []render.Renderer{}
-	for _, d := range dle {
-		list = append(list, NewDisciplinaryLogEntryResponse(&d))
+	for idx := range dle {
+		list = append(list, NewDisciplinaryLogEntryResponse(&dle[idx]))
 	}
 	return list
 }

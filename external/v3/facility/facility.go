@@ -36,8 +36,8 @@ func (res *Response) Render(w http.ResponseWriter, r *http.Request) error {
 
 func NewFacilityListResponse(facilities []models.Facility) []render.Renderer {
 	list := []render.Renderer{}
-	for _, facility := range facilities {
-		list = append(list, NewFacilityResponse(&facility))
+	for idx := range facilities {
+		list = append(list, NewFacilityResponse(&facilities[idx]))
 	}
 	return list
 }

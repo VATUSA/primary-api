@@ -48,8 +48,8 @@ func (res *Response) Render(w http.ResponseWriter, r *http.Request) error {
 
 func NewFeedbackListResponse(f []models.Feedback) []render.Renderer {
 	list := []render.Renderer{}
-	for _, d := range f {
-		list = append(list, NewFeedbackResponse(&d))
+	for idx := range f {
+		list = append(list, NewFeedbackResponse(&f[idx]))
 	}
 	return list
 }
