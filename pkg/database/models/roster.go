@@ -71,7 +71,7 @@ func GetRosters() ([]Roster, error) {
 
 func GetRostersByCID(cid uint) ([]Roster, error) {
 	var rosters []Roster
-	return rosters, database.DB.Where("c_id = ?", cid).Find(&rosters).Error
+	return rosters, database.DB.Where("c_id = ?", cid).Preload("Roles").Find(&rosters).Error
 }
 
 func GetRostersByFacility(facility constants.FacilityID) ([]Roster, error) {
