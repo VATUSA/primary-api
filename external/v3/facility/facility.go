@@ -59,6 +59,11 @@ func GetFacilities(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Strip sensitive data
+	for idx := range facs {
+		facs[idx].StripSensitive()
+	}
+
 	if err := render.RenderList(w, r, NewFacilityListResponse(facs)); err != nil {
 		utils.Render(w, r, utils.ErrRender(err))
 		return

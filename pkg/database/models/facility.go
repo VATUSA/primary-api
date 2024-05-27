@@ -43,3 +43,7 @@ func GetAllFacilities() ([]Facility, error) {
 	var facilities []Facility
 	return facilities, database.DB.Find(&facilities).Error
 }
+
+func (f *Facility) StripSensitive() {
+	f.APIKey = ""
+}
