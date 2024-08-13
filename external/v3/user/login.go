@@ -10,6 +10,7 @@ import (
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/oauth"
 	"github.com/VATUSA/primary-api/pkg/utils"
+	vatsim_api "github.com/VATUSA/primary-api/pkg/vatsim/api"
 	gonanoid "github.com/matoous/go-nanoid"
 	"golang.org/x/oauth2"
 	"io"
@@ -19,40 +20,6 @@ import (
 	"strings"
 	"time"
 )
-
-type VATSIMUser struct {
-	CID      string `json:"cid"`
-	Personal struct {
-		FirstName string `json:"name_first"`
-		LastName  string `json:"name_last"`
-		FullName  string `json:"name_full"`
-		Email     string `json:"email"`
-	} `json:"personal"`
-	VATSIM struct {
-		ControllerRating struct {
-			ID    int    `json:"id"`
-			Short string `json:"short"`
-			Long  string `json:"long"`
-		} `json:"rating"`
-		PilotRating struct {
-			ID    int    `json:"id"`
-			Short string `json:"short"`
-			Long  string `json:"long"`
-		} `json:"pilotrating"`
-		Region struct {
-			ID   string `json:"id"`
-			Name string `json:"name"`
-		} `json:"region"`
-		Division struct {
-			ID   string `json:"id"`
-			Name string `json:"name"`
-		} `json:"division"`
-		Subdivision struct {
-			ID   string `json:"id"`
-			Name string `json:"name"`
-		} `json:"subdivision"`
-	}
-}
 
 func GetLogin(w http.ResponseWriter, r *http.Request) {
 	state, err := gonanoid.Generate("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 64)
@@ -119,7 +86,7 @@ func GetLoginCallback(w http.ResponseWriter, r *http.Request) {
 	res, err := http.NewRequest("GET", fmt.Sprintf("%s%s", config.Cfg.OAuth.BaseURL, config.Cfg.OAuth.UserInfoURL), nil)
 	res.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token.AccessToken))
 	res.Header.Add("Accept", "application/json")
-	res.Header.Add("User-Agent", "usa-primary-api")
+	res.Header.Add("User-Agent", "vatusa-primary-api")
 	if err != nil {
 		utils.Render(w, r, utils.ErrInternalServerWithErr(err))
 		return
@@ -149,7 +116,7 @@ func GetLoginCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user := &VATSIMUser{}
+	user := &vatsim_api.User{}
 	if err := json.Unmarshal(body, user); err != nil {
 		utils.Render(w, r, utils.ErrInternalServerWithErr(err))
 		return

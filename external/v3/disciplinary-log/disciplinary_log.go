@@ -11,7 +11,7 @@ import (
 )
 
 type Request struct {
-	Entry      string `json:"entry" example:"Changed Preferred OIs to RP" validate:"required"`
+	Entry      string `json:"entry" example:"Misconduct in discord" validate:"required"`
 	VATUSAOnly bool   `json:"vatusa_only" example:"true"`
 }
 
