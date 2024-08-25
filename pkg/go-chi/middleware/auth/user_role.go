@@ -55,9 +55,9 @@ func CanAddRole(next http.Handler) http.Handler {
 			}
 		}
 
-		if credentials.Facility != nil {
-			// TODO - possibly allow this in the future
-		}
+		// TODO - possibly allow this in the future
+		//if credentials.Facility != nil {
+		//}
 
 		next.ServeHTTP(w, r)
 	})
