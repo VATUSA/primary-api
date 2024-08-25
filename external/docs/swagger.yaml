@@ -816,9 +816,7 @@ definitions:
         example: Raaj
         type: string
       flags:
-        items:
-          $ref: '#/definitions/models.UserFlag'
-        type: array
+        $ref: '#/definitions/models.UserFlag'
       last_cert_sync:
         example: "2021-01-01T00:00:00Z"
         type: string
@@ -954,7 +952,6 @@ definitions:
         description: user-level status message
         type: string
     type: object
-host: api.vatusa.net
 info:
   contact:
     email: vatusa6@vatusa.net
@@ -1110,7 +1107,7 @@ paths:
       parameters:
       - description: Facility ID
         in: query
-        name: facility
+        name: FacilityID
         type: string
       produces:
       - application/json
@@ -1141,7 +1138,7 @@ paths:
           $ref: '#/definitions/faq.Request'
       - description: Facility ID
         in: path
-        name: facility
+        name: FacilityID
         required: true
         type: string
       produces:
@@ -1173,6 +1170,11 @@ paths:
         name: id
         required: true
         type: string
+      - description: Facility ID
+        in: path
+        name: FacilityID
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1193,6 +1195,11 @@ paths:
       - description: FAQ ID
         in: path
         name: id
+        required: true
+        type: string
+      - description: Facility ID
+        in: path
+        name: FacilityID
         required: true
         type: string
       - description: FAQ
@@ -1231,6 +1238,11 @@ paths:
       - description: FAQ ID
         in: path
         name: id
+        required: true
+        type: string
+      - description: Facility ID
+        in: path
+        name: FacilityID
         required: true
         type: string
       - description: FAQ
@@ -1450,10 +1462,6 @@ paths:
         in: path
         name: FacilityID
         required: true
-        type: string
-      - description: Facility ID
-        in: query
-        name: facility
         type: string
       produces:
       - application/json
@@ -1874,7 +1882,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Create a new roster
+      description: Adds a user to a roster
       parameters:
       - description: Facility ID
         in: path
@@ -1902,7 +1910,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/utils.ErrResponse'
-      summary: Create a new roster
+      summary: Add user to roster
       tags:
       - roster
   /facility/{FacilityID}/roster-request:
@@ -3220,6 +3228,4 @@ paths:
       summary: Update a user flag
       tags:
       - user-flag
-schemes:
-- https
 swagger: "2.0"

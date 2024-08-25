@@ -243,7 +243,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Facility ID",
-                        "name": "facility",
+                        "name": "FacilityID",
                         "in": "query"
                     }
                 ],
@@ -290,7 +290,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Facility ID",
-                        "name": "facility",
+                        "name": "FacilityID",
                         "in": "path",
                         "required": true
                     }
@@ -335,6 +335,13 @@ const docTemplate = `{
                         "type": "string",
                         "description": "FAQ ID",
                         "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Facility ID",
+                        "name": "FacilityID",
                         "in": "path",
                         "required": true
                     },
@@ -394,6 +401,13 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Facility ID",
+                        "name": "FacilityID",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -425,6 +439,13 @@ const docTemplate = `{
                         "type": "string",
                         "description": "FAQ ID",
                         "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Facility ID",
+                        "name": "FacilityID",
                         "in": "path",
                         "required": true
                     },
@@ -754,12 +775,6 @@ const docTemplate = `{
                         "name": "FacilityID",
                         "in": "path",
                         "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Facility ID",
-                        "name": "facility",
-                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -1380,7 +1395,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Create a new roster",
+                "description": "Adds a user to a roster",
                 "consumes": [
                     "application/json"
                 ],
@@ -1390,7 +1405,7 @@ const docTemplate = `{
                 "tags": [
                     "roster"
                 ],
-                "summary": "Create a new roster",
+                "summary": "Add user to roster",
                 "parameters": [
                     {
                         "type": "string",
@@ -4524,10 +4539,7 @@ const docTemplate = `{
                     "example": "Raaj"
                 },
                 "flags": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.UserFlag"
-                    }
+                    "$ref": "#/definitions/models.UserFlag"
                 },
                 "last_cert_sync": {
                     "type": "string",
@@ -4734,9 +4746,9 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "0.1",
-	Host:             "api.vatusa.net",
+	Host:             "",
 	BasePath:         "/v3",
-	Schemes:          []string{"https"},
+	Schemes:          []string{},
 	Title:            "VATUSA API",
 	Description:      "VATUSAs public API",
 	InfoInstanceName: "swagger",

@@ -1,7 +1,4 @@
 {
-    "schemes": [
-        "https"
-    ],
     "swagger": "2.0",
     "info": {
         "description": "VATUSAs public API",
@@ -18,7 +15,6 @@
         },
         "version": "0.1"
     },
-    "host": "api.vatusa.net",
     "basePath": "/v3",
     "paths": {
         "/facility": {
@@ -240,7 +236,7 @@
                     {
                         "type": "string",
                         "description": "Facility ID",
-                        "name": "facility",
+                        "name": "FacilityID",
                         "in": "query"
                     }
                 ],
@@ -287,7 +283,7 @@
                     {
                         "type": "string",
                         "description": "Facility ID",
-                        "name": "facility",
+                        "name": "FacilityID",
                         "in": "path",
                         "required": true
                     }
@@ -332,6 +328,13 @@
                         "type": "string",
                         "description": "FAQ ID",
                         "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Facility ID",
+                        "name": "FacilityID",
                         "in": "path",
                         "required": true
                     },
@@ -391,6 +394,13 @@
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Facility ID",
+                        "name": "FacilityID",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -422,6 +432,13 @@
                         "type": "string",
                         "description": "FAQ ID",
                         "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Facility ID",
+                        "name": "FacilityID",
                         "in": "path",
                         "required": true
                     },
@@ -751,12 +768,6 @@
                         "name": "FacilityID",
                         "in": "path",
                         "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Facility ID",
-                        "name": "facility",
-                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -1377,7 +1388,7 @@
                 }
             },
             "post": {
-                "description": "Create a new roster",
+                "description": "Adds a user to a roster",
                 "consumes": [
                     "application/json"
                 ],
@@ -1387,7 +1398,7 @@
                 "tags": [
                     "roster"
                 ],
-                "summary": "Create a new roster",
+                "summary": "Add user to roster",
                 "parameters": [
                     {
                         "type": "string",
@@ -4521,10 +4532,7 @@
                     "example": "Raaj"
                 },
                 "flags": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.UserFlag"
-                    }
+                    "$ref": "#/definitions/models.UserFlag"
                 },
                 "last_cert_sync": {
                     "type": "string",

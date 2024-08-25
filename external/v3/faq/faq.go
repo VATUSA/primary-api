@@ -52,7 +52,7 @@ func NewFAQListResponse(faqs []models.FAQ) []render.Renderer {
 // @Accept  json
 // @Produce  json
 // @Param faq body Request true "FAQ"
-// @Param facility path string true "Facility ID"
+// @Param FacilityID path string true "Facility ID"
 // @Success 201 {object} Response
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
@@ -104,7 +104,7 @@ func CreateFAQ(w http.ResponseWriter, r *http.Request) {
 // @Tags faq
 // @Accept  json
 // @Produce  json
-// @Param facility query string false "Facility ID"
+// @Param FacilityID query string false "Facility ID"
 // @Success 200 {object} []Response
 // @Failure 500 {object} utils.ErrResponse
 // @Router /facility/{FacilityID}/faq [get]
@@ -130,6 +130,7 @@ func ListFAQ(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "FAQ ID"
+// @Param FacilityID path string true "Facility ID"
 // @Param faq body Request true "FAQ"
 // @Success 200 {object} Response
 // @Failure 400 {object} utils.ErrResponse
@@ -173,6 +174,7 @@ func UpdateFAQ(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "FAQ ID"
+// @Param FacilityID path string true "Facility ID"
 // @Param faq body Request true "FAQ"
 // @Success 200 {object} Response
 // @Failure 400 {object} utils.ErrResponse
@@ -217,6 +219,7 @@ func PatchFAQ(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "FAQ ID"
+// @Param FacilityID path string true "Facility ID"
 // @Success 204
 // @Failure 500 {object} utils.ErrResponse
 // @Router /facility/{FacilityID}/faq/{id} [delete]
