@@ -10,10 +10,11 @@ import (
 )
 
 func Router(r chi.Router) {
-	r.Use(Ctx)
-	r.With(middleware.CanViewUser).Get("/", GetUserFlag)
-	r.With(middleware.CanEditUser).Put("/", UpdateUserFlag)
-	r.With(middleware.CanEditUser).Delete("/", DeleteUserFlag)
+	r.Use(middleware.NotGuest, Ctx)
+	r.With(middleware.CanViewUserFlag).Get("/", GetUserFlag)
+	r.With(middleware.CanEditUserFlag).Put("/", UpdateUserFlag)
+	r.With(middleware.CanEditUserFlag).Patch("/", PatchUserFlag)
+	r.With(middleware.CanEditUserFlag).Delete("/", DeleteUserFlag)
 }
 
 func Ctx(next http.Handler) http.Handler {

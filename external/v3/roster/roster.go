@@ -52,17 +52,17 @@ func NewRosterListResponse(rosters []models.Roster) []render.Renderer {
 }
 
 // CreateRoster godoc
-// @Summary Create a new roster
-// @Description Create a new roster
+// @Summary Add user to roster
+// @Description Adds a user to a roster
 // @Tags roster
 // @Accept  json
 // @Produce  json
-// @Param facility path string true "Facility"
+// @Param FacilityID path string true "Facility ID"
 // @Param roster body Request true "Roster"
 // @Success 201 {object} Response
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /facility/{facility}/roster [post]
+// @Router /facility/{FacilityID}/roster [post]
 func CreateRoster(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
@@ -116,12 +116,12 @@ func CreateRoster(w http.ResponseWriter, r *http.Request) {
 // @Tags roster
 // @Accept  json
 // @Produce  json
-// @Param facility path string true "Facility"
+// @Param FacilityID path string true "Facility ID"
 // @Param type query string false "Type" Enums(home,visiting)
 // @Success 200 {object} []Response
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /facility/{facility}/roster [get]
+// @Router /facility/{FacilityID}/roster [get]
 func GetRosterByFacility(w http.ResponseWriter, r *http.Request) {
 	fac := utils.GetFacilityCtx(r)
 
@@ -159,12 +159,12 @@ func GetRosterByFacility(w http.ResponseWriter, r *http.Request) {
 // @Tags roster
 // @Accept  json
 // @Produce  json
-// @Param facility path string true "Facility"
+// @Param FacilityID path string true "Facility ID"
 // @Param id path int true "Roster ID"
 // @Success 204
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /facility/{facility}/roster/{id} [delete]
+// @Router /facility/{FacilityID}/roster/{id} [delete]
 func DeleteRoster(w http.ResponseWriter, r *http.Request) {
 	roster := utils.GetRosterCtx(r)
 

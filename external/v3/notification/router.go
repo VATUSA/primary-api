@@ -11,14 +11,14 @@ import (
 )
 
 func Router(r chi.Router) {
-	r.With(middleware.CanViewNotifications).Get("/", ListNotifications)
+	r.With(middleware.NotGuest, middleware.CanViewNotifications).Get("/", ListNotifications)
 
 	r.Route("/{NotificationID}", func(r chi.Router) {
 		r.Use(Ctx)
 
-		r.With(middleware.CanEditNotifications).Put("/", UpdateNotification)
-		r.With(middleware.CanEditNotifications).Patch("/", PatchNotification)
-		r.With(middleware.CanEditNotifications).Delete("/", DeleteNotification)
+		r.With(middleware.NotGuest, middleware.CanEditNotifications).Put("/", UpdateNotification)
+		r.With(middleware.NotGuest, middleware.CanEditNotifications).Patch("/", PatchNotification)
+		r.With(middleware.NotGuest, middleware.CanEditNotifications).Delete("/", DeleteNotification)
 	})
 }
 

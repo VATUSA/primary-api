@@ -1,6 +1,7 @@
 package external
 
 import (
+	_ "github.com/VATUSA/primary-api/external/docs"
 	v3 "github.com/VATUSA/primary-api/external/v3"
 	"github.com/VATUSA/primary-api/pkg/config"
 	"github.com/go-chi/chi/v5"
@@ -28,7 +29,7 @@ func Router(r chi.Router, cfg *config.Config) {
 
 	r.Get("/swagger/*", httpSwagger.Handler(
 		//httpSwagger.URL("https://api.vatusa.dev/swagger/doc.json"),
-		httpSwagger.URL("http://localhost:3000/swagger/swagger.json"),
+		httpSwagger.URL("http://api.vatusa.local:3000/swagger/doc.json"),
 	))
 
 }

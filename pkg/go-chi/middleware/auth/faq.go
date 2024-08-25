@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func CanEditRoster(next http.Handler) http.Handler {
+func CanEditFAQ(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		targetFacility := utils.GetFacilityCtx(r)
 
@@ -22,16 +22,7 @@ func CanEditRoster(next http.Handler) http.Handler {
 				return
 			}
 
-			log.Warnf("User %d, attempted to edit roster for facility: %s. No permissions.", credentials.User.CID, targetFacility.ID)
-		}
-
-		if credentials.Facility != nil {
-			if credentials.Facility.ID == targetFacility.ID {
-				next.ServeHTTP(w, r)
-				return
-			}
-
-			log.Warnf("Facility API Key %s, attempted to edit roster for facility: %s. No permissions.", credentials.Facility.ID, targetFacility.ID)
+			log.Warnf("User %d, attempted to edit faq for facility: %s. No permissions.", credentials.User.CID, targetFacility.ID)
 		}
 
 		utils.Render(w, r, utils.ErrForbidden)

@@ -3,7 +3,6 @@ package user
 import (
 	"errors"
 	"github.com/VATUSA/primary-api/pkg/database/models"
-	middleware "github.com/VATUSA/primary-api/pkg/go-chi/middleware/auth"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
 	"github.com/go-playground/validator/v10"
@@ -61,7 +60,7 @@ func NewUserListResponse(users []models.User) []render.Renderer {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /user/ [get]
 func GetSelf(w http.ResponseWriter, r *http.Request) {
-	user := middleware.GetSelfUser(r)
+	user := utils.GetXUser(r)
 
 	utils.Render(w, r, NewUserResponse(user))
 }

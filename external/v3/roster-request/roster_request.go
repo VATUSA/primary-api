@@ -54,12 +54,12 @@ func NewRosterRequestListResponse(rosterReq []models.RosterRequest) []render.Ren
 // @Tags roster-request
 // @Accept  json
 // @Produce  json
-// @Param facility path string true "Facility"
+// @Param FacilityID path string true "Facility ID"
 // @Param roster_request body Request true "Roster Request"
 // @Success 201 {object} Response
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /facility/{facility}/roster-request [post]
+// @Router /facility/{FacilityID}/roster-request [post]
 func CreateRosterRequest(w http.ResponseWriter, r *http.Request) {
 	req := &Request{}
 	if err := req.Bind(r); err != nil {
@@ -102,13 +102,13 @@ func CreateRosterRequest(w http.ResponseWriter, r *http.Request) {
 // @Tags roster-request
 // @Accept  json
 // @Produce  json
-// @Param cid path string true "CID"
+// @Param FacilityID path string true "Facility ID"
 // @Param type query string false "Type" Enums(visiting, transferring)
 // @Param status query string false "Status" Enums(pending, accepted, rejected)
 // @Success 200 {object} []Response
 // @Failure 422 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /facility/{facility}/roster-request [get]
+// @Router /facility/{FacilityID}/roster-request [get]
 func ListRosterRequest(w http.ResponseWriter, r *http.Request) {
 	fac := utils.GetFacilityCtx(r)
 	typeQuery := r.URL.Query().Get("type")
@@ -172,13 +172,13 @@ func ListRosterRequest(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Roster Request ID"
-// @Param facility path string true "Facility"
+// @Param FacilityID path string true "Facility ID"
 // @Param roster_request body Request true "Roster Request"
 // @Success 200 {object} Response
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 404 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /facility/{facility}/roster-request/{id} [patch]
+// @Router /facility/{FacilityID}/roster-request/{id} [patch]
 func PatchRosterRequest(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
@@ -236,13 +236,13 @@ func PatchRosterRequest(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Roster Request ID"
-// @Param facility path string true "Facility"
+// @Param FacilityID path string true "Facility ID"
 // @Param roster_request body Request true "Roster Request"
 // @Success 200 {object} Response
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 404 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /facility/{facility}/roster-request/{id} [put]
+// @Router /facility/{FacilityID}/roster-request/{id} [put]
 func UpdateRosterRequest(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := data.Bind(r); err != nil {
@@ -297,12 +297,12 @@ func UpdateRosterRequest(w http.ResponseWriter, r *http.Request) {
 // @Tags roster-request
 // @Accept  json
 // @Produce  json
-// @Param facility path string true "Facility"
+// @Param FacilityID path string true "Facility ID"
 // @Param id path string true "Roster Request ID"
 // @Success 204
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /facility/{facility}/roster-request/{id} [delete]
+// @Router /facility/{FacilityID}/roster-request/{id} [delete]
 func DeleteRosterRequest(w http.ResponseWriter, r *http.Request) {
 	req := utils.GetRosterRequestCtx(r)
 	if err := req.Delete(); err != nil {

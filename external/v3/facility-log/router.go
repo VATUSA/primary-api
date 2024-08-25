@@ -11,14 +11,15 @@ import (
 )
 
 func Router(r chi.Router) {
-	r.With(middleware.CanViewFacilityLog).Get("/", ListFacilityLog)
+	r.With(middleware.NotGuest, middleware.CanViewFacilityLog).Get("/", ListFacilityLog)
 
 	r.Route("/{FacilityLogID}", func(r chi.Router) {
 		r.Use(Ctx)
 
-		r.With(middleware.CanEditFacilityLog).Put("/", UpdateFacilityLog)
-		r.With(middleware.CanEditFacilityLog).Patch("/", PatchFacilityLog)
-		r.With(middleware.CanEditFacilityLog).Delete("/", DeleteFacilityLog)
+		r.With(middleware.NotGuest, middleware.CanEditFacility).Post("/", CreateFacilityLogEntry)
+		r.With(middleware.NotGuest, middleware.CanEditFacilityLog).Put("/", UpdateFacilityLog)
+		r.With(middleware.NotGuest, middleware.CanEditFacilityLog).Patch("/", PatchFacilityLog)
+		r.With(middleware.NotGuest, middleware.CanEditFacilityLog).Delete("/", DeleteFacilityLog)
 	})
 }
 

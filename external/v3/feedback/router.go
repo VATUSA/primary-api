@@ -11,14 +11,14 @@ import (
 )
 
 func Router(r chi.Router) {
-	r.With(middleware.CanViewFeedback).Get("/", ListFeedback)
-	r.Post("/", CreateFeedback)
+	r.With(middleware.NotGuest, middleware.CanViewFeedback).Get("/", ListFeedback)
+	r.With(middleware.NotGuest).Post("/", CreateFeedback)
 
 	r.Route("/{FeedbackID}", func(r chi.Router) {
 		r.Use(Ctx)
-		r.With(middleware.CanEditFeedback).Put("/", UpdateFeedback)
-		r.With(middleware.CanEditFeedback).Patch("/", PatchFeedback)
-		r.With(middleware.CanEditFeedback).Delete("/", DeleteFeedback)
+		r.With(middleware.NotGuest, middleware.CanEditFeedback).Put("/", UpdateFeedback)
+		r.With(middleware.NotGuest, middleware.CanEditFeedback).Patch("/", PatchFeedback)
+		r.With(middleware.NotGuest, middleware.CanEditFeedback).Delete("/", DeleteFeedback)
 	})
 }
 

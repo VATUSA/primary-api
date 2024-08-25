@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database/models"
-	middleware "github.com/VATUSA/primary-api/pkg/go-chi/middleware/auth"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
 	"github.com/go-playground/validator/v10"
@@ -75,7 +74,7 @@ func NewUserRoleListResponse(userRoles []models.UserRole) []render.Renderer {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /user/{cid}/role/ [get]
 func GetSelfRoles(w http.ResponseWriter, r *http.Request) {
-	user := middleware.GetSelfUser(r)
+	user := utils.GetXUser(r)
 
 	roles := []models.UserRole{}
 	for _, roster := range user.Roster {

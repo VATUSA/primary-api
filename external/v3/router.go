@@ -10,10 +10,6 @@ import (
 func Router(r chi.Router, cfg *config.Config) {
 	r.Route("/v3", func(r chi.Router) {
 		r.Route("/user", func(r chi.Router) {
-			r.Get("/logout", user.GetLogout)
-			r.Get("/login", user.GetLogin)
-			r.Get("/login/callback", user.GetLoginCallback)
-
 			user.Router(r)
 		})
 

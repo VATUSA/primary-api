@@ -39,8 +39,9 @@ func EnvOrDefault(key, def string) string {
 func defaultConfig() *Config {
 	return &Config{
 		API: &APIConfig{
-			BaseURL: "https://api.vatusa.net",
-			Port:    "3000",
+			BaseURL:     "https://api.vatusa.net",
+			Port:        "3000",
+			LoggerLevel: "warn",
 		},
 		Database: &DBConfig{
 			Host:        "localhost",

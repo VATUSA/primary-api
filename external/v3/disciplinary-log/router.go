@@ -11,15 +11,15 @@ import (
 )
 
 func Router(r chi.Router) {
-	r.With(middleware.CanReadDisciplinaryLog).Get("/", GetDisciplinaryLog)
-	r.With(middleware.CanEditDisciplinaryLog).Post("/", CreateDisciplinaryLogEntry)
+	r.With(middleware.NotGuest, middleware.CanReadDisciplinaryLog).Get("/", GetDisciplinaryLog)
+	r.With(middleware.NotGuest, middleware.CanEditDisciplinaryLog).Post("/", CreateDisciplinaryLogEntry)
 
 	r.Route("/{DisciplinaryLogID}", func(r chi.Router) {
 		r.Use(Ctx)
 
-		r.With(middleware.CanEditDisciplinaryLog).Patch("/", PatchDisciplinaryLogEntry)
-		r.With(middleware.CanEditDisciplinaryLog).Put("/", UpdateDisciplinaryLogEntry)
-		r.With(middleware.CanEditDisciplinaryLog).Delete("/", DeleteDisciplinaryLogEntry)
+		r.With(middleware.NotGuest, middleware.CanEditDisciplinaryLog).Patch("/", PatchDisciplinaryLogEntry)
+		r.With(middleware.NotGuest, middleware.CanEditDisciplinaryLog).Put("/", UpdateDisciplinaryLogEntry)
+		r.With(middleware.NotGuest, middleware.CanEditDisciplinaryLog).Delete("/", DeleteDisciplinaryLogEntry)
 	})
 }
 

@@ -2,13 +2,17 @@ package feedback
 
 import (
 	"errors"
+	"fmt"
+	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/database/types"
+	"github.com/VATUSA/primary-api/pkg/logger"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
 	"github.com/go-playground/validator/v10"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 type Request struct {
@@ -31,16 +35,34 @@ func (req *Request) Bind(r *http.Request) error {
 }
 
 type Response struct {
-	*models.Feedback
+	ID            uint                 `json:"id" example:"1"`
+	ControllerCID uint                 `json:"controller_cid" example:"1293257"`
+	Position      string               `json:"position" example:"DEN_I_APP"`
+	Facility      constants.FacilityID `json:"facility" example:"ZDV"`
+	Rating        types.FeedbackRating `json:"rating" example:"good"`
+	Notes         string               `json:"notes" example:"Raaj was the best controller I've ever flown under."`
+	Status        types.StatusType     `json:"status" example:"pending"`
+	Comment       string               `json:"comment" example:"Great work Raaj!"`
+	CreatedAt     time.Time            `json:"created_at" example:"2021-01-01T00:00:00Z"`
 }
 
 func NewFeedbackResponse(f *models.Feedback) *Response {
-	return &Response{Feedback: f}
+	return &Response{
+		ID:            f.ID,
+		ControllerCID: f.ControllerCID,
+		Position:      f.Position,
+		Facility:      f.Facility,
+		Rating:        f.Rating,
+		Notes:         f.Notes,
+		Status:        f.Status,
+		Comment:       f.Comment,
+		CreatedAt:     f.CreatedAt,
+	}
 }
 
 func (res *Response) Render(w http.ResponseWriter, r *http.Request) error {
-	if res.Feedback == nil {
-		return errors.New("feedback not found")
+	if res.ID == 0 {
+		return errors.New("feedback is required")
 	}
 	return nil
 }
@@ -125,19 +147,15 @@ func CreateFeedback(w http.ResponseWriter, r *http.Request) {
 func ListFeedback(w http.ResponseWriter, r *http.Request) {
 	cid := r.URL.Query().Get("cid")
 
-	cidInt, err := strconv.Atoi(cid)
-	if err != nil {
-		utils.Render(w, r, utils.ErrInvalidRequest(err))
-		return
-	}
-
-	var status types.StatusType = "approved"
-	statusParam := r.URL.Query().Get("status")
-	if statusParam != "" {
-		status = types.StatusType(statusParam)
-	}
+	status := types.StatusType(r.URL.Query().Get("status"))
 
 	if cid != "" {
+		cidInt, err := strconv.Atoi(cid)
+		if err != nil {
+			utils.Render(w, r, utils.ErrInvalidRequest(err))
+			return
+		}
+
 		f, err := models.GetFeedbackByFacilityAndCID(utils.GetFacilityCtx(r).ID, uint(cidInt), status)
 		if err != nil {
 			utils.Render(w, r, utils.ErrInternalServer)
@@ -289,4 +307,34 @@ func DeleteFeedback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	render.Status(r, http.StatusNoContent)
+}
+
+// GetUserFeedback godoc
+// @Summary Get accepted feedback entries for a user
+// @Description Get feedback entries for a user
+// @Tags feedback
+// @Accept  json
+// @Produce  json
+// @Param CID path int true "CID"
+// @Success 200 {object} []Response
+// @Failure 422 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /user/{cid}/feedback [get]
+func GetUserFeedback(w http.ResponseWriter, r *http.Request) {
+	user := utils.GetUserCtx(r)
+
+	status := types.Accepted
+
+	feedbacks, err := models.GetFeedbackByCID(user.CID, status)
+	if err != nil {
+		utils.Render(w, r, utils.ErrInternalServer)
+		return
+	}
+
+	logger.Logger.Info(fmt.Sprintf("Found %d feedback entries for user %d", len(feedbacks), user.CID))
+
+	if err := render.RenderList(w, r, NewFeedbackListResponse(feedbacks)); err != nil {
+		utils.Render(w, r, utils.ErrRender(err))
+		return
+	}
 }

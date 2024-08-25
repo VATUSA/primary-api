@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func CanViewUser(next http.Handler) http.Handler {
+func CanViewUserFlag(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		targetUser := utils.GetUserCtx(r)
 
@@ -18,13 +18,13 @@ func CanViewUser(next http.Handler) http.Handler {
 			}
 
 			for _, roster := range targetUser.Roster {
-				if utils.IsFacilityStaff(credentials.User, roster.Facility) {
+				if utils.IsFacilitySeniorStaff(credentials.User, roster.Facility) {
 					next.ServeHTTP(w, r)
 					return
 				}
 			}
 
-			log.Warnf("User %d, attempted to view user: %d. No permissions.", credentials.User.CID, targetUser.CID)
+			log.Warnf("User %d, attempted to view user flag: %d. No permissions.", credentials.User.CID, targetUser.CID)
 		}
 
 		if credentials.Facility != nil {
@@ -35,7 +35,7 @@ func CanViewUser(next http.Handler) http.Handler {
 				}
 			}
 
-			log.Warnf("Facility API Key %s, attempted to view user: %d. No permissions.", credentials.Facility.ID, targetUser.CID)
+			log.Warnf("Facility API Key %s, attempted to view user flag: %d. No permissions.", credentials.Facility.ID, targetUser.CID)
 		}
 
 		utils.Render(w, r, utils.ErrForbidden)
@@ -43,7 +43,7 @@ func CanViewUser(next http.Handler) http.Handler {
 	})
 }
 
-func CanEditUser(next http.Handler) http.Handler {
+func CanEditUserFlag(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		targetUser := utils.GetUserCtx(r)
 
@@ -54,7 +54,7 @@ func CanEditUser(next http.Handler) http.Handler {
 				return
 			}
 
-			log.Warnf("User %d, attempted to edit user: %d. No permissions.", credentials.User.CID, targetUser.CID)
+			log.Warnf("User %d, attempted to edit user flag: %d. No permissions.", credentials.User.CID, targetUser.CID)
 		}
 
 		utils.Render(w, r, utils.ErrForbidden)

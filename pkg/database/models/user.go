@@ -20,7 +20,7 @@ type User struct {
 	DiscordID            string                 `json:"discord_id" example:"1234567890"`
 	LastLogin            time.Time              `json:"last_login" example:"2021-01-01T00:00:00Z"`
 	LastCertSync         time.Time              `json:"last_cert_sync" example:"2021-01-01T00:00:00Z"`
-	Flags                []UserFlag             `json:"flags" gorm:"foreignKey:CID"`
+	Flags                UserFlag               `json:"flags" gorm:"foreignKey:CID"`
 	RatingChanges        []RatingChange         `json:"-" gorm:"foreignKey:CID"`
 	RosterRequest        []RosterRequest        `json:"-" gorm:"foreignKey:CID"`
 	Roster               []Roster               `json:"-" gorm:"foreignKey:CID"`

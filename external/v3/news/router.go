@@ -12,14 +12,15 @@ import (
 
 func Router(r chi.Router) {
 	r.Get("/", ListNews)
-	r.With(middleware.CanEditNews).Post("/", CreateNews)
+
+	r.With(middleware.NotGuest, middleware.CanEditNews).Post("/", CreateNews)
 
 	r.Route("/{NewsID}", func(r chi.Router) {
 		r.Use(Ctx)
 
-		r.With(middleware.CanEditNews).Put("/", UpdateNews)
-		r.With(middleware.CanEditNews).Patch("/", PatchNews)
-		r.With(middleware.CanEditNews).Delete("/", DeleteNews)
+		r.With(middleware.NotGuest, middleware.CanEditNews).Put("/", UpdateNews)
+		r.With(middleware.NotGuest, middleware.CanEditNews).Patch("/", PatchNews)
+		r.With(middleware.NotGuest, middleware.CanEditNews).Delete("/", DeleteNews)
 	})
 }
 

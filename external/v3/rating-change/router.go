@@ -11,15 +11,15 @@ import (
 )
 
 func Router(r chi.Router) {
-	r.With(middleware.CanViewRatingChange).Get("/", ListRatingChanges)
-	r.With(middleware.CanEditRatingChange).Post("/", CreateRatingChange)
-
-	r.Route("/{RatingChangeID}", func(r chi.Router) {
-		r.Use(Ctx)
-		r.With(middleware.CanEditRatingChange).Put("/", UpdateRatingChange)
-		r.With(middleware.CanEditRatingChange).Patch("/", PatchRatingChange)
-		r.With(middleware.CanEditRatingChange).Delete("/", DeleteRatingChange)
-	})
+	r.With(middleware.NotGuest, middleware.CanViewRatingChange).Get("/", ListRatingChanges)
+	//r.With(middleware.CanEditRatingChange).Post("/", CreateRatingChange)
+	//
+	//r.Route("/{RatingChangeID}", func(r chi.Router) {
+	//	r.Use(Ctx)
+	//	r.With(middleware.CanEditRatingChange).Put("/", UpdateRatingChange)
+	//	r.With(middleware.CanEditRatingChange).Patch("/", PatchRatingChange)
+	//	r.With(middleware.CanEditRatingChange).Delete("/", DeleteRatingChange)
+	//})
 }
 
 func Ctx(next http.Handler) http.Handler {

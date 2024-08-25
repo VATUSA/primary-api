@@ -55,44 +55,6 @@ func IsFacilityStaff(user *models.User, facility constants.FacilityID) bool {
 	return false
 }
 
-// CanEditUser - must be VATUSA staff, or senior staff over the user.
-func CanEditUser(user *models.User, targetUser *models.User) bool {
-	if IsVATUSAStaff(user) {
-		return true
-	}
-
-	for _, roster := range targetUser.Roster {
-		if roster.Home {
-			if IsFacilitySeniorStaff(user, roster.Facility) {
-				return true
-			}
-		}
-	}
-
-	return false
-}
-
-// CanViewUser - Must be the user, be VATUSA or Facility Staff.
-func CanViewUser(user *models.User, targetUser *models.User) bool {
-	if IsVATUSAStaff(user) {
-		return true
-	}
-
-	if user.CID == targetUser.CID {
-		return true
-	}
-
-	for _, roster := range targetUser.Roster {
-		if roster.Home {
-			if IsFacilityStaff(user, roster.Facility) {
-				return true
-			}
-		}
-	}
-
-	return false
-}
-
 func CanEditFacility(user *models.User, targetFacility *models.Facility) bool {
 	if IsVATUSAStaff(user) {
 		return true

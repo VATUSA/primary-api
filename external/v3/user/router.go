@@ -2,7 +2,14 @@ package user
 
 import (
 	"context"
+	action_log "github.com/VATUSA/primary-api/external/v3/action-log"
+	disciplinary_log "github.com/VATUSA/primary-api/external/v3/disciplinary-log"
+	"github.com/VATUSA/primary-api/external/v3/feedback"
+	"github.com/VATUSA/primary-api/external/v3/notification"
+	rating_change "github.com/VATUSA/primary-api/external/v3/rating-change"
 	"github.com/VATUSA/primary-api/external/v3/roster"
+	user_flag "github.com/VATUSA/primary-api/external/v3/user-flag"
+	user_role "github.com/VATUSA/primary-api/external/v3/user-role"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/go-chi/middleware/auth"
 	"github.com/VATUSA/primary-api/pkg/utils"
@@ -12,16 +19,46 @@ import (
 )
 
 func Router(r chi.Router) {
+	r.With(middleware.NotGuest).Get("/logout", GetLogout)
+	r.Get("/login", GetLogin)
+	r.Get("/login/callback", GetLoginCallback)
+
 	r.With(middleware.NotGuest).Get("/", GetSelf)
 
 	r.Route("/{CID}", func(r chi.Router) {
 		r.Use(Ctx)
 
-		r.With(middleware.CanViewUser).Get("/", GetUser)
-		r.With(middleware.CanEditUser).Put("/", UpdateUser)
-		r.With(middleware.CanEditUser).Patch("/", PatchUser)
+		r.With(middleware.NotGuest, middleware.CanViewUser).Get("/", GetUser)
+		r.With(middleware.NotGuest, middleware.CanEditUser).Put("/", UpdateUser)
+		r.With(middleware.NotGuest, middleware.CanEditUser).Patch("/", PatchUser)
 
-		r.With(middleware.CanViewUser).Get("/roster", roster.GetUserRosters)
+		r.Route("/action-log", func(r chi.Router) {
+			action_log.Router(r)
+		})
+
+		r.Route("/disciplinary-log", func(r chi.Router) {
+			disciplinary_log.Router(r)
+		})
+
+		r.With(middleware.NotGuest, middleware.CanViewUser).Get("/feedback", feedback.GetUserFeedback)
+
+		r.Route("/notifications", func(r chi.Router) {
+			notification.Router(r)
+		})
+
+		r.Route("/rating-change", func(r chi.Router) {
+			rating_change.Router(r)
+		})
+
+		r.With(middleware.NotGuest, middleware.CanViewUser).Get("/roster", roster.GetUserRosters)
+
+		r.Route("/user-flag", func(r chi.Router) {
+			user_flag.Router(r)
+		})
+
+		r.Route("/user-roles", func(r chi.Router) {
+			user_role.Router(r)
+		})
 	})
 }
 

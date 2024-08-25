@@ -81,7 +81,11 @@ func CreateFAQ(w http.ResponseWriter, r *http.Request) {
 		Question:  data.Question,
 		Answer:    data.Answer,
 		Category:  data.Category,
-		CreatedBy: 1,
+		CreatedBy: 111,
+	}
+
+	if self := utils.GetXUser(r); self != nil {
+		faq.CreatedBy = self.CID
 	}
 
 	if err := faq.Create(); err != nil {
@@ -150,6 +154,10 @@ func UpdateFAQ(w http.ResponseWriter, r *http.Request) {
 	faq.Answer = data.Answer
 	faq.Category = data.Category
 
+	if self := utils.GetXUser(r); self != nil {
+		faq.UpdatedBy = self.CID
+	}
+
 	if err := faq.Update(); err != nil {
 		utils.Render(w, r, utils.ErrInternalServer)
 		return
@@ -188,6 +196,10 @@ func PatchFAQ(w http.ResponseWriter, r *http.Request) {
 	}
 	if data.Category != "" {
 		faq.Category = data.Category
+	}
+
+	if self := utils.GetXUser(r); self != nil {
+		faq.UpdatedBy = self.CID
 	}
 
 	if err := faq.Update(); err != nil {

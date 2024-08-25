@@ -1,6 +1,8 @@
 package models
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database"
 	"time"
@@ -34,6 +36,15 @@ func (f *Facility) Get() error {
 	return database.DB.Where("id = ?", f.ID).First(f).Error
 }
 
+func GetFacilityByAPIKey(key string) (*Facility, error) {
+	var f Facility
+	if err := database.DB.Where("api_key = ?", key).First(&f).Error; err != nil {
+		return nil, err
+	}
+
+	return &f, nil
+}
+
 func IsValidFacility(id constants.FacilityID) bool {
 	var f Facility
 	return database.DB.Where("id = ?", id).First(&f).Error == nil
@@ -46,4 +57,13 @@ func GetAllFacilities() ([]Facility, error) {
 
 func (f *Facility) StripSensitive() {
 	f.APIKey = ""
+}
+
+func GenerateApiKey() (string, error) {
+	key := make([]byte, 32)
+	if _, err := rand.Read(key); err != nil {
+		return "", err
+	}
+
+	return hex.EncodeToString(key), nil
 }

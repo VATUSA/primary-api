@@ -42,6 +42,11 @@ func GetAllDisciplinaryLogEntries(VATUSAOnly bool) ([]DisciplinaryLogEntry, erro
 }
 
 func GetAllDisciplinaryLogEntriesByCID(cid uint, VATUSAOnly bool) ([]DisciplinaryLogEntry, error) {
+	if VATUSAOnly {
+		var dle []DisciplinaryLogEntry
+		return dle, database.DB.Where("cid = ?", cid).Find(&dle).Error
+	}
+
 	var dle []DisciplinaryLogEntry
 	return dle, database.DB.Where("cid = ? AND vatusa_only = ?", cid, VATUSAOnly).Find(&dle).Error
 }

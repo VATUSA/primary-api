@@ -2,49 +2,90 @@ package middleware
 
 import (
 	"github.com/VATUSA/primary-api/pkg/utils"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"strconv"
 )
 
 func CanViewFeedback(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		requestingUser := GetSelfUser(r)
-		fac := utils.GetFacilityCtx(r)
+		credentials := GetCredentials(r)
 
-		cidQuery := r.URL.Query().Get("cid")
-		cidInt, err := strconv.Atoi(cidQuery)
-		if err != nil {
-			utils.Render(w, r, utils.ErrInvalidRequest(err))
-			return
-		}
+		targetFacility := utils.GetFacilityCtx(r)
 
-		statusQuery := r.URL.Query().Get("status")
-		if statusQuery == "" || statusQuery == "approved" {
-			if uint(cidInt) != requestingUser.CID {
-				utils.Render(w, r, utils.ErrForbidden)
+		if credentials.User != nil {
+			if utils.IsVATUSAStaff(credentials.User) {
+				next.ServeHTTP(w, r)
 				return
 			}
+
+			if utils.IsFacilitySeniorStaff(credentials.User, targetFacility.ID) {
+				next.ServeHTTP(w, r)
+				return
+			}
+
+			cid := r.URL.Query().Get("cid")
+			if cid != "" {
+				cidInt, err := strconv.Atoi(cid)
+				if err != nil {
+					utils.Render(w, r, utils.ErrInvalidRequest(err))
+					return
+				}
+
+				if credentials.User.CID == uint(cidInt) {
+					r.URL.Query().Set("status", "accepted")
+					next.ServeHTTP(w, r)
+					return
+				}
+			}
+
+			log.Warnf("User %d, attempted to view feedback for facility: %s. No permissions.", credentials.User.CID, targetFacility.ID)
 		}
 
-		if !utils.IsVATUSAStaff(requestingUser) && !utils.IsFacilitySeniorStaff(requestingUser, fac.ID) {
-			utils.Render(w, r, utils.ErrForbidden)
-			return
+		if credentials.Facility != nil {
+			if credentials.Facility.ID == targetFacility.ID {
+				next.ServeHTTP(w, r)
+				return
+			}
+
+			log.Warnf("Facility %s, attempted to view feedback for facility: %s. No permissions.", credentials.Facility.ID, targetFacility.ID)
 		}
 
-		next.ServeHTTP(w, r)
+		utils.Render(w, r, utils.ErrForbidden)
+		return
 	})
 }
 
 func CanEditFeedback(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		requestingUser := GetSelfUser(r)
-		fac := utils.GetFacilityCtx(r)
+		credentials := GetCredentials(r)
 
-		if !utils.IsVATUSAStaff(requestingUser) && !utils.IsFacilitySeniorStaff(requestingUser, fac.ID) {
-			utils.Render(w, r, utils.ErrForbidden)
-			return
+		targetFacility := utils.GetFacilityCtx(r)
+
+		if credentials.User != nil {
+			if utils.IsVATUSAStaff(credentials.User) {
+				next.ServeHTTP(w, r)
+				return
+			}
+
+			if utils.IsFacilitySeniorStaff(credentials.User, targetFacility.ID) {
+				next.ServeHTTP(w, r)
+				return
+			}
+
+			log.Warnf("User %d, attempted to edit feedback for facility: %s. No permissions.", credentials.User.CID, targetFacility.ID)
 		}
 
-		next.ServeHTTP(w, r)
+		if credentials.Facility != nil {
+			if credentials.Facility.ID == targetFacility.ID {
+				next.ServeHTTP(w, r)
+				return
+			}
+
+			log.Warnf("Facility %s, attempted to edit feedback for facility: %s. No permissions.", credentials.Facility.ID, targetFacility.ID)
+		}
+
+		utils.Render(w, r, utils.ErrForbidden)
+		return
 	})
 }

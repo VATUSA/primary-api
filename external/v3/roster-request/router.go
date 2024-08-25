@@ -11,12 +11,14 @@ import (
 )
 
 func Router(r chi.Router) {
-	r.With(middleware.CanEditRoster).Get("/", ListRosterRequest)
-	r.Post("/", CreateRosterRequest)
+	r.With(middleware.NotGuest, middleware.CanEditRosterRequest).Get("/", ListRosterRequest)
+	r.With(middleware.NotGuest).Post("/", CreateRosterRequest)
+
 	r.Route("/{RosterRequestID}", func(r chi.Router) {
 		r.Use(Ctx)
-		r.With(middleware.CanEditRoster).Put("/", UpdateRosterRequest)
-		r.With(middleware.CanEditRoster).Delete("/", DeleteRosterRequest)
+
+		r.With(middleware.NotGuest, middleware.CanEditRosterRequest).Put("/", UpdateRosterRequest)
+		r.With(middleware.NotGuest, middleware.CanEditRosterRequest).Delete("/", DeleteRosterRequest)
 	})
 }
 

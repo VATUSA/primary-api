@@ -1,6 +1,7 @@
 package facility
 
 import (
+	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
@@ -21,11 +22,17 @@ func (req *Request) Bind(r *http.Request) error {
 }
 
 type Response struct {
-	*models.Facility
+	ID   constants.FacilityID `json:"id" example:"ZDV"`
+	Name string               `json:"name" example:"Denver ARTCC"`
+	URL  string               `json:"url" example:"https://zdvartcc.org"`
 }
 
 func NewFacilityResponse(facility *models.Facility) *Response {
-	resp := &Response{Facility: facility}
+	resp := &Response{
+		ID:   facility.ID,
+		Name: facility.Name,
+		URL:  facility.URL,
+	}
 
 	return resp
 }
@@ -161,4 +168,34 @@ func PatchFacility(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.Render(w, r, NewFacilityResponse(fac))
+}
+
+// ResetApiKey godoc
+// @Summary Regenerate an API key
+// @Description Regenerate an API key
+// @Tags facility
+// @Accept  json
+// @Produce  json
+// @Param FacilityID path string true "Facility ID"
+// @Success 200 {object} Response
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 404 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /facility/{FacilityID}/reset-api-key [post]
+func ResetApiKey(w http.ResponseWriter, r *http.Request) {
+	fac := utils.GetFacilityCtx(r)
+
+	key, err := models.GenerateApiKey()
+	if err != nil {
+		utils.Render(w, r, utils.ErrInternalServer)
+		return
+	}
+
+	fac.APIKey = key
+	if err := fac.Update(); err != nil {
+		utils.Render(w, r, utils.ErrInternalServer)
+		return
+	}
+
+	utils.JSON(w, r, http.StatusOK, map[string]string{"api_key": key})
 }

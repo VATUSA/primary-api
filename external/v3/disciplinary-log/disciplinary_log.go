@@ -3,7 +3,6 @@ package disciplinary_log
 import (
 	"fmt"
 	"github.com/VATUSA/primary-api/pkg/database/models"
-	middleware "github.com/VATUSA/primary-api/pkg/go-chi/middleware/auth"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
 	"github.com/go-playground/validator/v10"
@@ -72,18 +71,23 @@ func CreateDisciplinaryLogEntry(w http.ResponseWriter, r *http.Request) {
 
 	user := utils.GetUserCtx(r)
 
-	self := middleware.GetSelfUser(r)
-
 	if !models.IsValidUser(user.CID) {
 		utils.Render(w, r, utils.ErrInvalidCID)
 		return
+	}
+
+	createdBy := ""
+	if self := utils.GetXUser(r); self != nil {
+		createdBy = fmt.Sprintf("%d", self)
+	} else {
+		createdBy = string(utils.GetXFacility(r).ID)
 	}
 
 	dle := &models.DisciplinaryLogEntry{
 		CID:        user.CID,
 		Entry:      data.Entry,
 		VATUSAOnly: data.VATUSAOnly,
-		CreatedBy:  fmt.Sprintf("%d", self.CID),
+		CreatedBy:  createdBy,
 	}
 
 	if err := dle.Create(); err != nil {
@@ -109,15 +113,9 @@ func CreateDisciplinaryLogEntry(w http.ResponseWriter, r *http.Request) {
 // @Router /user/{cid}/disciplinary-log [get]
 func GetDisciplinaryLog(w http.ResponseWriter, r *http.Request) {
 	vatusaOnly := r.URL.Query().Get("vatusa_only")
-	usaOnly := false
-
-	self := middleware.GetSelfUser(r)
-	if vatusaOnly == "true" && utils.IsVATUSAStaff(self) {
-		usaOnly = true
-	}
 
 	user := utils.GetUserCtx(r)
-	dle, err := models.GetAllDisciplinaryLogEntriesByCID(user.CID, usaOnly)
+	dle, err := models.GetAllDisciplinaryLogEntriesByCID(user.CID, vatusaOnly == "true")
 	if err != nil {
 		utils.Render(w, r, utils.ErrInternalServer)
 		return
@@ -159,8 +157,11 @@ func UpdateDisciplinaryLogEntry(w http.ResponseWriter, r *http.Request) {
 	dle.Entry = data.Entry
 	dle.VATUSAOnly = data.VATUSAOnly
 
-	requestingUser := middleware.GetSelfUser(r)
-	dle.UpdatedBy = fmt.Sprintf("%d", requestingUser.CID)
+	if self := utils.GetXUser(r); self != nil {
+		dle.UpdatedBy = fmt.Sprintf("%d", self)
+	} else {
+		dle.UpdatedBy = string(utils.GetXFacility(r).ID)
+	}
 
 	if err := dle.Update(); err != nil {
 		utils.Render(w, r, utils.ErrInternalServer)
@@ -199,8 +200,12 @@ func PatchDisciplinaryLogEntry(w http.ResponseWriter, r *http.Request) {
 	if data.VATUSAOnly {
 		dle.VATUSAOnly = data.VATUSAOnly
 	}
-	requestingUser := middleware.GetSelfUser(r)
-	dle.UpdatedBy = fmt.Sprintf("%d", requestingUser.CID)
+
+	if self := utils.GetXUser(r); self != nil {
+		dle.UpdatedBy = fmt.Sprintf("%d", self)
+	} else {
+		dle.UpdatedBy = string(utils.GetXFacility(r).ID)
+	}
 
 	if err := dle.Update(); err != nil {
 		utils.Render(w, r, utils.ErrInternalServer)

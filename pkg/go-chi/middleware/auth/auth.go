@@ -3,7 +3,6 @@ package middleware
 import (
 	"context"
 	"errors"
-	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/cookie"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
@@ -11,7 +10,7 @@ import (
 	"strconv"
 )
 
-func Auth(next http.Handler) http.Handler {
+func HasCookie(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authCookie, err := r.Cookie("VATUSA")
 		if errors.Is(err, http.ErrNoCookie) {
@@ -47,59 +46,51 @@ func Auth(next http.Handler) http.Handler {
 
 }
 
-func NotGuest(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		guest := utils.GetXGuest(r)
-		if guest {
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
-			return
-		}
-		next.ServeHTTP(w, r)
-	})
-}
-
-func HasRole(roles ...constants.RoleID) func(http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			user := GetSelfUser(r)
-
-			for _, role := range roles {
-				if models.HasRole(user, role) {
-					next.ServeHTTP(w, r)
-					return
-				}
-			}
-			next.ServeHTTP(w, r)
-		})
-	}
-}
-
-// TODO - Implement properly
 func HasAPIKey(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		apiKey := r.Header.Get("x-api-key")
 		if apiKey == "" {
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			//ctx := context.WithValue(r.Context(), utils.XGuest{}, true)
+			next.ServeHTTP(w, r.WithContext(r.Context()))
+			return
+		}
+
+		facility, err := models.GetFacilityByAPIKey(apiKey)
+		if err != nil {
+			//ctx := context.WithValue(r.Context(), utils.XGuest{}, true)
+			next.ServeHTTP(w, r.WithContext(r.Context()))
+			return
+		}
+
+		ctx := context.WithValue(r.Context(), utils.XFacility{}, facility)
+		ctx = context.WithValue(ctx, utils.XGuest{}, false)
+
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
+}
+
+func NotGuest(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		guest := utils.GetXGuest(r)
+		if guest {
+			utils.Render(w, r, utils.ErrUnauthorized)
 			return
 		}
 		next.ServeHTTP(w, r)
 	})
 }
 
-func HasRoleInFacility(w http.ResponseWriter, r *http.Request, facility constants.FacilityID, roles ...constants.RoleID) bool {
-	user := GetSelfUser(r)
-
-	for _, role := range roles {
-		if models.HasRoleAtFacility(user, role, facility) {
-			return true
-		}
-	}
-
-	return false
+type Credentials struct {
+	User     *models.User
+	Facility *models.Facility
 }
 
-func GetSelfUser(r *http.Request) *models.User {
+func GetCredentials(r *http.Request) *Credentials {
 	user := utils.GetXUser(r)
+	facility := utils.GetXFacility(r)
 
-	return user
+	return &Credentials{
+		User:     user,
+		Facility: facility,
+	}
 }

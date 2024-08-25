@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database/models"
-	middleware "github.com/VATUSA/primary-api/pkg/go-chi/middleware/auth"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
 	"github.com/go-playground/validator/v10"
@@ -78,8 +77,7 @@ func CreateRatingChange(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	requestingUser := middleware.GetSelfUser(r)
-
+	requestingUser := utils.GetXUser(r)
 	rc := &models.RatingChange{
 		CID:          user.CID,
 		OldRating:    data.OldRating,
@@ -148,7 +146,7 @@ func UpdateRatingChange(w http.ResponseWriter, r *http.Request) {
 
 	rc := utils.GetRatingChangeCtx(r)
 
-	requestingUser := middleware.GetSelfUser(r)
+	requestingUser := utils.GetXUser(r)
 
 	rc.OldRating = data.OldRating
 	rc.NewRating = data.NewRating

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database/models"
-	middleware "github.com/VATUSA/primary-api/pkg/go-chi/middleware/auth"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
 	"github.com/go-playground/validator/v10"
@@ -54,11 +53,12 @@ func NewFacilityLogEntryListResponse(fle []models.FacilityLogEntry) []render.Ren
 // @Tags facility-log
 // @Accept  json
 // @Produce  json
+// @Param FacilityID path string true "Facility ID"
 // @Param facility_log body Request true "Facility Log Entry"
 // @Success 201 {object} Response
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /facility-log [post]
+// @Router /facility/{FacilityID}/log [post]
 func CreateFacilityLogEntry(w http.ResponseWriter, r *http.Request) {
 	data := &Request{}
 	if err := render.Bind(r, data); err != nil {
@@ -76,12 +76,17 @@ func CreateFacilityLogEntry(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	requestingUser := middleware.GetSelfUser(r)
+	createdBy := ""
+	if self := utils.GetXUser(r); self != nil {
+		createdBy = fmt.Sprintf("%d", self)
+	} else {
+		createdBy = string(utils.GetXFacility(r).ID)
+	}
 
 	fle := &models.FacilityLogEntry{
 		Facility:  data.Facility,
 		Entry:     data.Entry,
-		CreatedBy: fmt.Sprintf("%d", requestingUser.CID),
+		CreatedBy: createdBy,
 	}
 
 	if err := fle.Create(); err != nil {
@@ -99,32 +104,15 @@ func CreateFacilityLogEntry(w http.ResponseWriter, r *http.Request) {
 // @Tags facility-log
 // @Accept  json
 // @Produce  json
-// @Param facility query string false "Facility ID"
+// @Param FacilityID path string true "Facility ID"
 // @Success 200 {object} Response
 // @Failure 422 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /facility-log [get]
+// @Router /facility/{FacilityID}/log [get]
 func ListFacilityLog(w http.ResponseWriter, r *http.Request) {
-	facId := r.URL.Query().Get("facility")
-	if facId != "" {
-		if !models.IsValidFacility(constants.FacilityID(facId)) {
-			utils.Render(w, r, utils.ErrInvalidFacility)
-			return
-		}
-		fle, err := models.GetAllFacilityLogEntriesByFacility(constants.FacilityID(facId))
-		if err != nil {
-			utils.Render(w, r, utils.ErrInternalServer)
-			return
-		}
+	facility := utils.GetFacilityCtx(r)
 
-		if err := render.RenderList(w, r, NewFacilityLogEntryListResponse(fle)); err != nil {
-			utils.Render(w, r, utils.ErrRender(err))
-			return
-		}
-		return
-	}
-
-	fle, err := models.GetAllFacilityLogEntries()
+	fle, err := models.GetAllFacilityLogEntriesByFacility(facility.ID)
 	if err != nil {
 		utils.Render(w, r, utils.ErrInternalServer)
 		return
@@ -142,13 +130,14 @@ func ListFacilityLog(w http.ResponseWriter, r *http.Request) {
 // @Tags facility-log
 // @Accept  json
 // @Produce  json
+// @Param FacilityID path string true "Facility ID"
 // @Param id path string true "Facility Log Entry ID"
 // @Param facility_log body Request true "Facility Log Entry"
 // @Success 200 {object} Response
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 404 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /facility-log/{id} [put]
+// @Router /facility/{FacilityID}/log/{id} [put]
 func UpdateFacilityLog(w http.ResponseWriter, r *http.Request) {
 	fle := utils.GetFacilityLogCtx(r)
 
@@ -171,6 +160,12 @@ func UpdateFacilityLog(w http.ResponseWriter, r *http.Request) {
 	fle.Facility = data.Facility
 	fle.Entry = data.Entry
 
+	if self := utils.GetXUser(r); self != nil {
+		fle.UpdatedBy = fmt.Sprintf("%d", self)
+	} else {
+		fle.UpdatedBy = string(utils.GetXFacility(r).ID)
+	}
+
 	if err := fle.Update(); err != nil {
 		utils.Render(w, r, utils.ErrInternalServer)
 		return
@@ -185,13 +180,14 @@ func UpdateFacilityLog(w http.ResponseWriter, r *http.Request) {
 // @Tags facility-log
 // @Accept  json
 // @Produce  json
+// @Param FacilityID path string true "Facility ID"
 // @Param id path string true "Facility Log Entry ID"
 // @Param facility_log body Request true "Facility Log Entry"
 // @Success 200 {object} Response
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 404 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /facility-log/{id} [patch]
+// @Router /facility/{FacilityID}/log/{id} [patch]
 func PatchFacilityLog(w http.ResponseWriter, r *http.Request) {
 	fle := utils.GetFacilityLogCtx(r)
 
@@ -213,6 +209,12 @@ func PatchFacilityLog(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+	if self := utils.GetXUser(r); self != nil {
+		fle.UpdatedBy = fmt.Sprintf("%d", self)
+	} else {
+		fle.UpdatedBy = string(utils.GetXFacility(r).ID)
+	}
+
 	if err := fle.Update(); err != nil {
 		utils.Render(w, r, utils.ErrInternalServer)
 		return
@@ -227,10 +229,11 @@ func PatchFacilityLog(w http.ResponseWriter, r *http.Request) {
 // @Tags facility-log
 // @Accept  json
 // @Produce  json
+// @Param FacilityID path string true "Facility ID"
 // @Param id path string true "Facility Log Entry ID"
 // @Success 204
 // @Failure 500 {object} utils.ErrResponse
-// @Router /facility-log/{id} [delete]
+// @Router /facility/{FacilityID}/log/{id} [delete]
 func DeleteFacilityLog(w http.ResponseWriter, r *http.Request) {
 	fle := utils.GetFacilityLogCtx(r)
 

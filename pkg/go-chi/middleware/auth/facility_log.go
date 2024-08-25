@@ -1,60 +1,59 @@
 package middleware
 
 import (
-	"github.com/VATUSA/primary-api/pkg/constants"
-	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 )
 
 func CanViewFacilityLog(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		requestingUser := GetSelfUser(r)
+		targetFacility := utils.GetFacilityCtx(r)
 
-		facParam := r.URL.Query().Get("facility")
-
-		if facParam == "" {
-			if !utils.IsVATUSAStaff(requestingUser) {
-				utils.Render(w, r, utils.ErrForbidden)
+		credentials := GetCredentials(r)
+		if credentials.User != nil {
+			if utils.IsVATUSAStaff(credentials.User) {
+				next.ServeHTTP(w, r)
 				return
 			}
 
-			next.ServeHTTP(w, r)
+			if utils.IsFacilityStaff(credentials.User, targetFacility.ID) {
+				next.ServeHTTP(w, r)
+				return
+			}
+
+			log.Warnf("User %d, attempted to view facility log for facility: %s. No permissions.", credentials.User.CID, targetFacility.ID)
 		}
 
-		fac := &models.Facility{ID: constants.FacilityID(facParam)}
-		err := fac.Get()
-		if err != nil {
-			utils.Render(w, r, utils.ErrBadRequest)
-			return
+		if credentials.Facility != nil {
+			if credentials.Facility.ID == targetFacility.ID {
+				next.ServeHTTP(w, r)
+				return
+			}
+
+			log.Warnf("Facility API Key %s, attempted to view facility log for facility: %s. No permissions.", credentials.Facility.ID, targetFacility.ID)
 		}
 
-		if !utils.CanEditFacility(requestingUser, fac) {
-			utils.Render(w, r, utils.ErrForbidden)
-			return
-		}
-
-		next.ServeHTTP(w, r)
+		utils.Render(w, r, utils.ErrForbidden)
+		return
 	})
 }
 
 func CanEditFacilityLog(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		requestingUser := GetSelfUser(r)
-		facLog := utils.GetFacilityLogCtx(r)
+		targetFacility := utils.GetFacilityCtx(r)
 
-		fac := &models.Facility{ID: facLog.Facility}
-		err := fac.Get()
-		if err != nil {
-			utils.Render(w, r, utils.ErrBadRequest)
-			return
+		credentials := GetCredentials(r)
+		if credentials.User != nil {
+			if utils.IsVATUSAStaff(credentials.User) {
+				next.ServeHTTP(w, r)
+				return
+			}
+
+			log.Warnf("User %d, attempted to edit facility log for facility: %s. No permissions.", credentials.User.CID, targetFacility.ID)
 		}
 
-		if !utils.CanEditFacility(requestingUser, fac) {
-			utils.Render(w, r, utils.ErrForbidden)
-			return
-		}
-
-		next.ServeHTTP(w, r)
+		utils.Render(w, r, utils.ErrForbidden)
+		return
 	})
 }

@@ -3,7 +3,6 @@ package action_log
 import (
 	"fmt"
 	"github.com/VATUSA/primary-api/pkg/database/models"
-	middleware "github.com/VATUSA/primary-api/pkg/go-chi/middleware/auth"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
 	"github.com/go-playground/validator/v10"
@@ -71,17 +70,22 @@ func CreateActionLogEntry(w http.ResponseWriter, r *http.Request) {
 
 	user := utils.GetUserCtx(r)
 
-	self := middleware.GetSelfUser(r)
-
 	if !models.IsValidUser(user.CID) {
 		utils.Render(w, r, utils.ErrInvalidCID)
 		return
 	}
 
+	createdBy := ""
+	if self := utils.GetXUser(r); self != nil {
+		createdBy = fmt.Sprintf("%d", self)
+	} else {
+		createdBy = string(utils.GetXFacility(r).ID)
+	}
+
 	ale := &models.ActionLogEntry{
 		CID:       user.CID,
 		Entry:     data.Entry,
-		CreatedBy: fmt.Sprintf("%d", self.CID),
+		CreatedBy: createdBy,
 	}
 
 	if err := ale.Create(); err != nil {
@@ -147,8 +151,11 @@ func UpdateActionLogEntry(w http.ResponseWriter, r *http.Request) {
 
 	ale.Entry = data.Entry
 
-	requestingUser := middleware.GetSelfUser(r)
-	ale.UpdatedBy = fmt.Sprintf("%d", requestingUser.CID)
+	if self := utils.GetXUser(r); self != nil {
+		ale.UpdatedBy = fmt.Sprintf("%d", self)
+	} else {
+		ale.UpdatedBy = string(utils.GetXFacility(r).ID)
+	}
 
 	if err := ale.Update(); err != nil {
 		utils.Render(w, r, utils.ErrInternalServer)
@@ -184,8 +191,12 @@ func PatchActionLogEntry(w http.ResponseWriter, r *http.Request) {
 	if data.Entry != "" {
 		ale.Entry = data.Entry
 	}
-	requestingUser := middleware.GetSelfUser(r)
-	ale.UpdatedBy = fmt.Sprintf("%d", requestingUser.CID)
+
+	if self := utils.GetXUser(r); self != nil {
+		ale.UpdatedBy = fmt.Sprintf("%d", self)
+	} else {
+		ale.UpdatedBy = string(utils.GetXFacility(r).ID)
+	}
 
 	if err := ale.Update(); err != nil {
 		utils.Render(w, r, utils.ErrInternalServer)

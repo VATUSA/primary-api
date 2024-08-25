@@ -165,6 +165,16 @@ func GetXUser(r *http.Request) *models.User {
 	return user
 }
 
+type XFacility struct{}
+
+func GetXFacility(r *http.Request) *models.Facility {
+	fac, ok := r.Context().Value(XFacility{}).(*models.Facility)
+	if !ok {
+		return nil
+	}
+	return fac
+}
+
 type XGuest struct{}
 
 func GetXGuest(r *http.Request) bool {

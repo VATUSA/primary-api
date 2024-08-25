@@ -16,6 +16,11 @@ func Render(w http.ResponseWriter, r *http.Request, renderer render.Renderer) {
 	}
 }
 
+func JSON(w http.ResponseWriter, r *http.Request, code int, data interface{}) {
+	render.Status(r, code)
+	render.JSON(w, r, data)
+}
+
 func TempRedirect(w http.ResponseWriter, r *http.Request, location string) {
 	http.Redirect(w, r, location, http.StatusTemporaryRedirect)
 }

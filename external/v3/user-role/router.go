@@ -11,10 +11,10 @@ import (
 )
 
 func Router(r chi.Router) {
-	r.Get("/", GetSelfRoles)
+	r.With(middleware.NotGuest).Get("/", GetSelfRoles)
 
 	r.Route("/{RoleID}", func(r chi.Router) {
-		r.Use(Ctx)
+		r.Use(middleware.NotGuest, Ctx)
 
 		r.With(middleware.CanAddRole).Get("/", CreateUserRoles)
 		r.With(middleware.CanDeleteRole).Delete("/", DeleteUserRoles)
