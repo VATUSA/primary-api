@@ -1,6 +1,7 @@
 package external
 
 import (
+	"fmt"
 	_ "github.com/VATUSA/primary-api/external/docs"
 	v3 "github.com/VATUSA/primary-api/external/v3"
 	"github.com/VATUSA/primary-api/pkg/config"
@@ -28,8 +29,7 @@ func Router(r chi.Router, cfg *config.Config) {
 	v3.Router(r, cfg)
 
 	r.Get("/swagger/*", httpSwagger.Handler(
-		//httpSwagger.URL("https://api.vatusa.dev/swagger/doc.json"),
-		httpSwagger.URL("http://api.vatusa.local:3000/swagger/doc.json"),
+		httpSwagger.URL(fmt.Sprintf("%s/swagger/doc.json", config.Cfg.API.BaseURL)),
 	))
 
 }
