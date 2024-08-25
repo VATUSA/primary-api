@@ -26,7 +26,6 @@ func CanViewNotifications(next http.Handler) http.Handler {
 		}
 
 		utils.Render(w, r, utils.ErrForbidden)
-		return
 	})
 }
 
@@ -45,6 +44,5 @@ func CanEditNotifications(next http.Handler) http.Handler {
 		}
 
 		utils.Render(w, r, utils.ErrForbidden)
-		return
 	})
 }

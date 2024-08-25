@@ -39,7 +39,6 @@ func CanViewUser(next http.Handler) http.Handler {
 		}
 
 		utils.Render(w, r, utils.ErrForbidden)
-		return
 	})
 }
 
@@ -58,6 +57,5 @@ func CanEditUser(next http.Handler) http.Handler {
 		}
 
 		utils.Render(w, r, utils.ErrForbidden)
-		return
 	})
 }

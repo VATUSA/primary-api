@@ -34,6 +34,5 @@ func CanEditFacility(next http.Handler) http.Handler {
 		}
 
 		utils.Render(w, r, utils.ErrForbidden)
-		return
 	})
 }

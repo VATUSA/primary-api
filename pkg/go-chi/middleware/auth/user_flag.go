@@ -39,7 +39,6 @@ func CanViewUserFlag(next http.Handler) http.Handler {
 		}
 
 		utils.Render(w, r, utils.ErrForbidden)
-		return
 	})
 }
 
@@ -58,6 +57,5 @@ func CanEditUserFlag(next http.Handler) http.Handler {
 		}
 
 		utils.Render(w, r, utils.ErrForbidden)
-		return
 	})
 }

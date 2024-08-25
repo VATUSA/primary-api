@@ -50,7 +50,6 @@ func CanReadDisciplinaryLog(next http.Handler) http.Handler {
 			}
 		}
 		utils.Render(w, r, utils.ErrForbidden)
-		return
 	})
 }
 
@@ -69,6 +68,5 @@ func CanEditDisciplinaryLog(next http.Handler) http.Handler {
 		log.Warnf("User %d, attempted to edit disciplinary log for user: %d. No permissions.", credentials.User.CID, targetUser.CID)
 
 		utils.Render(w, r, utils.ErrForbidden)
-		return
 	})
 }

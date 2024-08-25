@@ -78,7 +78,7 @@ func CreateDisciplinaryLogEntry(w http.ResponseWriter, r *http.Request) {
 
 	createdBy := ""
 	if self := utils.GetXUser(r); self != nil {
-		createdBy = fmt.Sprintf("%d", self)
+		createdBy = fmt.Sprintf("%d", self.CID)
 	} else {
 		createdBy = string(utils.GetXFacility(r).ID)
 	}
@@ -158,7 +158,7 @@ func UpdateDisciplinaryLogEntry(w http.ResponseWriter, r *http.Request) {
 	dle.VATUSAOnly = data.VATUSAOnly
 
 	if self := utils.GetXUser(r); self != nil {
-		dle.UpdatedBy = fmt.Sprintf("%d", self)
+		dle.UpdatedBy = fmt.Sprintf("%d", self.CID)
 	} else {
 		dle.UpdatedBy = string(utils.GetXFacility(r).ID)
 	}
@@ -202,7 +202,7 @@ func PatchDisciplinaryLogEntry(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if self := utils.GetXUser(r); self != nil {
-		dle.UpdatedBy = fmt.Sprintf("%d", self)
+		dle.UpdatedBy = fmt.Sprintf("%d", self.CID)
 	} else {
 		dle.UpdatedBy = string(utils.GetXFacility(r).ID)
 	}

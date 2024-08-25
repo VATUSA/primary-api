@@ -78,7 +78,7 @@ func CreateFacilityLogEntry(w http.ResponseWriter, r *http.Request) {
 
 	createdBy := ""
 	if self := utils.GetXUser(r); self != nil {
-		createdBy = fmt.Sprintf("%d", self)
+		createdBy = fmt.Sprintf("%d", self.CID)
 	} else {
 		createdBy = string(utils.GetXFacility(r).ID)
 	}
@@ -161,7 +161,7 @@ func UpdateFacilityLog(w http.ResponseWriter, r *http.Request) {
 	fle.Entry = data.Entry
 
 	if self := utils.GetXUser(r); self != nil {
-		fle.UpdatedBy = fmt.Sprintf("%d", self)
+		fle.UpdatedBy = fmt.Sprintf("%d", self.CID)
 	} else {
 		fle.UpdatedBy = string(utils.GetXFacility(r).ID)
 	}
@@ -210,7 +210,7 @@ func PatchFacilityLog(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if self := utils.GetXUser(r); self != nil {
-		fle.UpdatedBy = fmt.Sprintf("%d", self)
+		fle.UpdatedBy = fmt.Sprintf("%d", self.CID)
 	} else {
 		fle.UpdatedBy = string(utils.GetXFacility(r).ID)
 	}

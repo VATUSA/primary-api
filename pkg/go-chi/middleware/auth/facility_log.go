@@ -35,7 +35,6 @@ func CanViewFacilityLog(next http.Handler) http.Handler {
 		}
 
 		utils.Render(w, r, utils.ErrForbidden)
-		return
 	})
 }
 
@@ -54,6 +53,5 @@ func CanEditFacilityLog(next http.Handler) http.Handler {
 		}
 
 		utils.Render(w, r, utils.ErrForbidden)
-		return
 	})
 }

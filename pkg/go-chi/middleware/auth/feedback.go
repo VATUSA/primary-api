@@ -33,7 +33,10 @@ func CanViewFeedback(next http.Handler) http.Handler {
 				}
 
 				if credentials.User.CID == uint(cidInt) {
-					r.URL.Query().Set("status", "accepted")
+					q := r.URL.Query()
+					q.Set("cid", cid)           // Preserve the original 'cid'
+					q.Set("status", "accepted") // Set the 'status' to 'accepted'
+					r.URL.RawQuery = q.Encode()
 					next.ServeHTTP(w, r)
 					return
 				}
@@ -52,7 +55,6 @@ func CanViewFeedback(next http.Handler) http.Handler {
 		}
 
 		utils.Render(w, r, utils.ErrForbidden)
-		return
 	})
 }
 
@@ -86,6 +88,5 @@ func CanEditFeedback(next http.Handler) http.Handler {
 		}
 
 		utils.Render(w, r, utils.ErrForbidden)
-		return
 	})
 }
