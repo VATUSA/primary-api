@@ -11,7 +11,7 @@ import (
 	"github.com/VATUSA/primary-api/pkg/oauth"
 	"github.com/VATUSA/primary-api/pkg/storage"
 	"github.com/joho/godotenv"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 )
 

@@ -20,6 +20,7 @@ import (
 
 func Router(r chi.Router) {
 	r.With(middleware.NotGuest).Get("/logout", GetLogout)
+
 	r.Get("/login", GetLogin)
 	r.Get("/login/callback", GetLoginCallback)
 

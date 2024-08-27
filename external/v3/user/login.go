@@ -12,6 +12,7 @@ import (
 	"github.com/VATUSA/primary-api/pkg/utils"
 	vatsim_api "github.com/VATUSA/primary-api/pkg/vatsim/api"
 	gonanoid "github.com/matoous/go-nanoid"
+	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 	"io"
 	"net/http"
@@ -54,12 +55,14 @@ func GetLogin(w http.ResponseWriter, r *http.Request) {
 func GetLoginCallback(w http.ResponseWriter, r *http.Request) {
 	sessionCookie, err := r.Cookie("session")
 	if err != nil {
+		log.WithError(err).Error("Error getting session cookie.")
 		utils.Render(w, r, utils.ErrForbidden)
 		return
 	}
 
 	session := make(map[string]string)
 	if err := cookie.CookieStore.Decode("session", sessionCookie.Value, &session); err != nil {
+		log.WithError(err).Error("Error decoding session cookie.")
 		utils.Render(w, r, utils.ErrForbidden)
 		return
 	}
@@ -71,7 +74,7 @@ func GetLoginCallback(w http.ResponseWriter, r *http.Request) {
 
 	token, err := exchangeToken(r.Context(), oauth.OAuthConfig, r.URL.Query().Get("code"))
 	if err != nil {
-		fmt.Printf("Error: %s\n", err)
+		log.WithError(err).Error("Error exchanging tokens with VATSIM.")
 		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -110,8 +113,6 @@ func GetLoginCallback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if resp.StatusCode >= 299 {
-		fmt.Println("Error Code:", resp.StatusCode)
-		fmt.Println("Error Body:", string(body))
 		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}

@@ -3228,4 +3228,9 @@ paths:
       summary: Update a user flag
       tags:
       - user-flag
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: x-api-key
+    type: apiKey
 swagger: "2.0"

@@ -12,6 +12,11 @@ func CanViewUser(next http.Handler) http.Handler {
 
 		credentials := GetCredentials(r)
 		if credentials.User != nil {
+			if targetUser.CID == credentials.User.CID {
+				next.ServeHTTP(w, r)
+				return
+			}
+
 			if utils.IsVATUSAStaff(credentials.User) {
 				next.ServeHTTP(w, r)
 				return

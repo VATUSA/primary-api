@@ -25,6 +25,10 @@ import (
 
 // @BasePath  /v3
 
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name x-api-key
+
 func Router(r chi.Router, cfg *config.Config) {
 	v3.Router(r, cfg)
 
