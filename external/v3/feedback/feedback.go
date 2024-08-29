@@ -2,11 +2,9 @@ package feedback
 
 import (
 	"errors"
-	"fmt"
 	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/database/types"
-	"github.com/VATUSA/primary-api/pkg/logger"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
 	"github.com/go-playground/validator/v10"
@@ -330,8 +328,6 @@ func GetUserFeedback(w http.ResponseWriter, r *http.Request) {
 		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
-
-	logger.Logger.Info(fmt.Sprintf("Found %d feedback entries for user %d", len(feedbacks), user.CID))
 
 	if err := render.RenderList(w, r, NewFeedbackListResponse(feedbacks)); err != nil {
 		utils.Render(w, r, utils.ErrRender(err))
