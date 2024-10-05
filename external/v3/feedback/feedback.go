@@ -19,7 +19,7 @@ type Request struct {
 	ControllerCID uint                 `json:"controller_cid" example:"1293257" validate:"required"`
 	Position      string               `json:"position" example:"DEN_I_APP" validate:"required"`
 	Rating        types.FeedbackRating `json:"rating" example:"good" validate:"required,oneof=unsatisfactory poor fair good excellent"`
-	Notes         string               `json:"notes" example:"Raaj was the best controller I've ever flown under." validate:"required"`
+	Feedback      string               `json:"feedback" example:"Raaj was the best controller I've ever flown under." validate:"required"`
 	Status        types.StatusType     `json:"status" example:"pending" validate:"required,oneof=pending approved denied"`
 	Comment       string               `json:"comment" example:"Great work Raaj!"`
 }
@@ -38,7 +38,7 @@ type Response struct {
 	Position      string               `json:"position" example:"DEN_I_APP"`
 	Facility      constants.FacilityID `json:"facility" example:"ZDV"`
 	Rating        types.FeedbackRating `json:"rating" example:"good"`
-	Notes         string               `json:"notes" example:"Raaj was the best controller I've ever flown under."`
+	Feedback      string               `json:"feedback" example:"Raaj was the best controller I've ever flown under."`
 	Status        types.StatusType     `json:"status" example:"pending"`
 	Comment       string               `json:"comment" example:"Great work Raaj!"`
 	CreatedAt     time.Time            `json:"created_at" example:"2021-01-01T00:00:00Z"`
@@ -51,7 +51,7 @@ func NewFeedbackResponse(f *models.Feedback) *Response {
 		Position:      f.Position,
 		Facility:      f.Facility,
 		Rating:        f.Rating,
-		Notes:         f.Notes,
+		Feedback:      f.Feedback,
 		Status:        f.Status,
 		Comment:       f.Comment,
 		CreatedAt:     f.CreatedAt,
@@ -116,10 +116,15 @@ func CreateFeedback(w http.ResponseWriter, r *http.Request) {
 		Position:      data.Position,
 		Facility:      fac.ID,
 		Rating:        data.Rating,
-		Notes:         data.Notes,
+		Feedback:      data.Feedback,
 		Status:        data.Status,
 		Comment:       data.Comment,
 	}
+
+	if f.Status == types.Pending {
+		f.Comment = ""
+	}
+
 	if err := f.Create(); err != nil {
 		utils.Render(w, r, utils.ErrInternalServer)
 		return
@@ -215,7 +220,7 @@ func UpdateFeedback(w http.ResponseWriter, r *http.Request) {
 	f.ControllerCID = data.ControllerCID
 	f.Position = data.Position
 	f.Rating = data.Rating
-	f.Notes = data.Notes
+	f.Feedback = data.Feedback
 	f.Status = data.Status
 	f.Comment = data.Comment
 
@@ -267,8 +272,8 @@ func PatchFeedback(w http.ResponseWriter, r *http.Request) {
 	if data.Rating != "" {
 		f.Rating = data.Rating
 	}
-	if data.Notes != "" {
-		f.Notes = data.Notes
+	if data.Feedback != "" {
+		f.Feedback = data.Feedback
 	}
 	if data.Status != "" {
 		f.Status = data.Status

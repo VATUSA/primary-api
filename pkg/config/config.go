@@ -9,22 +9,24 @@ var defaultCfg = defaultConfig()
 var Cfg *Config
 
 type Config struct {
-	API      *APIConfig
-	Database *DBConfig
-	Cors     *CorsConfig
-	Cookie   *Cookie
-	S3       *S3Config
-	OAuth    *OAuth
+	API          *APIConfig
+	Database     *DBConfig
+	Cors         *CorsConfig
+	Cookie       *Cookie
+	S3           *S3Config
+	OAuth        *OAuth
+	DiscordOAuth *OAuth
 }
 
 func New() *Config {
 	return &Config{
-		API:      NewAPIConfig(),
-		Database: NewDBConfig(),
-		Cors:     NewCorsConfig(),
-		Cookie:   NewCookie(),
-		S3:       NewS3Config(),
-		OAuth:    NewOAuth(),
+		API:          NewAPIConfig(),
+		Database:     NewDBConfig(),
+		Cors:         NewCorsConfig(),
+		Cookie:       NewCookie(),
+		S3:           NewS3Config(),
+		OAuth:        NewOAuth(),
+		DiscordOAuth: NewDiscordOAuth(),
 	}
 }
 
@@ -70,6 +72,12 @@ func defaultConfig() *Config {
 		OAuth: &OAuth{
 			BaseURL:      "https://auth.vatusa.net",
 			UserInfoURL:  "/oauth/userinfo",
+			ClientID:     "",
+			ClientSecret: "",
+		},
+		DiscordOAuth: &OAuth{
+			BaseURL:      "https://discord.com",
+			UserInfoURL:  "/api/users/@me",
 			ClientID:     "",
 			ClientSecret: "",
 		},

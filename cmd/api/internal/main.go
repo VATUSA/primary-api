@@ -18,7 +18,7 @@ func main() {
 	_ = godotenv.Load(".env")
 	config.Cfg = config.New()
 
-	oauth.OAuthConfig = oauth.Initialize(config.Cfg)
+	oauth.OAuthConfig = oauth.InitializeVATSIM(config.Cfg)
 
 	bucket, err := storage.NewS3Client(config.Cfg.S3)
 	if err != nil {

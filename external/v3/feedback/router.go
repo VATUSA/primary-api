@@ -12,7 +12,7 @@ import (
 
 func Router(r chi.Router) {
 	r.With(middleware.NotGuest, middleware.CanViewFeedback).Get("/", ListFeedback)
-	r.With(middleware.NotGuest).Post("/", CreateFeedback)
+	r.With(middleware.NotGuest, middleware.CanLeaveFeedback).Post("/", CreateFeedback)
 
 	r.Route("/{FeedbackID}", func(r chi.Router) {
 		r.Use(Ctx)

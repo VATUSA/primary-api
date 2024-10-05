@@ -23,7 +23,7 @@ type Roster struct {
 
 func (r *Roster) Create() error {
 	// Check and see if user is already on the roster
-	if err := database.DB.Where("c_id = ? AND facility = ?", r.CID, r.Facility).First(&Roster{}).Error; err == nil {
+	if err := database.DB.Where("cid = ? AND facility = ?", r.CID, r.Facility).First(&Roster{}).Error; err == nil {
 		return errors.New("user already exists on facility roster")
 	}
 
@@ -61,7 +61,7 @@ func (r *Roster) Get() error {
 
 func GetRosterByFacilityAndCID(facility constants.FacilityID, cid uint) (Roster, error) {
 	var roster Roster
-	return roster, database.DB.Where("facility = ? AND c_id = ?", facility, cid).First(&roster).Error
+	return roster, database.DB.Where("facility = ? AND cid = ?", facility, cid).First(&roster).Error
 }
 
 func GetRosters() ([]Roster, error) {
@@ -71,7 +71,7 @@ func GetRosters() ([]Roster, error) {
 
 func GetRostersByCID(cid uint) ([]Roster, error) {
 	var rosters []Roster
-	return rosters, database.DB.Where("c_id = ?", cid).Preload("Roles").Find(&rosters).Error
+	return rosters, database.DB.Where("cid = ?", cid).Preload("Roles").Find(&rosters).Error
 }
 
 func GetRostersByFacility(facility constants.FacilityID) ([]Roster, error) {

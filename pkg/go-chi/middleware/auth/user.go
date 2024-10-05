@@ -58,6 +58,11 @@ func CanEditUser(next http.Handler) http.Handler {
 				return
 			}
 
+			if targetUser.CID == credentials.User.CID {
+				next.ServeHTTP(w, r)
+				return
+			}
+
 			log.Warnf("User %d, attempted to edit user: %d. No permissions.", credentials.User.CID, targetUser.CID)
 		}
 

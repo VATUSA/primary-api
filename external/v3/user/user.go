@@ -7,6 +7,7 @@ import (
 	"github.com/go-chi/render"
 	"github.com/go-playground/validator/v10"
 	"net/http"
+	"strings"
 )
 
 type Request struct {
@@ -112,7 +113,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user.PreferredName = req.PreferredName
-	user.PreferredOIs = req.PreferredOIs
+	user.PreferredOIs = strings.ToUpper(req.PreferredOIs)
 	user.DiscordID = req.DiscordID
 
 	if err := user.Update(); err != nil {
@@ -146,10 +147,13 @@ func PatchUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if req.PreferredName != "" {
+		if req.PreferredName == "-" {
+			req.PreferredName = ""
+		}
 		user.PreferredName = req.PreferredName
 	}
 	if req.PreferredOIs != "" {
-		user.PreferredOIs = req.PreferredOIs
+		user.PreferredOIs = strings.ToUpper(req.PreferredOIs)
 	}
 	if req.DiscordID != "" {
 		user.DiscordID = req.DiscordID

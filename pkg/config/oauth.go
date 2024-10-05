@@ -15,3 +15,12 @@ func NewOAuth() *OAuth {
 		UserInfoURL:  EnvOrDefault("OAUTH_USER_INFO_URL", defaultCfg.OAuth.UserInfoURL),
 	}
 }
+
+func NewDiscordOAuth() *OAuth {
+	return &OAuth{
+		BaseURL:      EnvOrDefault("DISCORD_OAUTH_BASE_URL", defaultCfg.DiscordOAuth.BaseURL),
+		ClientID:     EnvOrDefault("DISCORD_OAUTH_CLIENT_ID", defaultCfg.DiscordOAuth.ClientID),
+		ClientSecret: EnvOrDefault("DISCORD_OAUTH_CLIENT_SECRET", defaultCfg.DiscordOAuth.ClientSecret),
+		UserInfoURL:  EnvOrDefault("DISCORD_OAUTH_USER_INFO_URL", defaultCfg.DiscordOAuth.UserInfoURL),
+	}
+}

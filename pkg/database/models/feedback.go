@@ -17,7 +17,7 @@ type Feedback struct {
 	Position      string               `json:"position" example:"DEN_I_APP"`
 	Facility      constants.FacilityID `json:"facility" example:"ZDV"`
 	Rating        types.FeedbackRating `json:"rating" gorm:"type:enum('unsatisfactory', 'poor', 'fair', 'good', 'excellent');" example:"good"`
-	Notes         string               `json:"notes" example:"Raaj was the best controller I've ever flown under."`
+	Feedback      string               `json:"feedback" example:"Raaj was the best controller I've ever flown under."`
 	Status        types.StatusType     `json:"status" gorm:"type:enum('pending', 'accepted', 'rejected');" example:"pending"`
 	Comment       string               `json:"comment" example:"Great work Raaj!"`
 	CreatedAt     time.Time            `json:"created_at" example:"2021-01-01T00:00:00Z"`

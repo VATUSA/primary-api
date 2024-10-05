@@ -2622,6 +2622,113 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/{cid}/notification-settings": {
+            "get": {
+                "description": "Get a user notification settings",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "notification-settings"
+                ],
+                "summary": "Get a user notification settings",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "CID",
+                        "name": "cid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user_notification.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a user notification settings",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "notification-settings"
+                ],
+                "summary": "Update a user's notifications settings",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "CID",
+                        "name": "cid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user_notification.Request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user_notification.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/user/{cid}/notification/{id}": {
             "put": {
                 "description": "Update a notification",
@@ -3871,7 +3978,7 @@ const docTemplate = `{
             "required": [
                 "callsign",
                 "controller_cid",
-                "notes",
+                "feedback",
                 "pilot_cid",
                 "position",
                 "rating",
@@ -3890,7 +3997,7 @@ const docTemplate = `{
                     "type": "integer",
                     "example": 1293257
                 },
-                "notes": {
+                "feedback": {
                     "type": "string",
                     "example": "Raaj was the best controller I've ever flown under."
                 },
@@ -3955,13 +4062,13 @@ const docTemplate = `{
                     ],
                     "example": "ZDV"
                 },
+                "feedback": {
+                    "type": "string",
+                    "example": "Raaj was the best controller I've ever flown under."
+                },
                 "id": {
                     "type": "integer",
                     "example": 1
-                },
-                "notes": {
-                    "type": "string",
-                    "example": "Raaj was the best controller I've ever flown under."
                 },
                 "position": {
                     "type": "string",
@@ -4326,6 +4433,9 @@ const docTemplate = `{
                     ],
                     "example": "ZDV"
                 },
+                "first_name": {
+                    "type": "string"
+                },
                 "home": {
                     "type": "boolean",
                     "example": true
@@ -4333,6 +4443,9 @@ const docTemplate = `{
                 "id": {
                     "type": "integer",
                     "example": 1
+                },
+                "last_name": {
+                    "type": "string"
                 },
                 "operating_initials": {
                     "type": "string",
@@ -4670,6 +4783,56 @@ const docTemplate = `{
                 "used_transfer_override": {
                     "type": "boolean",
                     "example": false
+                }
+            }
+        },
+        "user_notification.Request": {
+            "type": "object",
+            "properties": {
+                "discord": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "email": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "events": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "feedback": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "training": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "user_notification.Response": {
+            "type": "object",
+            "properties": {
+                "discord": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "email": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "events": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "feedback": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "training": {
+                    "type": "boolean",
+                    "example": true
                 }
             }
         },

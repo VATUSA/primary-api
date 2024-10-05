@@ -28,10 +28,22 @@ func (req *Request) Bind(r *http.Request) error {
 
 type Response struct {
 	*models.Roster
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
 }
 
 func NewRosterResponse(r *models.Roster) *Response {
-	return &Response{Roster: r}
+	// TODO - Speed this up by putting the user in the roster struct and sending a custom struct response
+	u := &models.User{CID: r.CID}
+	if err := u.Get(); err != nil {
+		return &Response{Roster: r}
+	}
+
+	return &Response{
+		Roster:    r,
+		FirstName: u.FirstName,
+		LastName:  u.LastName,
+	}
 }
 
 func (res *Response) Render(w http.ResponseWriter, r *http.Request) error {

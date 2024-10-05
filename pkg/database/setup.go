@@ -6,7 +6,9 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"gorm.io/gorm/schema"
 	"log"
+	"strings"
 )
 
 var DB *gorm.DB
@@ -27,6 +29,9 @@ func Connect(dbConfig *config.DBConfig) *gorm.DB {
 	var err error
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logLevel),
+		NamingStrategy: schema.NamingStrategy{
+			NameReplacer: strings.NewReplacer("CID", "Cid"),
+		},
 	})
 	if err != nil {
 		log.Fatal("[Database] Connection Error:", err)

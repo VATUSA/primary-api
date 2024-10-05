@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"github.com/VATUSA/primary-api/pkg/database/types"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -85,6 +86,55 @@ func CanEditFeedback(next http.Handler) http.Handler {
 			}
 
 			log.Warnf("Facility %s, attempted to edit feedback for facility: %s. No permissions.", credentials.Facility.ID, targetFacility.ID)
+		}
+
+		utils.Render(w, r, utils.ErrForbidden)
+	})
+}
+
+type Request struct {
+	PilotCID uint             `json:"pilot_cid" example:"1293257" validate:"required"`
+	Status   types.StatusType `json:"status" example:"accepted" validate:"required"`
+}
+
+func (req *Request) Bind(r *http.Request) error {
+	return nil
+}
+
+func CanLeaveFeedback(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		req := &Request{}
+		if err := req.Bind(r); err != nil {
+			utils.Render(w, r, utils.ErrInvalidRequest(err))
+			return
+		}
+
+		credentials := GetCredentials(r)
+
+		targetFacility := utils.GetFacilityCtx(r)
+
+		if credentials.User != nil {
+			if req.Status != types.Pending {
+				log.Error("User %d, attempted to create feedback with status: %s. No permissions.", credentials.User.CID, req.Status)
+				utils.Render(w, r, utils.ErrForbidden)
+				return
+			}
+
+			if req.PilotCID == credentials.User.CID {
+				next.ServeHTTP(w, r)
+				return
+			}
+
+			log.Warnf("User %d, attempted to create feedback as another user: %d. No permissions.", credentials.User.CID, req.PilotCID)
+		}
+
+		if credentials.Facility != nil {
+			if credentials.Facility.ID == targetFacility.ID {
+				next.ServeHTTP(w, r)
+				return
+			}
+
+			log.Warnf("Facility %s, attempted to create feedback for facility: %s. No permissions.", credentials.Facility.ID, targetFacility.ID)
 		}
 
 		utils.Render(w, r, utils.ErrForbidden)

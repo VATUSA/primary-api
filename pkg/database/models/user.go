@@ -32,28 +32,28 @@ type User struct {
 	UpdatedAt            time.Time              `json:"updated_at" example:"2021-01-01T00:00:00Z"`
 }
 
-func (u *User) Create() error {
-	return database.DB.Create(u).Error
+func (un *User) Create() error {
+	return database.DB.Create(un).Error
 }
 
-func (u *User) Update() error {
-	return database.DB.Save(u).Error
+func (un *User) Update() error {
+	return database.DB.Save(un).Error
 }
 
-func (u *User) Delete() error {
-	return database.DB.Delete(u).Error
+func (un *User) Delete() error {
+	return database.DB.Delete(un).Error
 }
 
-func (u *User) Get() error {
-	if u.Email != "" {
-		return database.DB.Where("email = ?", u.Email).First(u).Error
+func (un *User) Get() error {
+	if un.Email != "" {
+		return database.DB.Where("email = ?", un.Email).First(un).Error
 	}
 
-	if u.DiscordID != "" {
-		return database.DB.Where("discord_id = ?", u.DiscordID).First(u).Error
+	if un.DiscordID != "" {
+		return database.DB.Where("discord_id = ?", un.DiscordID).First(un).Error
 	}
 
-	return database.DB.First(u, u.CID).Error
+	return database.DB.First(un, un.CID).Error
 }
 
 func GetAllUsers() ([]User, error) {

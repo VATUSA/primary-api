@@ -33,7 +33,7 @@ func (f *UserFlag) Delete() error {
 }
 
 func (f *UserFlag) Get() error {
-	return database.DB.Where("c_id = ?", f.CID).First(f).Error
+	return database.DB.Where("cid = ?", f.CID).First(f).Error
 }
 
 func GetAllFlags() ([]UserFlag, error) {

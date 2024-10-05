@@ -360,7 +360,7 @@ definitions:
       controller_cid:
         example: 1293257
         type: integer
-      notes:
+      feedback:
         example: Raaj was the best controller I've ever flown under.
         type: string
       pilot_cid:
@@ -390,7 +390,7 @@ definitions:
     required:
     - callsign
     - controller_cid
-    - notes
+    - feedback
     - pilot_cid
     - position
     - rating
@@ -411,12 +411,12 @@ definitions:
         allOf:
         - $ref: '#/definitions/constants.FacilityID'
         example: ZDV
+      feedback:
+        example: Raaj was the best controller I've ever flown under.
+        type: string
       id:
         example: 1
         type: integer
-      notes:
-        example: Raaj was the best controller I've ever flown under.
-        type: string
       position:
         example: DEN_I_APP
         type: string
@@ -665,12 +665,16 @@ definitions:
         allOf:
         - $ref: '#/definitions/constants.FacilityID'
         example: ZDV
+      first_name:
+        type: string
       home:
         example: true
         type: boolean
       id:
         example: 1
         type: integer
+      last_name:
+        type: string
       operating_initials:
         example: RP
         type: string
@@ -910,6 +914,42 @@ definitions:
         type: string
       used_transfer_override:
         example: false
+        type: boolean
+    type: object
+  user_notification.Request:
+    properties:
+      discord:
+        example: true
+        type: boolean
+      email:
+        example: true
+        type: boolean
+      events:
+        example: true
+        type: boolean
+      feedback:
+        example: true
+        type: boolean
+      training:
+        example: true
+        type: boolean
+    type: object
+  user_notification.Response:
+    properties:
+      discord:
+        example: true
+        type: boolean
+      email:
+        example: true
+        type: boolean
+      events:
+        example: true
+        type: boolean
+      feedback:
+        example: true
+        type: boolean
+      training:
+        example: true
         type: boolean
     type: object
   user_role.Request:
@@ -2697,6 +2737,77 @@ paths:
       summary: List all notifications
       tags:
       - notification
+  /user/{cid}/notification-settings:
+    get:
+      consumes:
+      - application/json
+      description: Get a user notification settings
+      parameters:
+      - description: CID
+        in: path
+        name: cid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_notification.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Get a user notification settings
+      tags:
+      - notification-settings
+    put:
+      consumes:
+      - application/json
+      description: Update a user notification settings
+      parameters:
+      - description: CID
+        in: path
+        name: cid
+        required: true
+        type: integer
+      - description: Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/user_notification.Request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_notification.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Update a user's notifications settings
+      tags:
+      - notification-settings
   /user/{cid}/notification/{id}:
     delete:
       consumes:

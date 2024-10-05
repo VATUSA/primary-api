@@ -9,6 +9,7 @@ import (
 	rating_change "github.com/VATUSA/primary-api/external/v3/rating-change"
 	"github.com/VATUSA/primary-api/external/v3/roster"
 	user_flag "github.com/VATUSA/primary-api/external/v3/user-flag"
+	user_notification "github.com/VATUSA/primary-api/external/v3/user-notification"
 	user_role "github.com/VATUSA/primary-api/external/v3/user-role"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/go-chi/middleware/auth"
@@ -23,6 +24,10 @@ func Router(r chi.Router) {
 
 	r.Get("/login", GetLogin)
 	r.Get("/login/callback", GetLoginCallback)
+
+	r.With(middleware.NotGuest).Get("/discord", GetDiscordLink)
+	r.With(middleware.NotGuest).Get("/discord/callback", GetDiscordCallback)
+	r.With(middleware.NotGuest).Get("/discord/unlink", UnlinkDiscord)
 
 	r.With(middleware.NotGuest).Get("/", GetSelf)
 
@@ -45,6 +50,10 @@ func Router(r chi.Router) {
 
 		r.Route("/notifications", func(r chi.Router) {
 			notification.Router(r)
+		})
+
+		r.Route("/notification-settings", func(r chi.Router) {
+			user_notification.Router(r)
 		})
 
 		r.Route("/rating-change", func(r chi.Router) {

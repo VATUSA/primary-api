@@ -108,6 +108,10 @@ func MigrateFacilities(oldDbConn *gorm.DB) {
 	oldDbConn.Table("facilities").Find(&facilities)
 
 	for _, facility := range facilities {
+		if facility.ID == "PCF" {
+			continue
+		}
+
 		newFacility := &models.Facility{
 			ID:     constants.FacilityID(facility.ID),
 			Name:   facility.Name,
@@ -170,10 +174,27 @@ func MigrateUsers(oldDbConn *gorm.DB) {
 				continue
 			}
 
+			// Create User Notification Settings
+			userNotificationSettings := &models.UserNotification{
+				CID:            user.CID,
+				DiscordEnabled: true,
+				EmailEnabled:   true,
+				Events:         true,
+				Training:       true,
+				Feedback:       true,
+				CreatedAt:      time.Now(),
+				UpdatedAt:      time.Now(),
+			}
+
+			if err := userNotificationSettings.Create(); err != nil {
+				fmt.Printf("Error creating user notification settings: %s\n", err.Error())
+				continue
+			}
+
 			// 3. Migrate user roster
 			roster := &models.Roster{
 				CID:       user.CID,
-				Facility:  constants.FacilityID(user.HomeFacility),
+				Facility:  user.HomeFacility,
 				CreatedAt: user.JoinDate,
 				OIs:       newUser.PreferredOIs,
 				Home:      true,

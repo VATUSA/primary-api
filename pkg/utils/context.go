@@ -135,6 +135,16 @@ func GetRosterRequestCtx(r *http.Request) *models.RosterRequest {
 	return rr
 }
 
+type UserNotificationKey struct{}
+
+func GetUserNotificationCtx(r *http.Request) *models.UserNotification {
+	un, ok := r.Context().Value(UserNotificationKey{}).(*models.UserNotification)
+	if !ok {
+		return nil
+	}
+	return un
+}
+
 type UserFlagKey struct{}
 
 func GetUserFlagCtx(r *http.Request) *models.UserFlag {
