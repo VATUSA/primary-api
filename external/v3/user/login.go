@@ -178,6 +178,21 @@ func GetLoginCallback(w http.ResponseWriter, r *http.Request) {
 			utils.Render(w, r, utils.ErrInternalServerWithErr(err))
 			return
 		}
+
+		// Create user notification settings if they don't exist (due to old data migration)
+		dbUserNotificationSettings := &models.UserNotification{
+			CID:            dbUser.CID,
+			DiscordEnabled: true,
+			EmailEnabled:   true,
+			Training:       true,
+			Events:         true,
+			Feedback:       true,
+		}
+
+		if err := dbUserNotificationSettings.Create(); err != nil {
+			utils.Render(w, r, utils.ErrInternalServerWithErr(err))
+			return
+		}
 	} else {
 		dbUser.FirstName = user.Personal.FirstName
 		dbUser.LastName = user.Personal.LastName
