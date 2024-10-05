@@ -71,7 +71,7 @@ func GetDiscordCallback(w http.ResponseWriter, r *http.Request) {
 
 	token, err := exchangeToken(r.Context(), oauth.DiscordOAuthConfig, r.URL.Query().Get("code"))
 	if err != nil {
-		log.WithError(err).Error("Error exchanging tokens with Discord.")
+		log.WithError(err).Errorf("Error exchanging tokens with Discord, used code: %s.", r.URL.Query().Get("code"))
 		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
