@@ -207,6 +207,23 @@ func GetLoginCallback(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		}
+
+		// Create user notification settings if they don't exist (due to old data migration)
+		dbUserNotificationSettings := &models.UserNotification{
+			CID: dbUser.CID,
+		}
+
+		if err := dbUserNotificationSettings.Get(); err != nil {
+			dbUserNotificationSettings.DiscordEnabled = true
+			dbUserNotificationSettings.EmailEnabled = true
+			dbUserNotificationSettings.Training = true
+			dbUserNotificationSettings.Events = true
+			dbUserNotificationSettings.Feedback = true
+			if err := dbUserNotificationSettings.Create(); err != nil {
+				utils.Render(w, r, utils.ErrInternalServerWithErr(err))
+				return
+			}
+		}
 	}
 
 	redirect := session["redirect"]
