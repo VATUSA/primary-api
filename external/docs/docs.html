@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VATUSA API Docs</title>
+    <script src="https://unpkg.com/@stoplight/elements/web-components.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/@stoplight/elements/styles.min.css">
+
+    <style>
+        /* Set the body and html to use full height */
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        /* Ensure the elements-api component takes up full height */
+        elements-api {
+            display: block;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<!-- The API component will take up the entire screen -->
+<elements-api
+        apiDescriptionUrl="/swagger/doc.json"
+        router="hash"
+/>
+</body>
+</html>

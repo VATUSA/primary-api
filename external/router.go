@@ -8,6 +8,7 @@ import (
 	"github.com/VATUSA/primary-api/pkg/config"
 	"github.com/go-chi/chi/v5"
 	httpSwagger "github.com/swaggo/http-swagger"
+	"net/http"
 	"strings"
 )
 
@@ -43,4 +44,8 @@ func Router(r chi.Router, cfg *config.Config) {
 	r.Get("/swagger/*", httpSwagger.Handler(
 		httpSwagger.URL(fmt.Sprintf("%s/swagger/doc.json", config.Cfg.API.BaseURL)),
 	))
+
+	r.Get("/docs", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./external/docs/docs.html")
+	})
 }
