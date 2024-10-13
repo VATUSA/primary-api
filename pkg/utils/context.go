@@ -35,6 +35,56 @@ func GetDocumentCtx(r *http.Request) *models.Document {
 	return doc
 }
 
+type EventKey struct{}
+
+func GetEventCtx(r *http.Request) *models.Event {
+	ev, ok := r.Context().Value(EventKey{}).(*models.Event)
+	if !ok {
+		return nil
+	}
+	return ev
+}
+
+type EventPositionKey struct{}
+
+func GetEventPositionCtx(r *http.Request) *models.EventPosition {
+	ep, ok := r.Context().Value(EventPositionKey{}).(*models.EventPosition)
+	if !ok {
+		return nil
+	}
+	return ep
+}
+
+type EventSignupKey struct{}
+
+func GetEventSignupCtx(r *http.Request) *models.EventSignup {
+	es, ok := r.Context().Value(EventSignupKey{}).(*models.EventSignup)
+	if !ok {
+		return nil
+	}
+	return es
+}
+
+type EventRoutingKey struct{}
+
+func GetEventRoutingCtx(r *http.Request) *models.EventRouting {
+	er, ok := r.Context().Value(EventRoutingKey{}).(*models.EventRouting)
+	if !ok {
+		return nil
+	}
+	return er
+}
+
+type EventTemplateKey struct{}
+
+func GetEventTemplateCtx(r *http.Request) *models.EventTemplate {
+	et, ok := r.Context().Value(EventTemplateKey{}).(*models.EventTemplate)
+	if !ok {
+		return nil
+	}
+	return et
+}
+
 type FacilityKey struct{}
 
 func GetFacilityCtx(r *http.Request) *models.Facility {

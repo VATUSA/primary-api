@@ -2,6 +2,7 @@ package facility
 
 import (
 	"context"
+	"github.com/VATUSA/primary-api/external/v3/event"
 	facility_log "github.com/VATUSA/primary-api/external/v3/facility-log"
 	"github.com/VATUSA/primary-api/external/v3/faq"
 	"github.com/VATUSA/primary-api/external/v3/feedback"
@@ -27,6 +28,14 @@ func Router(r chi.Router) {
 		r.With(middleware.NotGuest, middleware.CanEditFacility).Put("/", UpdateFacility)
 		r.With(middleware.NotGuest, middleware.CanEditFacility).Patch("/", PatchFacility)
 		r.With(middleware.NotGuest, middleware.CanEditFacility).Post("/reset-api-key", ResetApiKey)
+
+		r.Route("/event-templates", func(r chi.Router) {
+			event.TemplateRouter(r)
+		})
+
+		r.Route("/events", func(r chi.Router) {
+			event.EventRouter(r)
+		})
 
 		r.Route("/log", func(r chi.Router) {
 			facility_log.Router(r)

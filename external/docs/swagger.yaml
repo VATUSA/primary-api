@@ -234,6 +234,317 @@ definitions:
         example: true
         type: boolean
     type: object
+  event.EventPositionRequest:
+    properties:
+      assignee:
+        example: 1293257
+        type: integer
+      position:
+        example: ZDV_APP
+        type: string
+      secondary_assignee:
+        example: 1293257
+        type: integer
+      shifts:
+        example: true
+        type: boolean
+    required:
+    - position
+    type: object
+  event.EventPositionResponse:
+    properties:
+      assignee:
+        example: 1293257
+        type: integer
+      created_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      event_id:
+        example: 1
+        type: integer
+      facility:
+        allOf:
+        - $ref: '#/definitions/constants.FacilityID'
+        example: ZDV
+      id:
+        example: 1
+        type: integer
+      position:
+        example: ZDV_APP
+        type: string
+      secondary_assignee:
+        example: 1293257
+        type: integer
+      shifts:
+        example: true
+        type: boolean
+      signups:
+        items:
+          $ref: '#/definitions/models.EventSignup'
+        type: array
+      updated_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+    type: object
+  event.EventRequest:
+    properties:
+      banner_url:
+        example: https://zdvartcc.org/banner.jpg
+        type: string
+      description:
+        example: Join us for a fun night of flying in and out of Denver!
+        type: string
+      end_date:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      facilities:
+        example:
+        - '["ZDV"'
+        - ' "ZAB"'
+        - ' "ZLC"]'
+        items:
+          $ref: '#/definitions/constants.FacilityID'
+        type: array
+      fields:
+        example:
+        - '["KDEN"'
+        - ' "KBJC"'
+        - ' "KAPA"]'
+        items:
+          type: string
+        type: array
+      start_date:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      title:
+        example: ZDV FNO
+        type: string
+    required:
+    - description
+    - end_date
+    - facilities
+    - fields
+    - start_date
+    - title
+    type: object
+  event.EventResponse:
+    properties:
+      banner_url:
+        example: https://zdvartcc.org/banner.jpg
+        type: string
+      created_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      description:
+        example: Join us for a fun night of flying in and out of Denver!
+        type: string
+      end_date:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      facilities:
+        example:
+        - '["ZDV"'
+        - ' "ZAB"'
+        - ' "ZLC"]'
+        items:
+          $ref: '#/definitions/constants.FacilityID'
+        type: array
+      fields:
+        example:
+        - '["KDEN"'
+        - ' "KBJC"'
+        - ' "KAPA"]'
+        items:
+          type: string
+        type: array
+      id:
+        example: 1
+        type: integer
+      positions:
+        items:
+          $ref: '#/definitions/models.EventPosition'
+        type: array
+      routing:
+        items:
+          $ref: '#/definitions/models.EventRouting'
+        type: array
+      start_date:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      title:
+        example: ZDV FNO
+        type: string
+      updated_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+    type: object
+  event.EventRoutingRequest:
+    properties:
+      destination:
+        example: ZAB
+        type: string
+      notes:
+        example: Expect vectors to final at DBL
+        type: string
+      origin:
+        example: ZDV
+        type: string
+      routing:
+        example: ZDV J80 DBL J80 FQF J80 HCT J80 HBU J80 HCT J80 FQF J80 DBL J80 ZAB
+        type: string
+    required:
+    - destination
+    - notes
+    - origin
+    - routing
+    type: object
+  event.EventRoutingResponse:
+    properties:
+      created_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      destination:
+        example: KDEN
+        type: string
+      event_id:
+        example: 1
+        type: integer
+      id:
+        example: 1
+        type: integer
+      notes:
+        example: JETS ONLY
+        type: string
+      origin:
+        example: KLAX
+        type: string
+      routing:
+        example: DCT
+        type: string
+      updated_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+    type: object
+  event.EventSignupRequest:
+    properties:
+      cid:
+        example: 1293257
+        type: integer
+      position_id:
+        example: 1
+        type: integer
+      shift:
+        description: 1 = Primary, 2 = Secondary
+        example: 1
+        type: integer
+    required:
+    - cid
+    - position_id
+    - shift
+    type: object
+  event.EventSignupResponse:
+    properties:
+      cid:
+        example: 1293257
+        type: integer
+      created_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      event_id:
+        example: 1
+        type: integer
+      id:
+        example: 1
+        type: integer
+      position_id:
+        example: 1
+        type: integer
+      shift:
+        description: 1 = Primary, 2 = Secondary
+        example: 1
+        type: integer
+      updated_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+    type: object
+  event.EventTemplateRequest:
+    properties:
+      facilities:
+        example:
+        - '["ZDV"'
+        - ' "ZAB"'
+        - ' "ZLC"]'
+        items:
+          $ref: '#/definitions/constants.FacilityID'
+        type: array
+      fields:
+        example:
+        - '["KDEN"'
+        - ' "KBJC"'
+        - ' "KAPA"]'
+        items:
+          type: string
+        type: array
+      positions:
+        example:
+        - '["ZDV_APP"'
+        - ' "ZDV_TWR"]'
+        items:
+          type: string
+        type: array
+      shifts:
+        example: true
+        type: boolean
+      title:
+        example: KDEN FNO
+        type: string
+    required:
+    - facilities
+    - fields
+    - positions
+    - title
+    type: object
+  event.EventTemplateResponse:
+    properties:
+      created_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      facilities:
+        example:
+        - '["ZDV"'
+        - ' "ZAB"'
+        - ' "ZLC"]'
+        items:
+          $ref: '#/definitions/constants.FacilityID'
+        type: array
+      fields:
+        example:
+        - '["KDEN"'
+        - ' "KBJC"'
+        - ' "KAPA"]'
+        items:
+          type: string
+        type: array
+      id:
+        example: 1
+        type: integer
+      positions:
+        example:
+        - '["ZDV_APP"'
+        - ' "ZDV_TWR"]'
+        items:
+          type: string
+        type: array
+      shifts:
+        example: true
+        type: boolean
+      title:
+        example: KDEN FNO Template
+        type: string
+      updated_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+    type: object
   facility.Request:
     properties:
       name:
@@ -428,6 +739,93 @@ definitions:
         allOf:
         - $ref: '#/definitions/types.StatusType'
         example: pending
+    type: object
+  models.EventPosition:
+    properties:
+      assignee:
+        example: 1293257
+        type: integer
+      created_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      event_id:
+        example: 1
+        type: integer
+      facility:
+        allOf:
+        - $ref: '#/definitions/constants.FacilityID'
+        example: ZDV
+      id:
+        example: 1
+        type: integer
+      position:
+        example: ZDV_APP
+        type: string
+      secondary_assignee:
+        example: 1293257
+        type: integer
+      shifts:
+        example: true
+        type: boolean
+      signups:
+        items:
+          $ref: '#/definitions/models.EventSignup'
+        type: array
+      updated_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+    type: object
+  models.EventRouting:
+    properties:
+      created_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      destination:
+        example: KDEN
+        type: string
+      event_id:
+        example: 1
+        type: integer
+      id:
+        example: 1
+        type: integer
+      notes:
+        example: JETS ONLY
+        type: string
+      origin:
+        example: KLAX
+        type: string
+      routing:
+        example: DCT
+        type: string
+      updated_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+    type: object
+  models.EventSignup:
+    properties:
+      cid:
+        example: 1293257
+        type: integer
+      created_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      event_id:
+        example: 1
+        type: integer
+      id:
+        example: 1
+        type: integer
+      position_id:
+        example: 1
+        type: integer
+      shift:
+        description: 1 = Primary, 2 = Secondary
+        example: 1
+        type: integer
+      updated_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
     type: object
   models.UserFlag:
     properties:
@@ -933,6 +1331,12 @@ definitions:
       training:
         example: true
         type: boolean
+    required:
+    - discord
+    - email
+    - events
+    - feedback
+    - training
     type: object
   user_notification.Response:
     properties:
@@ -1139,6 +1543,801 @@ paths:
       summary: Update a facility
       tags:
       - facility
+  /facility/{FacilityID}/event-templates:
+    get:
+      consumes:
+      - application/json
+      description: Get Event Templates by Facility
+      parameters:
+      - description: Facility ID
+        in: path
+        name: FacilityID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/event.EventTemplateResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Get Event Templates
+      tags:
+      - event
+  /facility/{FacilityID}/event-templates/{EventTemplateID}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an Event Template
+      parameters:
+      - description: Facility ID
+        in: path
+        name: FacilityID
+        required: true
+        type: string
+      - description: Event Template ID
+        in: path
+        name: EventTemplateID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Delete an Event Template
+      tags:
+      - event
+    put:
+      consumes:
+      - application/json
+      description: Update an Event Template
+      parameters:
+      - description: Facility ID
+        in: path
+        name: FacilityID
+        required: true
+        type: string
+      - description: Event Template ID
+        in: path
+        name: EventTemplateID
+        required: true
+        type: string
+      - description: Event Template
+        in: body
+        name: event
+        required: true
+        schema:
+          $ref: '#/definitions/event.EventTemplateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/event.EventTemplateResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Update an Event Template
+      tags:
+      - event
+  /facility/{FacilityID}/events:
+    get:
+      consumes:
+      - application/json
+      description: Get Events by Facility
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/event.EventResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Get Events
+      tags:
+      - event
+    post:
+      consumes:
+      - application/json
+      description: Create an Event
+      parameters:
+      - description: Event
+        in: body
+        name: event
+        required: true
+        schema:
+          $ref: '#/definitions/event.EventRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/event.EventResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Create an Event
+      tags:
+      - event
+  /facility/{FacilityID}/events/{EventID}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Event by ID
+      parameters:
+      - description: Event ID
+        in: path
+        name: EventID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Delete Event
+      tags:
+      - event
+    get:
+      consumes:
+      - application/json
+      description: Get Event by ID
+      parameters:
+      - description: Event ID
+        in: path
+        name: EventID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/event.EventResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Get Event
+      tags:
+      - event
+    patch:
+      consumes:
+      - application/json
+      description: Patch Event by ID
+      parameters:
+      - description: Event ID
+        in: path
+        name: EventID
+        required: true
+        type: string
+      - description: Event
+        in: body
+        name: event
+        required: true
+        schema:
+          $ref: '#/definitions/event.EventRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/event.EventResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Patch Event
+      tags:
+      - event
+    put:
+      consumes:
+      - application/json
+      description: Update Event by ID
+      parameters:
+      - description: Event ID
+        in: path
+        name: EventID
+        required: true
+        type: string
+      - description: Event
+        in: body
+        name: event
+        required: true
+        schema:
+          $ref: '#/definitions/event.EventRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/event.EventResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Update Event
+      tags:
+      - event
+  /facility/{FacilityID}/events/{EventID}/positions:
+    get:
+      consumes:
+      - application/json
+      description: Get Event Positions
+      parameters:
+      - description: Facility ID
+        in: path
+        name: FacilityID
+        required: true
+        type: string
+      - description: Event ID
+        in: path
+        name: EventID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/event.EventPositionResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Get Event Positions
+      tags:
+      - event
+    post:
+      consumes:
+      - application/json
+      description: Create an Event Position
+      parameters:
+      - description: Facility ID
+        in: path
+        name: FacilityID
+        required: true
+        type: string
+      - description: Event ID
+        in: path
+        name: EventID
+        required: true
+        type: string
+      - description: Event Position
+        in: body
+        name: event
+        required: true
+        schema:
+          $ref: '#/definitions/event.EventPositionRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/event.EventPositionResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Create an Event Position
+      tags:
+      - event
+  /facility/{FacilityID}/events/{EventID}/positions/{EventPositionID}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an Event Position
+      parameters:
+      - description: Facility ID
+        in: path
+        name: FacilityID
+        required: true
+        type: string
+      - description: Event ID
+        in: path
+        name: EventID
+        required: true
+        type: string
+      - description: Event Position ID
+        in: path
+        name: EventPositionID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Delete an Event Position
+      tags:
+      - event
+    get:
+      consumes:
+      - application/json
+      description: Get Event Position
+      parameters:
+      - description: Facility ID
+        in: path
+        name: FacilityID
+        required: true
+        type: string
+      - description: Event ID
+        in: path
+        name: EventID
+        required: true
+        type: string
+      - description: Event Position ID
+        in: path
+        name: EventPositionID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/event.EventPositionResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Get Event Position
+      tags:
+      - event
+    patch:
+      consumes:
+      - application/json
+      description: Patch an Event Position
+      parameters:
+      - description: Facility ID
+        in: path
+        name: FacilityID
+        required: true
+        type: string
+      - description: Event ID
+        in: path
+        name: EventID
+        required: true
+        type: string
+      - description: Event Position ID
+        in: path
+        name: EventPositionID
+        required: true
+        type: string
+      - description: Event Position
+        in: body
+        name: event
+        required: true
+        schema:
+          $ref: '#/definitions/event.EventPositionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/event.EventPositionResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Patch an Event Position
+      tags:
+      - event
+  /facility/{FacilityID}/events/{EventID}/routing:
+    get:
+      consumes:
+      - application/json
+      description: Get Event Routing
+      parameters:
+      - description: Facility ID
+        in: path
+        name: FacilityID
+        required: true
+        type: string
+      - description: Event ID
+        in: path
+        name: EventID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/event.EventRoutingResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Get Event Routing
+      tags:
+      - event
+    post:
+      consumes:
+      - application/json
+      description: Create an Event Routing
+      parameters:
+      - description: Facility ID
+        in: path
+        name: FacilityID
+        required: true
+        type: string
+      - description: Event ID
+        in: path
+        name: EventID
+        required: true
+        type: string
+      - description: Event Routing
+        in: body
+        name: event
+        required: true
+        schema:
+          $ref: '#/definitions/event.EventRoutingRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/event.EventRoutingResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Create an Event Routing
+      tags:
+      - event
+  /facility/{FacilityID}/events/{EventID}/routing/{EventRoutingID}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an Event Routing
+      parameters:
+      - description: Facility ID
+        in: path
+        name: FacilityID
+        required: true
+        type: string
+      - description: Event ID
+        in: path
+        name: EventID
+        required: true
+        type: string
+      - description: Event Routing ID
+        in: path
+        name: EventRoutingID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Delete an Event Routing
+      tags:
+      - event
+    patch:
+      consumes:
+      - application/json
+      description: Patch an Event Routing
+      parameters:
+      - description: Facility ID
+        in: path
+        name: FacilityID
+        required: true
+        type: string
+      - description: Event ID
+        in: path
+        name: EventID
+        required: true
+        type: string
+      - description: Event Routing ID
+        in: path
+        name: EventRoutingID
+        required: true
+        type: string
+      - description: Event Routing
+        in: body
+        name: event
+        required: true
+        schema:
+          $ref: '#/definitions/event.EventRoutingRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/event.EventRoutingResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Patch an Event Routing
+      tags:
+      - event
+  /facility/{FacilityID}/events/{EventID}/signups:
+    get:
+      consumes:
+      - application/json
+      description: Get Event Signups
+      parameters:
+      - description: Facility ID
+        in: path
+        name: FacilityID
+        required: true
+        type: string
+      - description: Event ID
+        in: path
+        name: EventID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/event.EventSignupResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Get Event Signups
+      tags:
+      - event
+    post:
+      consumes:
+      - application/json
+      description: Create an Event Signup
+      parameters:
+      - description: Facility ID
+        in: path
+        name: FacilityID
+        required: true
+        type: string
+      - description: Event ID
+        in: path
+        name: EventID
+        required: true
+        type: string
+      - description: Event Signup
+        in: body
+        name: event
+        required: true
+        schema:
+          $ref: '#/definitions/event.EventSignupRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/event.EventSignupResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Create an Event Signup
+      tags:
+      - event
+  /facility/{FacilityID}/events/{EventID}/signups/{EventSignupID}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an Event Signup
+      parameters:
+      - description: Facility ID
+        in: path
+        name: FacilityID
+        required: true
+        type: string
+      - description: Event ID
+        in: path
+        name: EventID
+        required: true
+        type: string
+      - description: Event Signup ID
+        in: path
+        name: EventSignupID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Delete an Event Signup
+      tags:
+      - event
+    get:
+      consumes:
+      - application/json
+      description: Get an Event Signup
+      parameters:
+      - description: Facility ID
+        in: path
+        name: FacilityID
+        required: true
+        type: string
+      - description: Event ID
+        in: path
+        name: EventID
+        required: true
+        type: string
+      - description: Event Signup ID
+        in: path
+        name: EventSignupID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/event.EventSignupResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Get an Event Signup
+      tags:
+      - event
   /facility/{FacilityID}/faq:
     get:
       consumes:
@@ -3339,6 +4538,33 @@ paths:
       summary: Update a user flag
       tags:
       - user-flag
+  /user/discord/unlink:
+    get:
+      consumes:
+      - application/json
+      description: Unlink your Discord account from your VATUSA account
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Unlink your Discord account
+      tags:
+      - discord
 securityDefinitions:
   ApiKeyAuth:
     in: header
