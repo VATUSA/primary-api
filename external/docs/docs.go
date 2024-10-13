@@ -24,6 +24,58 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/events": {
+            "get": {
+                "description": "Get All Events (Paginated, default 10, limit 25)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "event"
+                ],
+                "summary": "Get All Events",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/event.EventResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/facility": {
             "get": {
                 "description": "Get all facilities",
@@ -392,6 +444,15 @@ const docTemplate = `{
                     "event"
                 ],
                 "summary": "Get Events",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Facility ID",
+                        "name": "FacilityID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -429,6 +490,13 @@ const docTemplate = `{
                 ],
                 "summary": "Create an Event",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Facility ID",
+                        "name": "FacilityID",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "description": "Event",
                         "name": "event",
@@ -477,6 +545,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "Facility ID",
+                        "name": "FacilityID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "Event ID",
                         "name": "EventID",
                         "in": "path",
@@ -523,6 +598,13 @@ const docTemplate = `{
                 ],
                 "summary": "Update Event",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Facility ID",
+                        "name": "FacilityID",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Event ID",
@@ -582,6 +664,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "Facility ID",
+                        "name": "FacilityID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "Event ID",
                         "name": "EventID",
                         "in": "path",
@@ -625,6 +714,13 @@ const docTemplate = `{
                 ],
                 "summary": "Patch Event",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Facility ID",
+                        "name": "FacilityID",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Event ID",
@@ -5136,9 +5232,7 @@ const docTemplate = `{
                         "$ref": "#/definitions/constants.FacilityID"
                     },
                     "example": [
-                        "[\"ZDV\"",
-                        " \"ZAB\"",
-                        " \"ZLC\"]"
+                        "ZDV"
                     ]
                 },
                 "fields": {
@@ -5147,9 +5241,7 @@ const docTemplate = `{
                         "type": "string"
                     },
                     "example": [
-                        "[\"KDEN\"",
-                        " \"KBJC\"",
-                        " \"KAPA\"]"
+                        "KDEN"
                     ]
                 },
                 "start_date": {
@@ -5369,9 +5461,7 @@ const docTemplate = `{
                         "$ref": "#/definitions/constants.FacilityID"
                     },
                     "example": [
-                        "[\"ZDV\"",
-                        " \"ZAB\"",
-                        " \"ZLC\"]"
+                        "ZDV"
                     ]
                 },
                 "fields": {
@@ -5380,9 +5470,7 @@ const docTemplate = `{
                         "type": "string"
                     },
                     "example": [
-                        "[\"KDEN\"",
-                        " \"KBJC\"",
-                        " \"KAPA\"]"
+                        "KDEN"
                     ]
                 },
                 "positions": {
@@ -5391,8 +5479,7 @@ const docTemplate = `{
                         "type": "string"
                     },
                     "example": [
-                        "[\"ZDV_APP\"",
-                        " \"ZDV_TWR\"]"
+                        "ZDV_APP"
                     ]
                 },
                 "shifts": {

@@ -7,6 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"slices"
+	"strconv"
 	"time"
 )
 
@@ -16,6 +17,7 @@ import (
 // @Tags event
 // @Accept  json
 // @Produce  json
+// @Param FacilityID path string true "Facility ID"
 // @Param event body EventRequest true "Event"
 // @Success 201 {object} EventResponse
 // @Failure 400 {object} utils.ErrResponse
@@ -60,12 +62,59 @@ func CreateEvent(w http.ResponseWriter, r *http.Request) {
 	utils.Render(w, r, NewEventResponse(ev))
 }
 
+// GetAllEvents godoc
+// @Summary Get All Events
+// @Description Get All Events (Paginated, default 10, limit 25)
+// @Tags event
+// @Accept  json
+// @Produce  json
+// @Param page query int false "Page"
+// @Param limit query int false "Limit"
+// @Success 200 {object} []EventResponse
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /events [get]
+func GetAllEvents(w http.ResponseWriter, r *http.Request) {
+	pageStr := r.URL.Query().Get("page")
+	limitStr := r.URL.Query().Get("limit")
+
+	page, err := strconv.ParseInt(pageStr, 10, 64)
+	if err != nil {
+		page = 1
+	}
+
+	if page == 0 {
+		page = 1
+	}
+
+	limit, err := strconv.ParseInt(limitStr, 10, 64)
+	if err != nil {
+		limit = 10
+	}
+	if limit < 1 || limit > 25 {
+		limit = 10
+	}
+
+	events, err := models.GetEventsFiltered(int(page), int(limit), "", time.Now())
+	if err != nil {
+		log.WithError(err).Error("Error getting events")
+		utils.Render(w, r, utils.ErrInternalServer)
+		return
+	}
+
+	if err := render.RenderList(w, r, NewEventListResponse(events)); err != nil {
+		utils.Render(w, r, utils.ErrRender(err))
+		return
+	}
+}
+
 // GetEvents godoc
 // @Summary Get Events
 // @Description Get Events by Facility
 // @Tags event
 // @Accept  json
 // @Produce  json
+// @Param FacilityID path string true "Facility ID"
 // @Success 200 {object} []EventResponse
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
@@ -73,7 +122,7 @@ func CreateEvent(w http.ResponseWriter, r *http.Request) {
 func GetEvents(w http.ResponseWriter, r *http.Request) {
 	fac := utils.GetFacilityCtx(r)
 
-	events, err := models.GetEventsFiltered(fac.ID, time.Now())
+	events, err := models.GetEventsFiltered(0, 1000, fac.ID, time.Now())
 	if err != nil {
 		log.WithError(err).Error("Error getting events")
 		utils.Render(w, r, utils.ErrInternalServer)
@@ -92,6 +141,7 @@ func GetEvents(w http.ResponseWriter, r *http.Request) {
 // @Tags event
 // @Accept  json
 // @Produce  json
+// @Param FacilityID path string true "Facility ID"
 // @Param EventID path string true "Event ID"
 // @Success 200 {object} EventResponse
 // @Failure 400 {object} utils.ErrResponse
@@ -109,6 +159,7 @@ func GetEvent(w http.ResponseWriter, r *http.Request) {
 // @Tags event
 // @Accept  json
 // @Produce  json
+// @Param FacilityID path string true "Facility ID"
 // @Param EventID path string true "Event ID"
 // @Param event body EventRequest true "Event"
 // @Success 200 {object} EventResponse
@@ -153,6 +204,7 @@ func UpdateEvent(w http.ResponseWriter, r *http.Request) {
 // @Tags event
 // @Accept  json
 // @Produce  json
+// @Param FacilityID path string true "Facility ID"
 // @Param EventID path string true "Event ID"
 // @Param event body EventRequest true "Event"
 // @Success 200 {object} EventResponse
@@ -211,6 +263,7 @@ func PatchEvent(w http.ResponseWriter, r *http.Request) {
 // @Tags event
 // @Accept  json
 // @Produce  json
+// @Param FacilityID path string true "Facility ID"
 // @Param EventID path string true "Event ID"
 // @Success 204
 // @Failure 400 {object} utils.ErrResponse

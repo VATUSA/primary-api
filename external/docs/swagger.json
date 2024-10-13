@@ -17,6 +17,58 @@
     },
     "basePath": "/v3",
     "paths": {
+        "/events": {
+            "get": {
+                "description": "Get All Events (Paginated, default 10, limit 25)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "event"
+                ],
+                "summary": "Get All Events",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/event.EventResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/facility": {
             "get": {
                 "description": "Get all facilities",
@@ -385,6 +437,15 @@
                     "event"
                 ],
                 "summary": "Get Events",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Facility ID",
+                        "name": "FacilityID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -422,6 +483,13 @@
                 ],
                 "summary": "Create an Event",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Facility ID",
+                        "name": "FacilityID",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "description": "Event",
                         "name": "event",
@@ -470,6 +538,13 @@
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "Facility ID",
+                        "name": "FacilityID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "Event ID",
                         "name": "EventID",
                         "in": "path",
@@ -516,6 +591,13 @@
                 ],
                 "summary": "Update Event",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Facility ID",
+                        "name": "FacilityID",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Event ID",
@@ -575,6 +657,13 @@
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "Facility ID",
+                        "name": "FacilityID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "Event ID",
                         "name": "EventID",
                         "in": "path",
@@ -618,6 +707,13 @@
                 ],
                 "summary": "Patch Event",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Facility ID",
+                        "name": "FacilityID",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Event ID",
@@ -5129,9 +5225,7 @@
                         "$ref": "#/definitions/constants.FacilityID"
                     },
                     "example": [
-                        "[\"ZDV\"",
-                        " \"ZAB\"",
-                        " \"ZLC\"]"
+                        "ZDV"
                     ]
                 },
                 "fields": {
@@ -5140,9 +5234,7 @@
                         "type": "string"
                     },
                     "example": [
-                        "[\"KDEN\"",
-                        " \"KBJC\"",
-                        " \"KAPA\"]"
+                        "KDEN"
                     ]
                 },
                 "start_date": {
@@ -5362,9 +5454,7 @@
                         "$ref": "#/definitions/constants.FacilityID"
                     },
                     "example": [
-                        "[\"ZDV\"",
-                        " \"ZAB\"",
-                        " \"ZLC\"]"
+                        "ZDV"
                     ]
                 },
                 "fields": {
@@ -5373,9 +5463,7 @@
                         "type": "string"
                     },
                     "example": [
-                        "[\"KDEN\"",
-                        " \"KBJC\"",
-                        " \"KAPA\"]"
+                        "KDEN"
                     ]
                 },
                 "positions": {
@@ -5384,8 +5472,7 @@
                         "type": "string"
                     },
                     "example": [
-                        "[\"ZDV_APP\"",
-                        " \"ZDV_TWR\"]"
+                        "ZDV_APP"
                     ]
                 },
                 "shifts": {

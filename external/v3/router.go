@@ -1,6 +1,7 @@
 package v3
 
 import (
+	"github.com/VATUSA/primary-api/external/v3/event"
 	"github.com/VATUSA/primary-api/external/v3/facility"
 	"github.com/VATUSA/primary-api/external/v3/user"
 	"github.com/VATUSA/primary-api/pkg/config"
@@ -16,5 +17,7 @@ func Router(r chi.Router, cfg *config.Config) {
 		r.Route("/facility", func(r chi.Router) {
 			facility.Router(r)
 		})
+
+		r.Get("/events", event.GetAllEvents)
 	})
 }

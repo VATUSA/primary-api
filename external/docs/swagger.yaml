@@ -299,17 +299,13 @@ definitions:
         type: string
       facilities:
         example:
-        - '["ZDV"'
-        - ' "ZAB"'
-        - ' "ZLC"]'
+        - ZDV
         items:
           $ref: '#/definitions/constants.FacilityID'
         type: array
       fields:
         example:
-        - '["KDEN"'
-        - ' "KBJC"'
-        - ' "KAPA"]'
+        - KDEN
         items:
           type: string
         type: array
@@ -471,24 +467,19 @@ definitions:
     properties:
       facilities:
         example:
-        - '["ZDV"'
-        - ' "ZAB"'
-        - ' "ZLC"]'
+        - ZDV
         items:
           $ref: '#/definitions/constants.FacilityID'
         type: array
       fields:
         example:
-        - '["KDEN"'
-        - ' "KBJC"'
-        - ' "KAPA"]'
+        - KDEN
         items:
           type: string
         type: array
       positions:
         example:
-        - '["ZDV_APP"'
-        - ' "ZDV_TWR"]'
+        - ZDV_APP
         items:
           type: string
         type: array
@@ -1409,6 +1400,40 @@ info:
   title: VATUSA API
   version: "0.1"
 paths:
+  /events:
+    get:
+      consumes:
+      - application/json
+      description: Get All Events (Paginated, default 10, limit 25)
+      parameters:
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/event.EventResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Get All Events
+      tags:
+      - event
   /facility:
     get:
       consumes:
@@ -1650,6 +1675,12 @@ paths:
       consumes:
       - application/json
       description: Get Events by Facility
+      parameters:
+      - description: Facility ID
+        in: path
+        name: FacilityID
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1675,6 +1706,11 @@ paths:
       - application/json
       description: Create an Event
       parameters:
+      - description: Facility ID
+        in: path
+        name: FacilityID
+        required: true
+        type: string
       - description: Event
         in: body
         name: event
@@ -1705,6 +1741,11 @@ paths:
       - application/json
       description: Delete Event by ID
       parameters:
+      - description: Facility ID
+        in: path
+        name: FacilityID
+        required: true
+        type: string
       - description: Event ID
         in: path
         name: EventID
@@ -1735,6 +1776,11 @@ paths:
       - application/json
       description: Get Event by ID
       parameters:
+      - description: Facility ID
+        in: path
+        name: FacilityID
+        required: true
+        type: string
       - description: Event ID
         in: path
         name: EventID
@@ -1767,6 +1813,11 @@ paths:
       - application/json
       description: Patch Event by ID
       parameters:
+      - description: Facility ID
+        in: path
+        name: FacilityID
+        required: true
+        type: string
       - description: Event ID
         in: path
         name: EventID
@@ -1805,6 +1856,11 @@ paths:
       - application/json
       description: Update Event by ID
       parameters:
+      - description: Facility ID
+        in: path
+        name: FacilityID
+        required: true
+        type: string
       - description: Event ID
         in: path
         name: EventID

@@ -1,8 +1,6 @@
 package models
 
 import (
-	"database/sql/driver"
-	"encoding/json"
 	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database"
 	"time"
@@ -11,34 +9,14 @@ import (
 type EventTemplate struct {
 	ID uint `json:"id" gorm:"primaryKey" example:"1"`
 
-	Title      string            `json:"title" gorm:"not null" example:"KDEN FNO Template"`
-	Positions  DefaultPositions  `json:"positions" gorm:"type:json" example:"[\"ZDV_APP\", \"ZDV_TWR\"]"`
-	Facilities DefaultFacilities `json:"facilities" gorm:"type:json" example:"[\"ZDV\", \"ZAB\", \"ZLC\"]"`
-	Fields     Fields            `json:"fields" gorm:"type:json" example:"[\"KDEN\", \"KBJC\", \"KAPA\"]"`
-	Shifts     bool              `json:"shifts" gorm:"not null;default:false" example:"true"`
+	Title      string                 `json:"title" gorm:"not null" example:"KDEN FNO Template"`
+	Positions  []string               `json:"positions" gorm:"serializer:json" example:"[\"ZDV_APP\", \"ZDV_TWR\"]"`
+	Facilities []constants.FacilityID `json:"facilities" gorm:"serializer:json" example:"[\"ZDV\", \"ZAB\", \"ZLC\"]"`
+	Fields     []string               `json:"fields" gorm:"serializer:json" example:"[\"KDEN\", \"KBJC\", \"KAPA\"]"`
+	Shifts     bool                   `json:"shifts" gorm:"not null;default:false" example:"true"`
 
 	CreatedAt time.Time `json:"created_at" example:"2021-01-01T00:00:00Z"`
 	UpdatedAt time.Time `json:"updated_at" example:"2021-01-01T00:00:00Z"`
-}
-
-type DefaultPositions []string
-
-func (f *DefaultPositions) Scan(value interface{}) error {
-	return json.Unmarshal(value.([]byte), f)
-}
-
-func (f *DefaultPositions) Value() (driver.Value, error) {
-	return json.Marshal(f)
-}
-
-type DefaultFacilities []constants.FacilityID
-
-func (f *DefaultFacilities) Scan(value interface{}) error {
-	return json.Unmarshal(value.([]byte), f)
-}
-
-func (f *DefaultFacilities) Value() (driver.Value, error) {
-	return json.Marshal(f)
 }
 
 func (et *EventTemplate) Create() error {

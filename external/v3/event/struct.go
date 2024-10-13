@@ -10,9 +10,9 @@ import (
 
 type EventTemplateRequest struct {
 	Title      string                 `json:"title" example:"KDEN FNO" validate:"required"`
-	Positions  []string               `json:"positions" example:"[\"ZDV_APP\", \"ZDV_TWR\"]" validate:"required"`
-	Facilities []constants.FacilityID `json:"facilities" example:"[\"ZDV\", \"ZAB\", \"ZLC\"]" validate:"required"`
-	Fields     []string               `json:"fields" example:"[\"KDEN\", \"KBJC\", \"KAPA\"]" validate:"required"`
+	Positions  []string               `json:"positions" example:"ZDV_APP" validate:"required"`
+	Facilities []constants.FacilityID `json:"facilities" example:"ZDV" validate:"required"`
+	Fields     []string               `json:"fields" example:"KDEN" validate:"required"`
 	Shifts     bool                   `json:"shifts" example:"true"`
 }
 
@@ -53,8 +53,8 @@ type EventRequest struct {
 	BannerURL   string                 `json:"banner_url" example:"https://zdvartcc.org/banner.jpg"`
 	StartDate   time.Time              `json:"start_date" example:"2021-01-01T00:00:00Z" validate:"required"`
 	EndDate     time.Time              `json:"end_date" example:"2021-01-01T00:00:00Z" validate:"required"`
-	Fields      []string               `json:"fields" example:"[\"KDEN\", \"KBJC\", \"KAPA\"]" validate:"required"`
-	Facilities  []constants.FacilityID `json:"facilities" example:"[\"ZDV\", \"ZAB\", \"ZLC\"]" validate:"required"`
+	Fields      []string               `json:"fields" example:"KDEN" validate:"required"`
+	Facilities  []constants.FacilityID `json:"facilities" example:"ZDV" validate:"required"`
 }
 
 func (req *EventRequest) Validate() error {
