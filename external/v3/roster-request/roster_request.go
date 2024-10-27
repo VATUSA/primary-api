@@ -1,12 +1,14 @@
 package roster_request
 
 import (
+	"encoding/json"
 	"errors"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/database/types"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
 	"github.com/go-playground/validator/v10"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 )
 
@@ -22,15 +24,31 @@ func (req *Request) Validate() error {
 }
 
 func (req *Request) Bind(r *http.Request) error {
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		return err
+	}
 	return nil
 }
 
 type Response struct {
 	*models.RosterRequest
+	FirstName string `json:"first_name" example:"John"`
+	LastName  string `json:"last_name" example:"Doe"`
 }
 
 func NewRosterRequestResponse(r *models.RosterRequest) *Response {
-	return &Response{RosterRequest: r}
+	resp := &Response{RosterRequest: r}
+
+	user := &models.User{CID: r.CID}
+	if err := user.Get(); err != nil {
+		log.WithError(err).Errorf("Error getting user with CID %d", r.CID)
+		return resp
+	}
+
+	resp.FirstName = user.FirstName
+	resp.LastName = user.LastName
+
+	return resp
 }
 
 func (res *Response) Render(w http.ResponseWriter, r *http.Request) error {

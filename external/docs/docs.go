@@ -4457,7 +4457,49 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/{cid}/role": {
+        "/user/{cid}/roles": {
+            "get": {
+                "description": "Get roles for the user logged in",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-roles"
+                ],
+                "summary": "Get your roles",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User CID",
+                        "name": "cid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user_role.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ErrResponse"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Create a new user role",
                 "consumes": [
@@ -4510,51 +4552,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/{cid}/role/": {
-            "get": {
-                "description": "Get roles for the user logged in",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user-roles"
-                ],
-                "summary": "Get your roles",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "User CID",
-                        "name": "cid",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/user_role.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/utils.ErrResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/utils.ErrResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/{cid}/role/{role_id}": {
+        "/user/{cid}/roles/{role_id}": {
             "delete": {
                 "description": "Remove a user role",
                 "consumes": [
@@ -5159,6 +5157,10 @@ const docTemplate = `{
                     "type": "integer",
                     "example": 1293257
                 },
+                "assignee_name": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
                 "created_at": {
                     "type": "string",
                     "example": "2021-01-01T00:00:00Z"
@@ -5186,6 +5188,10 @@ const docTemplate = `{
                 "secondary_assignee": {
                     "type": "integer",
                     "example": 1293257
+                },
+                "secondary_assignee_name": {
+                    "type": "string",
+                    "example": "Jane Doe"
                 },
                 "shifts": {
                     "type": "boolean",
@@ -5430,6 +5436,9 @@ const docTemplate = `{
                 "id": {
                     "type": "integer",
                     "example": 1
+                },
+                "name": {
+                    "type": "string"
                 },
                 "position_id": {
                     "type": "integer",
@@ -5944,6 +5953,9 @@ const docTemplate = `{
                     "type": "integer",
                     "example": 1
                 },
+                "name": {
+                    "type": "string"
+                },
                 "position_id": {
                     "type": "integer",
                     "example": 1
@@ -6394,24 +6406,24 @@ const docTemplate = `{
                     "type": "string",
                     "example": "2021-01-01T00:00:00Z"
                 },
+                "first_name": {
+                    "type": "string",
+                    "example": "John"
+                },
                 "id": {
                     "type": "integer",
                     "example": 1
+                },
+                "last_name": {
+                    "type": "string",
+                    "example": "Doe"
                 },
                 "reason": {
                     "type": "string",
                     "example": "I want to transfer to ZDV"
                 },
-                "requestType": {
+                "request_type": {
                     "$ref": "#/definitions/types.RequestType"
-                },
-                "requested_facility": {
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/constants.FacilityID"
-                        }
-                    ],
-                    "example": "ZDV"
                 },
                 "status": {
                     "$ref": "#/definitions/types.StatusType"

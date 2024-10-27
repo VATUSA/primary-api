@@ -66,7 +66,7 @@ func Router(r chi.Router) {
 			user_flag.Router(r)
 		})
 
-		r.Route("/user-roles", func(r chi.Router) {
+		r.Route("/roles", func(r chi.Router) {
 			user_role.Router(r)
 		})
 	})

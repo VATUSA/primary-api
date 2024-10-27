@@ -23,17 +23,21 @@ import (
 // @Router /facility/{FacilityID}/events/{EventID}/signups [post]
 func CreateEventSignup(w http.ResponseWriter, r *http.Request) {
 	req := &EventSignupRequest{}
-	if err := render.Bind(r, req); err != nil {
+	if err := req.Bind(r); err != nil {
+		log.WithError(err).Error("Error binding request")
 		utils.Render(w, r, utils.ErrBadRequest)
 		return
 	}
 
 	if err := req.Validate(); err != nil {
+		log.WithError(err).Error("Error validating request")
 		utils.Render(w, r, utils.ErrBadRequest)
 		return
 	}
 
+	event := utils.GetEventCtx(r)
 	signup := &models.EventSignup{
+		EventID:    event.ID,
 		PositionID: req.PositionID,
 		CID:        req.CID,
 		Shift:      req.Shift,

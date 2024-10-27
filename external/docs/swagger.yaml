@@ -256,6 +256,9 @@ definitions:
       assignee:
         example: 1293257
         type: integer
+      assignee_name:
+        example: John Doe
+        type: string
       created_at:
         example: "2021-01-01T00:00:00Z"
         type: string
@@ -275,6 +278,9 @@ definitions:
       secondary_assignee:
         example: 1293257
         type: integer
+      secondary_assignee_name:
+        example: Jane Doe
+        type: string
       shifts:
         example: true
         type: boolean
@@ -452,6 +458,8 @@ definitions:
       id:
         example: 1
         type: integer
+      name:
+        type: string
       position_id:
         example: 1
         type: integer
@@ -807,6 +815,8 @@ definitions:
       id:
         example: 1
         type: integer
+      name:
+        type: string
       position_id:
         example: 1
         type: integer
@@ -1119,18 +1129,20 @@ definitions:
       created_at:
         example: "2021-01-01T00:00:00Z"
         type: string
+      first_name:
+        example: John
+        type: string
       id:
         example: 1
         type: integer
+      last_name:
+        example: Doe
+        type: string
       reason:
         example: I want to transfer to ZDV
         type: string
-      requestType:
+      request_type:
         $ref: '#/definitions/types.RequestType'
-      requested_facility:
-        allOf:
-        - $ref: '#/definitions/constants.FacilityID'
-        example: ZDV
       status:
         $ref: '#/definitions/types.StatusType'
       updated_at:
@@ -4332,7 +4344,35 @@ paths:
       summary: Update a rating change
       tags:
       - rating-change
-  /user/{cid}/role:
+  /user/{cid}/roles:
+    get:
+      consumes:
+      - application/json
+      description: Get roles for the user logged in
+      parameters:
+      - description: User CID
+        in: path
+        name: cid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_role.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Get your roles
+      tags:
+      - user-roles
     post:
       consumes:
       - application/json
@@ -4367,36 +4407,7 @@ paths:
       summary: Create a new user role
       tags:
       - user-roles
-  /user/{cid}/role/:
-    get:
-      consumes:
-      - application/json
-      description: Get roles for the user logged in
-      parameters:
-      - description: User CID
-        in: path
-        name: cid
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/user_role.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ErrResponse'
-      summary: Get your roles
-      tags:
-      - user-roles
-  /user/{cid}/role/{role_id}:
+  /user/{cid}/roles/{role_id}:
     delete:
       consumes:
       - application/json

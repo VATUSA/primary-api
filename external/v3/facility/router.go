@@ -57,7 +57,7 @@ func Router(r chi.Router) {
 			roster.Router(r)
 		})
 
-		r.Route("/roster-requests", func(r chi.Router) {
+		r.Route("/roster-request", func(r chi.Router) {
 			roster_request.Router(r)
 		})
 	})

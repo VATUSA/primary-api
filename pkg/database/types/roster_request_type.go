@@ -13,12 +13,12 @@ const (
 )
 
 func (s *RequestType) Scan(value interface{}) error {
-	strValue, ok := value.(string)
-	if !ok {
-		return errors.New("failed to scan RequestType")
+	if byteSlice, ok := value.([]byte); ok {
+		*s = RequestType(byteSlice)
+	} else {
+		return errors.New("failed to scan request_type")
 	}
 
-	*s = RequestType(strValue)
 	return nil
 }
 

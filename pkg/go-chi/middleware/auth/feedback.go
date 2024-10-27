@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"encoding/json"
 	"github.com/VATUSA/primary-api/pkg/database/types"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	log "github.com/sirupsen/logrus"
@@ -98,6 +99,10 @@ type Request struct {
 }
 
 func (req *Request) Bind(r *http.Request) error {
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		return err
+	}
+
 	return nil
 }
 

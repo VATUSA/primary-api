@@ -53,7 +53,7 @@ func (un *User) Get() error {
 		return database.DB.Where("discord_id = ?", un.DiscordID).First(un).Error
 	}
 
-	return database.DB.First(un).Error
+	return database.DB.Preload("Roster").First(un).Error
 }
 
 func GetAllUsers() ([]User, error) {
@@ -86,4 +86,18 @@ func IsValidUser(cid uint) bool {
 		return false
 	}
 	return true
+}
+
+func GetUserOIs(cid uint, facility constants.FacilityID) (string, error) {
+	var user User
+	if err := database.DB.Preload("Roster").First(&user, cid).Error; err != nil {
+		return "", err
+	}
+
+	for _, roster := range user.Roster {
+		if roster.Facility == facility {
+			return roster.OIs, nil
+		}
+	}
+	return user.PreferredOIs, nil
 }

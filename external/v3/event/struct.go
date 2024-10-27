@@ -1,9 +1,12 @@
 package event
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/go-chi/render"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"time"
 )
@@ -21,6 +24,9 @@ func (req *EventTemplateRequest) Validate() error {
 }
 
 func (req *EventTemplateRequest) Bind(r *http.Request) error {
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -62,6 +68,9 @@ func (req *EventRequest) Validate() error {
 }
 
 func (req *EventRequest) Bind(r *http.Request) error {
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -100,15 +109,62 @@ func (req *EventPositionRequest) Validate() error {
 }
 
 func (req *EventPositionRequest) Bind(r *http.Request) error {
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		return err
+	}
 	return nil
 }
 
 type EventPositionResponse struct {
 	*models.EventPosition
+	AssigneeName          string `json:"assignee_name" example:"John Doe"`
+	SecondaryAssigneeName string `json:"secondary_assignee_name" example:"Jane Doe"`
 }
 
 func NewEventPositionResponse(ep *models.EventPosition) *EventPositionResponse {
-	return &EventPositionResponse{EventPosition: ep}
+	resp := &EventPositionResponse{EventPosition: ep}
+	if ep.Assignee != 0 {
+		user := models.User{CID: ep.Assignee}
+		if err := user.Get(); err != nil {
+			log.WithError(err).Errorf("Error getting user %d", ep.Assignee)
+			resp.AssigneeName = "Unknown"
+		}
+
+		ois, err := models.GetUserOIs(user.CID, ep.Facility)
+		if err != nil {
+			log.WithError(err).Errorf("Error getting OIs for user %d", user.CID)
+		}
+		resp.AssigneeName = fmt.Sprintf("%s - %s", user.FirstName, ois)
+	}
+	if ep.SecondaryAssignee != 0 {
+		user := models.User{CID: ep.SecondaryAssignee}
+		if err := user.Get(); err != nil {
+			log.WithError(err).Errorf("Error getting user %d", ep.SecondaryAssignee)
+			resp.SecondaryAssigneeName = "Unknown"
+		}
+
+		ois, err := models.GetUserOIs(user.CID, ep.Facility)
+		if err != nil {
+			log.WithError(err).Errorf("Error getting OIs for user %d", user.CID)
+		}
+		resp.SecondaryAssigneeName = fmt.Sprintf("%s - %s", user.FirstName, ois)
+	}
+
+	for idx, signup := range ep.Signups {
+		user := models.User{CID: signup.CID}
+		if err := user.Get(); err != nil {
+			log.WithError(err).Errorf("Error getting user %d", signup.CID)
+			continue
+		}
+
+		ois, err := models.GetUserOIs(user.CID, ep.Facility)
+		if err != nil {
+			log.WithError(err).Errorf("Error getting OIs for user %d", user.CID)
+		}
+		ep.Signups[idx].Name = fmt.Sprintf("%s - %s", user.FirstName, ois)
+	}
+
+	return resp
 }
 
 func (res *EventPositionResponse) Render(w http.ResponseWriter, r *http.Request) error {
@@ -137,6 +193,9 @@ func (req *EventSignupRequest) Validate() error {
 }
 
 func (req *EventSignupRequest) Bind(r *http.Request) error {
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -175,6 +234,9 @@ func (req *EventRoutingRequest) Validate() error {
 }
 
 func (req *EventRoutingRequest) Bind(r *http.Request) error {
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		return err
+	}
 	return nil
 }
 

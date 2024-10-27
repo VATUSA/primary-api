@@ -40,7 +40,10 @@ func (ep *EventPosition) Delete() error {
 
 func GetEventPositionsFiltered(eventId uint, facilityID constants.FacilityID) ([]EventPosition, error) {
 	var positions []EventPosition
-	query := database.DB.Where("event_id = ?", eventId)
+	query := database.DB.Preload("Signups")
+	if eventId != 0 {
+		query = query.Where("event_id = ?", eventId)
+	}
 	if facilityID != "" {
 		query = query.Where("facility = ?", facilityID)
 	}

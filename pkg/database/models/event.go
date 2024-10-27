@@ -30,7 +30,7 @@ func (e *Event) Create() error {
 }
 
 func (e *Event) Get() error {
-	return database.DB.Preload("Positions").Preload("Routing").First(e).Error
+	return database.DB.Preload("Positions.Signups").Preload("Routing").First(e).Error
 }
 
 func (e *Event) Update() error {

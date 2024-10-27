@@ -10,9 +10,9 @@ import (
 type RosterRequest struct {
 	ID          uint                 `json:"id" gorm:"primaryKey" example:"1"`
 	CID         uint                 `json:"cid" example:"1293257"`
-	Facility    constants.FacilityID `json:"requested_facility" example:"ZDV"`
-	RequestType types.RequestType    `gorm:"type:enum('visiting', 'transferring');"`
-	Status      types.StatusType     `gorm:"type:enum('pending', 'accepted', 'rejected');"`
+	Facility    constants.FacilityID `json:"-" example:"ZDV"`
+	RequestType types.RequestType    `json:"request_type" gorm:"type:enum('visiting', 'transferring');"`
+	Status      types.StatusType     `json:"status" gorm:"type:enum('pending', 'accepted', 'rejected');"`
 	Reason      string               `json:"reason" example:"I want to transfer to ZDV"`
 	CreatedAt   time.Time            `json:"created_at" example:"2021-01-01T00:00:00Z"`
 	UpdatedAt   time.Time            `json:"updated_at" example:"2021-01-01T00:00:00Z"`
@@ -46,20 +46,20 @@ func GetAllRosterRequestsByCID(cid uint) ([]RosterRequest, error) {
 
 func GetAllRosterRequestsByFacility(facility constants.FacilityID) ([]RosterRequest, error) {
 	var rosterRequests []RosterRequest
-	return rosterRequests, database.DB.Where("requested_facility = ?", facility).Find(&rosterRequests).Error
+	return rosterRequests, database.DB.Where("facility = ?", facility).Find(&rosterRequests).Error
 }
 
 func GetRosterRequestsByType(facility constants.FacilityID, reqType types.RequestType) ([]RosterRequest, error) {
 	var rosterRequests []RosterRequest
-	return rosterRequests, database.DB.Where("requested_facility = ? AND request_type = ?", facility, reqType).Find(&rosterRequests).Error
+	return rosterRequests, database.DB.Where("facility = ? AND request_type = ?", facility, reqType).Find(&rosterRequests).Error
 }
 
 func GetRosterRequestsByStatus(facility constants.FacilityID, status types.StatusType) ([]RosterRequest, error) {
 	var rosterRequests []RosterRequest
-	return rosterRequests, database.DB.Where("requested_facility = ? AND status = ?", facility, status).Find(&rosterRequests).Error
+	return rosterRequests, database.DB.Where("facility = ? AND status = ?", facility, status).Find(&rosterRequests).Error
 }
 
 func GetRosterRequestsByTypeAndStatus(facility constants.FacilityID, reqType types.RequestType, status types.StatusType) ([]RosterRequest, error) {
 	var rosterRequests []RosterRequest
-	return rosterRequests, database.DB.Where("requested_facility = ? AND request_type = ? AND status = ?", facility, reqType, status).Find(&rosterRequests).Error
+	return rosterRequests, database.DB.Where("facility = ? AND request_type = ? AND status = ?", facility, reqType, status).Find(&rosterRequests).Error
 }

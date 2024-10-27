@@ -29,6 +29,9 @@ func (req *Request) Validate() error {
 }
 
 func (req *Request) Bind(r *http.Request) error {
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		return err
+	}
 	return nil
 }
 

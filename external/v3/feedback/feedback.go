@@ -1,6 +1,7 @@
 package feedback
 
 import (
+	"encoding/json"
 	"errors"
 	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database/models"
@@ -29,6 +30,9 @@ func (req *Request) Validate() error {
 }
 
 func (req *Request) Bind(r *http.Request) error {
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		return err
+	}
 	return nil
 }
 

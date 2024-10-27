@@ -1,6 +1,7 @@
 package facility_log
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/VATUSA/primary-api/pkg/constants"
@@ -21,6 +22,9 @@ func (req *Request) Validate() error {
 }
 
 func (req *Request) Bind(r *http.Request) error {
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		return err
+	}
 	return nil
 }
 

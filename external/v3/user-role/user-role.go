@@ -1,12 +1,14 @@
 package user_role
 
 import (
+	"encoding/json"
 	"errors"
 	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	"github.com/go-chi/render"
 	"github.com/go-playground/validator/v10"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"time"
 )
@@ -21,6 +23,9 @@ func (req *Request) Validate() error {
 }
 
 func (req *Request) Bind(r *http.Request) error {
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -72,12 +77,19 @@ func NewUserRoleListResponse(userRoles []models.UserRole) []render.Renderer {
 // @Success 200 {object} Response
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /user/{cid}/role/ [get]
+// @Router /user/{cid}/roles [get]
 func GetSelfRoles(w http.ResponseWriter, r *http.Request) {
 	user := utils.GetXUser(r)
 
+	rosters, err := models.GetRostersByCID(user.CID)
+	if err != nil {
+		log.WithError(err).Errorf("Error getting rosters for user %d", user.CID)
+		utils.Render(w, r, utils.ErrInternalServer)
+		return
+	}
+
 	roles := []models.UserRole{}
-	for _, roster := range user.Roster {
+	for _, roster := range rosters {
 		roles = append(roles, roster.Roles...)
 	}
 
@@ -97,7 +109,7 @@ func GetSelfRoles(w http.ResponseWriter, r *http.Request) {
 // @Success 201 {object} Response
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /user/{cid}/role [post]
+// @Router /user/{cid}/roles [post]
 func CreateUserRoles(w http.ResponseWriter, r *http.Request) {
 	req := &Request{}
 	if err := render.Bind(r, req); err != nil {
@@ -139,7 +151,7 @@ func CreateUserRoles(w http.ResponseWriter, r *http.Request) {
 // @Success 204
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
-// @Router /user/{cid}/role/{role_id} [delete]
+// @Router /user/{cid}/roles/{role_id} [delete]
 func DeleteUserRoles(w http.ResponseWriter, r *http.Request) {
 	user := utils.GetUserCtx(r)
 	role := utils.GetUserRoleCtx(r)
