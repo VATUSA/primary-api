@@ -69,13 +69,9 @@ func IsFacilityEventsStaff(user *models.User, facility constants.FacilityID) boo
 	return false
 }
 
-func CanEditFacility(user *models.User, targetFacility *models.Facility) bool {
-	if IsVATUSAStaff(user) {
-		return true
-	}
-
+func CanEditFacility(user *models.User, facility constants.FacilityID) bool {
 	for _, roster := range user.Roster {
-		if roster.Facility == targetFacility.ID {
+		if roster.Facility == facility {
 			for _, roles := range roster.Roles {
 				if roles.RoleID == constants.AirTrafficManagerRole || roles.RoleID == constants.DeputyAirTrafficManagerRole || roles.RoleID == constants.WebMasterRole {
 					return true

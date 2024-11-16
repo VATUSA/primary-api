@@ -11,8 +11,10 @@ import (
 type Facility struct {
 	ID               constants.FacilityID `json:"id" gorm:"size:3;primaryKey" example:"ZDV"`
 	Name             string               `json:"name" example:"Denver ARTCC"`
+	About            string               `json:"about" example:"Denver ARTCC contains ZDV... etc. etc. etc."`
 	URL              string               `json:"url" example:"https://zdvartcc.org"`
 	APIKey           string               `json:"api_key" example:"1234567890"`
+	WebhookURL       string               `json:"webhook_url" example:""`
 	FacilityLogEntry []FacilityLogEntry   `json:"-" gorm:"foreignKey:Facility"`
 	FAQ              []FAQ                `json:"-" gorm:"foreignKey:Facility"`
 	Document         []Document           `json:"-" gorm:"foreignKey:Facility"`

@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database"
 	"time"
@@ -44,17 +45,27 @@ func (e *Event) Delete() error {
 func GetEventsFiltered(page, pageSize int, facilityID constants.FacilityID, afterDate time.Time) ([]Event, error) {
 	var events []Event
 
-	query := database.DB
+	query := database.DB.Preload("Positions").Preload("Routing")
 	if !afterDate.IsZero() {
 		query = query.Where("end_date > ?", afterDate)
 	}
 	if facilityID != "" {
-		// FIXME: idk if this query works
-		query = query.Where("facilities @> ?", []constants.FacilityID{facilityID})
+		query = query.Where("JSON_CONTAINS(facilities, ?, '$')", fmt.Sprintf(`"%s"`, facilityID))
 	}
 
 	offset := (page - 1) * pageSize
 	query = query.Offset(offset).Limit(pageSize)
 
 	return events, query.Find(&events).Error
+}
+
+func GetPreviousEvents(limit int, facilityID constants.FacilityID) ([]Event, error) {
+	var events []Event
+
+	query := database.DB.Where("end_date < ?", time.Now())
+	if facilityID != "" {
+		query = query.Where("JSON_CONTAINS(facilities, ?, '$')", fmt.Sprintf(`"%s"`, facilityID))
+	}
+
+	return events, query.Order("end_date DESC").Limit(limit).Find(&events).Error
 }

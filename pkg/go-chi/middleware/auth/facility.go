@@ -16,7 +16,7 @@ func CanEditFacility(next http.Handler) http.Handler {
 				return
 			}
 
-			if utils.IsFacilitySeniorStaff(credentials.User, targetFacility.ID) {
+			if utils.CanEditFacility(credentials.User, targetFacility.ID) {
 				next.ServeHTTP(w, r)
 				return
 			}
