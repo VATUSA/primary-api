@@ -53,7 +53,7 @@ func (un *User) Get() error {
 		return database.DB.Where("discord_id = ?", un.DiscordID).First(un).Error
 	}
 
-	return database.DB.Preload("Roster").First(un).Error
+	return database.DB.Preload("Roster.Roles").First(un).Error
 }
 
 func GetAllUsers() ([]User, error) {
