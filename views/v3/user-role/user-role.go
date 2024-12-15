@@ -30,14 +30,14 @@ func (req *Request) Bind(r *http.Request) error {
 }
 
 type Response struct {
-	RoleID     constants.RoleID     `json:"role_id" example:"ATM"`
+	Role       constants.RoleID     `json:"role" example:"ATM"`
 	FacilityID constants.FacilityID `json:"facility_id" example:"ZDV"`
 	CreatedAt  time.Time            `json:"created_at" example:"2021-01-01T00:00:00Z"`
 }
 
 func NewUserRoleResponse(roleID constants.RoleID, facilityId constants.FacilityID, createdAt time.Time) *Response {
 	resp := &Response{
-		RoleID:     roleID,
+		Role:       roleID,
 		FacilityID: facilityId,
 		CreatedAt:  createdAt,
 	}
@@ -46,8 +46,8 @@ func NewUserRoleResponse(roleID constants.RoleID, facilityId constants.FacilityI
 }
 
 func (res *Response) Render(w http.ResponseWriter, r *http.Request) error {
-	if res.RoleID == "" {
-		return errors.New("missing required role-id")
+	if res.Role == "" {
+		return errors.New("missing required role")
 	}
 	if res.FacilityID == "" {
 		return errors.New("missing required facility-id")
@@ -138,6 +138,19 @@ func CreateUserRoles(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.Render(w, r, NewUserRoleResponse(userRole.RoleID, userRole.FacilityID, userRole.CreatedAt))
+
+	// Create notification
+	notification := &models.Notification{
+		CID:      user.CID,
+		Category: "Administration",
+		Title:    "Role Added",
+		Body:     "You have been added to the " + string(userRole.RoleID) + " role at " + string(userRole.FacilityID),
+		ExpireAt: time.Now().Add(7 * 24 * time.Hour),
+	}
+
+	if err := notification.Create(); err != nil {
+		log.WithError(err).Errorf("Error creating notification for user %d", user.CID)
+	}
 }
 
 // DeleteUserRoles godoc
@@ -167,4 +180,17 @@ func DeleteUserRoles(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusNoContent)
+
+	// Create notification
+	notification := &models.Notification{
+		CID:      user.CID,
+		Category: "Administration",
+		Title:    "Role Removed",
+		Body:     "You have been removed from the " + string(role.RoleID) + " role at " + string(role.FacilityID),
+		ExpireAt: time.Now().Add(7 * 24 * time.Hour),
+	}
+
+	if err := notification.Create(); err != nil {
+		log.WithError(err).Errorf("Error creating notification for user %d", user.CID)
+	}
 }

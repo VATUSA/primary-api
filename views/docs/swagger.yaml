@@ -3242,6 +3242,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/utils.ErrResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Get rosters by facility
       tags:
       - roster

@@ -2673,6 +2673,11 @@ const docTemplate = `{
         },
         "/facility/{FacilityID}/roster": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Get rosters by facility",
                 "consumes": [
                     "application/json"

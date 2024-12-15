@@ -38,7 +38,7 @@ func GetLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cookie := &http.Cookie{
+	session := &http.Cookie{
 		Name:     "session",
 		Value:    sessionEncoded,
 		Path:     "/",
@@ -47,7 +47,7 @@ func GetLogin(w http.ResponseWriter, r *http.Request) {
 		Domain:   config.Cfg.Cookie.Domain,
 	}
 
-	http.SetCookie(w, cookie)
+	http.SetCookie(w, session)
 
 	utils.TempRedirect(w, r, oauth.OAuthConfig.AuthCodeURL(state))
 }
@@ -87,13 +87,13 @@ func GetLoginCallback(w http.ResponseWriter, r *http.Request) {
 	//}
 
 	res, err := http.NewRequest("GET", fmt.Sprintf("%s%s", config.Cfg.OAuth.BaseURL, config.Cfg.OAuth.UserInfoURL), nil)
-	res.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token.AccessToken))
-	res.Header.Add("Accept", "application/json")
-	res.Header.Add("User-Agent", "vatusa-primary-api")
 	if err != nil {
 		utils.Render(w, r, utils.ErrInternalServerWithErr(err))
 		return
 	}
+	res.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token.AccessToken))
+	res.Header.Add("Accept", "application/json")
+	res.Header.Add("User-Agent", "vatusa-primary-api")
 
 	client := &http.Client{}
 	resp, err := client.Do(res)
@@ -126,16 +126,17 @@ func GetLoginCallback(w http.ResponseWriter, r *http.Request) {
 	if encoded, err := cookie.CookieStore.Encode("VATUSA", map[string]string{
 		"cid": user.CID,
 	}); err == nil {
-		cookie := &http.Cookie{
+		usa := &http.Cookie{
 			Name:     "VATUSA",
 			Value:    encoded,
 			Path:     "/",
+			MaxAge:   60 * 60 * 24, // 24 hours
 			HttpOnly: true,
 			Secure:   true,
 			Domain:   config.Cfg.Cookie.Domain,
 		}
 
-		http.SetCookie(w, cookie)
+		http.SetCookie(w, usa)
 	} else {
 		utils.Render(w, r, utils.ErrInternalServerWithErr(err))
 		return

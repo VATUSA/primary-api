@@ -9,6 +9,7 @@ import (
 	"github.com/go-chi/render"
 	"github.com/go-playground/validator/v10"
 	"net/http"
+	"sort"
 )
 
 type Request struct {
@@ -43,6 +44,10 @@ func (res *Response) Render(w http.ResponseWriter, r *http.Request) error {
 }
 
 func NewRatingChangeListResponse(rc []models.RatingChange) []render.Renderer {
+	sort.Slice(rc, func(i, j int) bool {
+		return rc[i].CreatedAt.After(rc[j].CreatedAt)
+	})
+
 	list := []render.Renderer{}
 	for idx := range rc {
 		list = append(list, NewRatingChangeResponse(&rc[idx]))

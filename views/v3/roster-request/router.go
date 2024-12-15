@@ -17,6 +17,7 @@ func Router(r chi.Router) {
 	r.Route("/{RosterRequestID}", func(r chi.Router) {
 		r.Use(Ctx)
 
+		r.With(middleware.NotGuest, middleware.CanEditRosterRequest).Patch("/", PatchRosterRequest)
 		r.With(middleware.NotGuest, middleware.CanEditRosterRequest).Put("/", UpdateRosterRequest)
 		r.With(middleware.NotGuest, middleware.CanEditRosterRequest).Delete("/", DeleteRosterRequest)
 	})

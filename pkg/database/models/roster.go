@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -18,7 +19,23 @@ type Roster struct {
 	Roles     []UserRole           `json:"roles" gorm:"foreignKey:RosterID"`
 	CreatedAt time.Time            `json:"created_at" example:"2021-01-01T00:00:00Z"`
 	UpdatedAt time.Time            `json:"updated_at" example:"2021-01-01T00:00:00Z"`
-	DeletedAt *time.Time           `json:"deleted_at" example:"2021-01-01T00:00:00Z"` // Soft Deletes for logging
+	DeletedAt gorm.DeletedAt       `json:"deleted_at" example:"2021-01-01T00:00:00Z"` // Soft Deletes for logging
+}
+
+func (r *Roster) BeforeCreate(tx *gorm.DB) error {
+	notification := &Notification{
+		CID:      r.CID,
+		Category: "Roster",
+		Title:    "Added to Roster",
+		Body:     "You have been added to the roster at " + constants.FacilityDisplayNameMap[r.Facility],
+		ExpireAt: time.Now().AddDate(0, 0, 7),
+	}
+
+	if err := tx.Create(notification).Error; err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (r *Roster) Create() error {

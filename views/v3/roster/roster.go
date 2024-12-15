@@ -138,6 +138,7 @@ func CreateRoster(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 500 {object} utils.ErrResponse
 // @Router /facility/{FacilityID}/roster [get]
+// @Security ApiKeyAuth
 func GetRosterByFacility(w http.ResponseWriter, r *http.Request) {
 	fac := utils.GetFacilityCtx(r)
 

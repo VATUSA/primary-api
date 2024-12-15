@@ -101,7 +101,7 @@ func CreateRosterRequest(w http.ResponseWriter, r *http.Request) {
 		CID:         req.CID,
 		Facility:    fac.ID,
 		RequestType: req.RequestType,
-		Status:      req.Status,
+		Status:      "pending",
 		Reason:      req.Reason,
 	}
 

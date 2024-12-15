@@ -50,14 +50,12 @@ func HasAPIKey(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		apiKey := r.Header.Get("x-api-key")
 		if apiKey == "" {
-			//ctx := context.WithValue(r.Context(), utils.XGuest{}, true)
 			next.ServeHTTP(w, r.WithContext(r.Context()))
 			return
 		}
 
 		facility, err := models.GetFacilityByAPIKey(apiKey)
 		if err != nil {
-			//ctx := context.WithValue(r.Context(), utils.XGuest{}, true)
 			next.ServeHTTP(w, r.WithContext(r.Context()))
 			return
 		}
