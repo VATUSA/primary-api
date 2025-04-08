@@ -211,27 +211,6 @@ func PatchRosterRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if data.Status != "" {
-		if req.Status == types.Pending && data.Status == types.Accepted {
-			roster := &models.Roster{
-				CID:      req.CID,
-				Facility: req.Facility,
-				OIs:      "",
-				Home:     false,
-				Visiting: false,
-				Status:   "Active",
-			}
-
-			if data.RequestType == types.Visiting {
-				roster.Visiting = true
-			} else {
-				roster.Home = true
-			}
-
-			if err := roster.Create(); err != nil {
-				utils.Render(w, r, utils.ErrInvalidRequest(err))
-				return
-			}
-		}
 		req.Status = data.Status
 	}
 

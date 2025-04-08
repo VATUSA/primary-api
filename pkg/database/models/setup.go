@@ -28,6 +28,9 @@ func AutoMigrate() {
 		&UserNotification{},
 		&UserFlag{},
 		&UserRole{},
+		&OTSTemplate{},
+		&OTSRecord{},
+		&TrainingNotes{},
 	)
 	if err != nil {
 		log.Fatal("[Database] Migration Error:", err)
@@ -57,6 +60,9 @@ func DropTables() {
 		&UserNotification{},
 		&UserFlag{},
 		&UserRole{},
+		&OTSTemplate{},
+		&OTSRecord{},
+		&TrainingNotes{},
 	)
 	if err != nil {
 		log.Fatal("[Database] Drop Table Error:", err)

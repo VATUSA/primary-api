@@ -11,6 +11,7 @@ import (
 	"github.com/VATUSA/primary-api/views/v3/notification"
 	rating_change "github.com/VATUSA/primary-api/views/v3/rating-change"
 	"github.com/VATUSA/primary-api/views/v3/roster"
+	trainingrecords "github.com/VATUSA/primary-api/views/v3/training-records"
 	user_flag "github.com/VATUSA/primary-api/views/v3/user-flag"
 	user_notification "github.com/VATUSA/primary-api/views/v3/user-notification"
 	user_role "github.com/VATUSA/primary-api/views/v3/user-role"
@@ -61,6 +62,10 @@ func Router(r chi.Router) {
 		})
 
 		r.With(middleware.NotGuest, middleware.CanViewUser).Get("/roster", roster.GetUserRosters)
+
+		r.Route("/training", func(r chi.Router) {
+			trainingrecords.Router(r)
+		})
 
 		r.Route("/user-flag", func(r chi.Router) {
 			user_flag.Router(r)

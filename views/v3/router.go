@@ -4,6 +4,7 @@ import (
 	"github.com/VATUSA/primary-api/pkg/config"
 	"github.com/VATUSA/primary-api/views/v3/event"
 	"github.com/VATUSA/primary-api/views/v3/facility"
+	"github.com/VATUSA/primary-api/views/v3/training"
 	"github.com/VATUSA/primary-api/views/v3/user"
 	"github.com/go-chi/chi/v5"
 )
@@ -19,5 +20,9 @@ func Router(r chi.Router, cfg *config.Config) {
 		})
 
 		r.Get("/events", event.GetAllEvents)
+
+		r.Route("/training", func(r chi.Router) {
+			training.Router(r)
+		})
 	})
 }

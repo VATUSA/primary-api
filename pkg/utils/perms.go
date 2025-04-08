@@ -109,3 +109,17 @@ func IsInstructor(user *models.User, facility constants.FacilityID) bool {
 
 	return false
 }
+
+func IsMentor(user *models.User, facility constants.FacilityID) bool {
+	for _, roster := range user.Roster {
+		if roster.Facility == facility {
+			for _, roles := range roster.Roles {
+				if roles.RoleID == constants.MentorRole {
+					return true
+				}
+			}
+		}
+	}
+
+	return false
+}

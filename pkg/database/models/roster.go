@@ -19,7 +19,7 @@ type Roster struct {
 	Roles     []UserRole           `json:"roles" gorm:"foreignKey:RosterID"`
 	CreatedAt time.Time            `json:"created_at" example:"2021-01-01T00:00:00Z"`
 	UpdatedAt time.Time            `json:"updated_at" example:"2021-01-01T00:00:00Z"`
-	DeletedAt gorm.DeletedAt       `json:"deleted_at" example:"2021-01-01T00:00:00Z"` // Soft Deletes for logging
+	DeletedAt time.Time            `json:"deleted_at" example:"2021-01-01T00:00:00Z"`
 }
 
 func (r *Roster) BeforeCreate(tx *gorm.DB) error {

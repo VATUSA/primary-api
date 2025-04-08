@@ -10,6 +10,8 @@ func CanEditRoster(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		targetFacility := utils.GetFacilityCtx(r)
 
+		roster := utils.GetRosterCtx(r)
+
 		credentials := GetCredentials(r)
 		if credentials.User != nil {
 			if utils.IsVATUSAStaff(credentials.User) {
@@ -18,6 +20,11 @@ func CanEditRoster(next http.Handler) http.Handler {
 			}
 
 			if utils.IsFacilitySeniorStaff(credentials.User, targetFacility.ID) {
+				next.ServeHTTP(w, r)
+				return
+			}
+
+			if roster.Visiting && roster.CID == credentials.User.CID {
 				next.ServeHTTP(w, r)
 				return
 			}

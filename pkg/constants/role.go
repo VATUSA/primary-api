@@ -435,6 +435,26 @@ func (r RoleID) IsValidRole() bool {
 	return ok
 }
 
+func (r RoleID) IsFacilityStaff() bool {
+	switch r {
+	case AirTrafficManagerRole, DeputyAirTrafficManagerRole, TrainingAdministratorRole:
+		return true
+	case EventCoordinatorRole, FacilityEngineerRole, WebMasterRole:
+		return true
+	}
+
+	return false
+}
+
+func (r RoleID) IsAssistant() bool {
+	switch r {
+	case AssistantEventCoordinator, AssistantFacilityEngineer, AssistantWebMasterRole:
+		return true
+	}
+
+	return false
+}
+
 func (r RoleID) DisplayName() string {
 	return Roles[r].Name
 }

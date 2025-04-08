@@ -4,6 +4,7 @@ import (
 	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/types"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -18,12 +19,77 @@ type RosterRequest struct {
 	UpdatedAt   time.Time            `json:"updated_at" example:"2021-01-01T00:00:00Z"`
 }
 
+func (rr *RosterRequest) BeforeUpdate(tx *gorm.DB) error {
+	oldRR := &RosterRequest{ID: rr.ID}
+	if err := oldRR.Get(); err != nil {
+		return err
+	}
+	if oldRR.Status == types.Pending && rr.Status == types.Accepted {
+		roster := &Roster{
+			CID:      rr.CID,
+			Facility: rr.Facility,
+			OIs:      "",
+			Home:     false,
+			Visiting: false,
+			Status:   "Active",
+		}
+
+		if rr.RequestType == types.Visiting {
+			roster.Visiting = true
+		} else {
+			roster.Home = true
+		}
+
+		if err := roster.Create(); err != nil {
+			return err
+		}
+
+		// Transfers:
+		// On accepting a transfer remove the user from their current facility
+		if rr.RequestType == types.Transferring {
+			rosters, err := GetRostersByCID(rr.CID)
+			if err != nil {
+				return err
+			}
+
+			for _, r := range rosters {
+				if r.Facility != rr.Facility && r.Home {
+					// if the user is an assistant add them to the new facility as a visitor
+					for _, role := range r.Roles {
+						if role.RoleID.IsAssistant() {
+							roster := &Roster{
+								CID:      r.CID,
+								Facility: r.Facility,
+								OIs:      r.OIs,
+								Home:     false,
+								Visiting: true,
+								Status:   "Active",
+							}
+
+							if err := roster.Create(); err != nil {
+								return err
+							}
+							break
+						}
+					}
+
+					if err := r.Delete(); err != nil {
+						return err
+					}
+				}
+			}
+		}
+	}
+
+	return nil
+}
+
 func (rr *RosterRequest) Create() error {
 	return database.DB.Create(rr).Error
 }
 
 func (rr *RosterRequest) Update() error {
-	return database.DB.Save(rr).Error
+	return database.DB.Updates(rr).Error
 }
 
 func (rr *RosterRequest) Delete() error {
@@ -37,6 +103,23 @@ func (rr *RosterRequest) Get() error {
 func GetAllRosterRequests() ([]RosterRequest, error) {
 	var rosterRequests []RosterRequest
 	return rosterRequests, database.DB.Find(&rosterRequests).Error
+}
+
+func GetFilteredRosterRequests(cid uint, reqType types.RequestType, dateAfter time.Time) ([]RosterRequest, error) {
+	var rosterRequests []RosterRequest
+
+	query := database.DB
+	if cid != 0 {
+		query = query.Where("cid = ?", cid)
+	}
+	if reqType != "" {
+		query = query.Where("request_type = ?", reqType)
+	}
+	if !dateAfter.IsZero() {
+		query = query.Where("created_at > ?", dateAfter)
+	}
+
+	return rosterRequests, query.Find(&rosterRequests).Error
 }
 
 func GetAllRosterRequestsByCID(cid uint) ([]RosterRequest, error) {

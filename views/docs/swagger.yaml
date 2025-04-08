@@ -1083,7 +1083,6 @@ definitions:
         example: "2021-01-01T00:00:00Z"
         type: string
       deleted_at:
-        description: Soft Deletes for logging
         example: "2021-01-01T00:00:00Z"
         type: string
       facility:
@@ -1173,6 +1172,32 @@ definitions:
         $ref: '#/definitions/types.StatusType'
       updated_at:
         example: "2021-01-01T00:00:00Z"
+        type: string
+    type: object
+  training.request:
+    properties:
+      name:
+        type: string
+      template:
+        items:
+          type: integer
+        type: array
+    type: object
+  training.response:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      last_updated_by:
+        type: integer
+      name:
+        type: string
+      template:
+        items:
+          type: integer
+        type: array
+      updated_at:
         type: string
     type: object
   types.FeedbackRating:
@@ -1408,7 +1433,7 @@ definitions:
         allOf:
         - $ref: '#/definitions/constants.FacilityID'
         example: ZDV
-      role_id:
+      role:
         allOf:
         - $ref: '#/definitions/constants.RoleID'
         example: ATM
@@ -3511,6 +3536,92 @@ paths:
       summary: Delete a roster
       tags:
       - roster
+  /training/ots/templates:
+    get:
+      consumes:
+      - application/json
+      description: List all OTS templates
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/training.response'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: List all OTS templates
+      tags:
+      - training
+  /training/ots/templates/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an OTS template
+      parameters:
+      - description: Template ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Delete an OTS template
+      tags:
+      - training
+    patch:
+      consumes:
+      - application/json
+      description: Patch an OTS template
+      parameters:
+      - description: Template ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Template
+        in: body
+        name: template
+        required: true
+        schema:
+          $ref: '#/definitions/training.request'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/training.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Patch an OTS template
+      tags:
+      - training
   /user/:
     get:
       consumes:

@@ -37,7 +37,16 @@ func GetAllRatingChanges() ([]RatingChange, error) {
 	return ratingChanges, database.DB.Find(&ratingChanges).Error
 }
 
-func GetAllRatingChangesByCID(cid uint) ([]RatingChange, error) {
+func GetFilteredRatingChanges(cid uint, dateAfter time.Time) ([]RatingChange, error) {
 	var ratingChanges []RatingChange
-	return ratingChanges, database.DB.Where("cid = ?", cid).Find(&ratingChanges).Error
+
+	query := database.DB
+	if cid != 0 {
+		query = query.Where("cid = ?", cid)
+	}
+	if !dateAfter.IsZero() {
+		query = query.Where("created_at > ?", dateAfter)
+	}
+
+	return ratingChanges, query.Find(&ratingChanges).Error
 }

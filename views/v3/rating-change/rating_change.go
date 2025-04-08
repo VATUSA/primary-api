@@ -10,6 +10,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"net/http"
 	"sort"
+	"time"
 )
 
 type Request struct {
@@ -115,7 +116,7 @@ func CreateRatingChange(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} utils.ErrResponse
 // @Router /user/{cid}/rating-change [get]
 func ListRatingChanges(w http.ResponseWriter, r *http.Request) {
-	rc, err := models.GetAllRatingChangesByCID(utils.GetUserCtx(r).CID)
+	rc, err := models.GetFilteredRatingChanges(utils.GetUserCtx(r).CID, time.Time{})
 	if err != nil {
 		utils.Render(w, r, utils.ErrInvalidRequest(err))
 		return

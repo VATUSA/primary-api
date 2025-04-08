@@ -185,6 +185,36 @@ func GetRosterRequestCtx(r *http.Request) *models.RosterRequest {
 	return rr
 }
 
+type TrainingNoteKey struct{}
+
+func GetTrainingNoteCtx(r *http.Request) *models.TrainingNotes {
+	tn, ok := r.Context().Value(TrainingNoteKey{}).(*models.TrainingNotes)
+	if !ok {
+		return nil
+	}
+	return tn
+}
+
+type OTSRecord struct{}
+
+func GetOTSRecordCtx(r *http.Request) *models.OTSRecord {
+	otsr, ok := r.Context().Value(OTSRecord{}).(*models.OTSRecord)
+	if !ok {
+		return nil
+	}
+	return otsr
+}
+
+type OTSTemplateKey struct{}
+
+func GetOTSTemplateCtx(r *http.Request) *models.OTSTemplate {
+	otst, ok := r.Context().Value(OTSTemplateKey{}).(*models.OTSTemplate)
+	if !ok {
+		return nil
+	}
+	return otst
+}
+
 type UserNotificationKey struct{}
 
 func GetUserNotificationCtx(r *http.Request) *models.UserNotification {
