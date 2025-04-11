@@ -29,7 +29,7 @@ func AutoMigrate() {
 		&UserFlag{},
 		&UserRole{},
 		&OTSTemplate{},
-		&OTSRecord{},
+		&RatingExamRecord{},
 		&TrainingNotes{},
 	)
 	if err != nil {
@@ -61,7 +61,7 @@ func DropTables() {
 		&UserFlag{},
 		&UserRole{},
 		&OTSTemplate{},
-		&OTSRecord{},
+		&RatingExamRecord{},
 		&TrainingNotes{},
 	)
 	if err != nil {

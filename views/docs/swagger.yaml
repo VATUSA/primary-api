@@ -1174,7 +1174,19 @@ definitions:
         example: "2021-01-01T00:00:00Z"
         type: string
     type: object
-  training.request:
+  time.Duration:
+    enum:
+    - 1
+    - 1000
+    - 1000000
+    - 1000000000
+    type: integer
+    x-enum-varnames:
+    - Nanosecond
+    - Microsecond
+    - Millisecond
+    - Second
+  training.otsTemplateRequest:
     properties:
       name:
         type: string
@@ -1183,7 +1195,7 @@ definitions:
           type: integer
         type: array
     type: object
-  training.response:
+  training.otsTemplateResponse:
     properties:
       created_at:
         type: string
@@ -1199,6 +1211,99 @@ definitions:
         type: array
       updated_at:
         type: string
+    type: object
+  trainingrecords.noteRequest:
+    properties:
+      duration:
+        $ref: '#/definitions/time.Duration'
+      facility:
+        $ref: '#/definitions/constants.FacilityID'
+      notes:
+        type: string
+      position:
+        type: string
+      rating_exam_id:
+        type: integer
+      session_date:
+        type: string
+    type: object
+  trainingrecords.noteResponse:
+    properties:
+      created_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      duration:
+        allOf:
+        - $ref: '#/definitions/time.Duration'
+        example: 60
+      facility:
+        allOf:
+        - $ref: '#/definitions/constants.FacilityID'
+        example: ZDV
+      id:
+        example: 1
+        type: integer
+      instructor_cid:
+        example: 1293257
+        type: integer
+      instructor_name:
+        type: string
+      notes:
+        example: Great job!
+        type: string
+      position:
+        example: DEN_DEL
+        type: string
+      rating_exam_id:
+        example: 1
+        type: integer
+      rating_exam_notes:
+        type: string
+      rating_exam_result:
+        type: boolean
+      session_date:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      student_cid:
+        example: 1293257
+        type: integer
+      student_name:
+        type: string
+      updated_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+    type: object
+  trainingrecords.otsRecordRequest:
+    properties:
+      data:
+        items:
+          type: integer
+        type: array
+      notes:
+        type: string
+      result:
+        type: boolean
+    type: object
+  trainingrecords.otsRecordResponse:
+    properties:
+      created_at:
+        type: string
+      data:
+        description: Stores form fields dynamically
+        items:
+          type: integer
+        type: array
+      id:
+        type: integer
+      instructor_cid:
+        type: integer
+      notes:
+        type: string
+      result:
+        description: True = Passed, False = Failed
+        type: boolean
+      student_cid:
+        type: integer
     type: object
   types.FeedbackRating:
     enum:
@@ -3536,6 +3641,45 @@ paths:
       summary: Delete a roster
       tags:
       - roster
+  /facility/{FacilityID}/training/notes:
+    get:
+      consumes:
+      - application/json
+      description: List all training notes for a specific facility
+      parameters:
+      - description: Facility ID
+        in: path
+        name: FacilityID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/trainingrecords.noteResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: List training notes for a Facility
+      tags:
+      - training
   /training/ots/templates:
     get:
       consumes:
@@ -3548,7 +3692,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/training.response'
+              $ref: '#/definitions/training.otsTemplateResponse'
             type: array
         "401":
           description: Unauthorized
@@ -3563,6 +3707,35 @@ paths:
           schema:
             $ref: '#/definitions/utils.ErrResponse'
       summary: List all OTS templates
+      tags:
+      - training
+    post:
+      consumes:
+      - application/json
+      description: Create an OTS template
+      parameters:
+      - description: Template
+        in: body
+        name: template
+        required: true
+        schema:
+          $ref: '#/definitions/training.otsTemplateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/training.otsTemplateResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Create an OTS template
       tags:
       - training
   /training/ots/templates/{id}:
@@ -3603,14 +3776,14 @@ paths:
         name: template
         required: true
         schema:
-          $ref: '#/definitions/training.request'
+          $ref: '#/definitions/training.otsTemplateRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/training.response'
+            $ref: '#/definitions/training.otsTemplateResponse'
         "400":
           description: Bad Request
           schema:
@@ -4642,6 +4815,253 @@ paths:
       summary: Get rosters by user
       tags:
       - roster
+  /user/{cid}/training/notes:
+    get:
+      consumes:
+      - application/json
+      description: List all training notes for a specific user
+      parameters:
+      - description: CID
+        in: path
+        name: cid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/trainingrecords.noteResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: List training notes for a user
+      tags:
+      - training
+    post:
+      consumes:
+      - application/json
+      description: Create a new training note
+      parameters:
+      - description: CID
+        in: path
+        name: cid
+        required: true
+        type: string
+      - description: Training Note
+        in: body
+        name: note
+        required: true
+        schema:
+          $ref: '#/definitions/trainingrecords.noteRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/trainingrecords.noteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Create a new training note
+      tags:
+      - training
+  /user/{cid}/training/notes/{note_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a specific training note by its ID
+      parameters:
+      - description: Note ID
+        in: path
+        name: note_id
+        required: true
+        type: integer
+      - description: CID
+        in: path
+        name: cid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Delete a specific training note
+      tags:
+      - training
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a specific training note by its ID
+      parameters:
+      - description: Note ID
+        in: path
+        name: note_id
+        required: true
+        type: integer
+      - description: CID
+        in: path
+        name: cid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/trainingrecords.noteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Get a specific training note
+      tags:
+      - training
+  /user/{cid}/training/ots:
+    get:
+      consumes:
+      - application/json
+      description: List all OTS Records for user
+      parameters:
+      - description: CID
+        in: path
+        name: cid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/trainingrecords.otsRecordResponse'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: List all OTS Records for user
+      tags:
+      - training
+    post:
+      consumes:
+      - application/json
+      description: Create a new OTS Record
+      parameters:
+      - description: CID
+        in: path
+        name: cid
+        required: true
+        type: string
+      - description: OTS Record
+        in: body
+        name: otsRecordRequest
+        required: true
+        schema:
+          $ref: '#/definitions/trainingrecords.otsRecordRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/trainingrecords.otsRecordResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrResponse'
+      summary: Create a new OTS Record
+      tags:
+      - training
   /user/{cid}/user-flag:
     delete:
       consumes:

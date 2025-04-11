@@ -200,7 +200,7 @@ func MigrateUsers(oldDbConn *gorm.DB) {
 				Home:      true,
 				Visiting:  false,
 				Status:    "Active",
-				DeletedAt: nil,
+				DeletedAt: time.Time{},
 			}
 
 			if err := roster.Create(); err != nil {
@@ -220,7 +220,7 @@ func MigrateUsers(oldDbConn *gorm.DB) {
 					Home:      false,
 					Visiting:  true,
 					Status:    "Active",
-					DeletedAt: nil,
+					DeletedAt: time.Time{},
 				}
 
 				if err := roster.Create(); err != nil {

@@ -34,7 +34,7 @@ func CanCreateReadTrainingNote(next http.Handler) http.Handler {
 				}
 			}
 
-			log.Warnf("User %d, attempted to create/read an OTS.", credentials.User.CID)
+			log.Warnf("User %d, attempted to create/read a training note.", credentials.User.CID)
 		}
 
 		utils.Render(w, r, utils.ErrForbidden)
@@ -59,7 +59,7 @@ func CanDeleteTrainingNote(next http.Handler) http.Handler {
 				}
 			}
 
-			log.Warnf("User %d, attempted to create/read an OTS.", credentials.User.CID)
+			log.Warnf("User %d, attempted to delete a training note.", credentials.User.CID)
 		}
 
 		utils.Render(w, r, utils.ErrForbidden)

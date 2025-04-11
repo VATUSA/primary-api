@@ -31,7 +31,7 @@ import (
 // @name x-api-key
 
 func Router(r chi.Router, cfg *config.Config) {
-	v3.Router(r, cfg)
+	v3.Router(r)
 
 	docs.SwaggerInfo.Host = cfg.API.BaseURL[strings.Index(cfg.API.BaseURL, "://")+3:]
 

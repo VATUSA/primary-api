@@ -13,13 +13,12 @@ import (
 )
 
 type noteRequest struct {
-	Facility    constants.FacilityID `json:"facility"`
-	Position    string               `json:"position"`
-	Duration    time.Duration        `json:"duration"`
-	Score       uint                 `json:"score"`
-	Notes       string               `json:"notes"`
-	OTSRecordID uint                 `json:"ots_record_id"`
-	SessionDate time.Time            `json:"session_date"`
+	Facility     constants.FacilityID `json:"facility"`
+	Position     string               `json:"position"`
+	Duration     time.Duration        `json:"duration"`
+	Notes        string               `json:"notes"`
+	RatingExamID uint                 `json:"rating_exam_id"`
+	SessionDate  time.Time            `json:"session_date"`
 }
 
 func (req *noteRequest) Validate() error {
@@ -35,10 +34,25 @@ func (req *noteRequest) Bind(r *http.Request) error {
 
 type noteResponse struct {
 	*models.TrainingNotes
+	StudentName      string `json:"student_name"`
+	InstructorName   string `json:"instructor_name"`
+	RatingExamNotes  string `json:"rating_exam_notes"`
+	RatingExamResult bool   `json:"rating_exam_result"`
 }
 
 func newNoteResponse(note *models.TrainingNotes) *noteResponse {
-	return &noteResponse{note}
+	resp := &noteResponse{
+		TrainingNotes:  note,
+		StudentName:    note.Student.FirstName + " " + note.Student.LastName,
+		InstructorName: note.Instructor.FirstName + " " + note.Instructor.LastName,
+	}
+
+	if note.RatingExam != nil {
+		resp.RatingExamNotes = note.RatingExam.Notes
+		resp.RatingExamResult = note.RatingExam.Result
+	}
+
+	return resp
 }
 
 func (res *noteResponse) Render(w http.ResponseWriter, r *http.Request) error {
@@ -78,13 +92,12 @@ func createNote(w http.ResponseWriter, r *http.Request) {
 	}
 
 	note := &models.TrainingNotes{
-		Facility:    data.Facility,
-		Position:    data.Position,
-		Duration:    data.Duration,
-		Score:       data.Score,
-		Notes:       data.Notes,
-		OTSRecordID: data.OTSRecordID,
-		SessionDate: data.SessionDate,
+		Facility:     data.Facility,
+		Position:     data.Position,
+		Duration:     data.Duration,
+		Notes:        data.Notes,
+		RatingExamID: data.RatingExamID,
+		SessionDate:  data.SessionDate,
 	}
 
 	note.StudentCID = utils.GetUserCtx(r).CID
@@ -106,7 +119,7 @@ func createNote(w http.ResponseWriter, r *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param cid path string true "CID"
-// @Success 200 {object} noteResponse
+// @Success 200 {object} []noteResponse
 // @Failure 400 {object} utils.ErrResponse
 // @Failure 401 {object} utils.ErrResponse
 // @Failure 403 {object} utils.ErrResponse
@@ -117,6 +130,35 @@ func listNotes(w http.ResponseWriter, r *http.Request) {
 
 	// Fetch the training notes for the user
 	notes, err := models.GetFilteredTrainingNotes(map[string]interface{}{"student_cid": cid})
+	if err != nil {
+		utils.Render(w, r, utils.ErrInternalServerWithErr(err))
+		return
+	}
+
+	if err := render.RenderList(w, r, newNoteListResponse(notes)); err != nil {
+		utils.Render(w, r, utils.ErrRender(err))
+		return
+	}
+}
+
+// ListNotesForFac godoc
+// @Summary List training notes for a Facility
+// @Description List all training notes for a specific facility
+// @Tags training
+// @Accept  json
+// @Produce  json
+// @Param FacilityID path string true "Facility ID"
+// @Success 200 {object} []noteResponse
+// @Failure 400 {object} utils.ErrResponse
+// @Failure 401 {object} utils.ErrResponse
+// @Failure 403 {object} utils.ErrResponse
+// @Failure 500 {object} utils.ErrResponse
+// @Router /facility/{FacilityID}/training/notes [get]
+func ListNotesForFac(w http.ResponseWriter, r *http.Request) {
+	fac := utils.GetFacilityCtx(r)
+
+	// Fetch the training notes for the facility
+	notes, err := models.GetFilteredTrainingNotes(map[string]interface{}{"facility": fac.ID})
 	if err != nil {
 		utils.Render(w, r, utils.ErrInternalServerWithErr(err))
 		return

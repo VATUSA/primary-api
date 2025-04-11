@@ -29,21 +29,21 @@ func (req *otsRecordRequest) Bind(r *http.Request) error {
 }
 
 type otsRecordResponse struct {
-	*models.OTSRecord
+	*models.RatingExamRecord
 }
 
-func newOTSRecordResponse(temp *models.OTSRecord) *otsRecordResponse {
+func newOTSRecordResponse(temp *models.RatingExamRecord) *otsRecordResponse {
 	return &otsRecordResponse{temp}
 }
 
 func (res *otsRecordResponse) Render(w http.ResponseWriter, r *http.Request) error {
-	if res.OTSRecord == nil {
+	if res.RatingExamRecord == nil {
 		return errors.New("OTS Record not found")
 	}
 	return nil
 }
 
-func newOTSRecordList(templates []models.OTSRecord) []render.Renderer {
+func newOTSRecordList(templates []models.RatingExamRecord) []render.Renderer {
 	list := []render.Renderer{}
 	for idx := range templates {
 		list = append(list, newOTSRecordResponse(&templates[idx]))
@@ -73,7 +73,7 @@ func createOTSRecord(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	record := &models.OTSRecord{
+	record := &models.RatingExamRecord{
 		StudentCID: cid,
 		Data:       data.Data,
 		Notes:      data.Notes,

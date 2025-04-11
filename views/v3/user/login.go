@@ -25,6 +25,7 @@ import (
 func GetLogin(w http.ResponseWriter, r *http.Request) {
 	state, err := gonanoid.Generate("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 64)
 	if err != nil {
+		log.WithError(err).Error("Error generating random state")
 		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}
@@ -34,6 +35,7 @@ func GetLogin(w http.ResponseWriter, r *http.Request) {
 		"redirect": r.URL.Query().Get("redirect"),
 	})
 	if err != nil {
+		log.WithError(err).Error("Error creating session")
 		utils.Render(w, r, utils.ErrInternalServer)
 		return
 	}

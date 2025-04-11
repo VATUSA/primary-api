@@ -197,8 +197,8 @@ func GetTrainingNoteCtx(r *http.Request) *models.TrainingNotes {
 
 type OTSRecord struct{}
 
-func GetOTSRecordCtx(r *http.Request) *models.OTSRecord {
-	otsr, ok := r.Context().Value(OTSRecord{}).(*models.OTSRecord)
+func GetOTSRecordCtx(r *http.Request) *models.RatingExamRecord {
+	otsr, ok := r.Context().Value(OTSRecord{}).(*models.RatingExamRecord)
 	if !ok {
 		return nil
 	}

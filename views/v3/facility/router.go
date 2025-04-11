@@ -13,6 +13,7 @@ import (
 	"github.com/VATUSA/primary-api/views/v3/news"
 	"github.com/VATUSA/primary-api/views/v3/roster"
 	roster_request "github.com/VATUSA/primary-api/views/v3/roster-request"
+	trainingrecords "github.com/VATUSA/primary-api/views/v3/training-records"
 	"github.com/go-chi/chi/v5"
 	"net/http"
 )
@@ -60,6 +61,8 @@ func Router(r chi.Router) {
 		r.Route("/roster-request", func(r chi.Router) {
 			roster_request.Router(r)
 		})
+
+		r.Get("/training/notes", trainingrecords.ListNotesForFac)
 	})
 }
 

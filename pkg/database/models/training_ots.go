@@ -4,10 +4,11 @@ import (
 	"errors"
 	"github.com/VATUSA/primary-api/pkg/database"
 	"gorm.io/datatypes"
+	"gorm.io/gorm"
 	"time"
 )
 
-type OTSRecord struct {
+type RatingExamRecord struct {
 	ID            uint           `json:"id" gorm:"primaryKey"`
 	StudentCID    uint           `json:"student_cid" gorm:"index"`
 	InstructorCID uint           `json:"instructor_cid" gorm:"index"`
@@ -17,7 +18,7 @@ type OTSRecord struct {
 	CreatedAt     time.Time      `json:"created_at"`
 }
 
-func (otsRecord *OTSRecord) BeforeCreate() error {
+func (otsRecord *RatingExamRecord) BeforeCreate(tx *gorm.DB) error {
 	// check if student CID is valid
 	if !IsValidUser(otsRecord.StudentCID) {
 		return errors.New("invalid student CID")
@@ -26,24 +27,24 @@ func (otsRecord *OTSRecord) BeforeCreate() error {
 	return nil
 }
 
-func (otsRecord *OTSRecord) Create() error {
+func (otsRecord *RatingExamRecord) Create() error {
 	return database.DB.Create(otsRecord).Error
 }
 
-func (otsRecord *OTSRecord) Update() error {
+func (otsRecord *RatingExamRecord) Update() error {
 	return database.DB.Updates(otsRecord).Error
 }
 
-func (otsRecord *OTSRecord) Delete() error {
+func (otsRecord *RatingExamRecord) Delete() error {
 	return database.DB.Delete(otsRecord).Error
 }
 
-func (otsRecord *OTSRecord) Get() error {
+func (otsRecord *RatingExamRecord) Get() error {
 	return database.DB.Where("id = ?", otsRecord.ID).First(otsRecord).Error
 }
 
-func GetFilteredOTSRecords(filter map[string]interface{}) ([]OTSRecord, error) {
-	var records []OTSRecord
+func GetFilteredOTSRecords(filter map[string]interface{}) ([]RatingExamRecord, error) {
+	var records []RatingExamRecord
 	err := database.DB.Where(filter).Find(&records).Error
 	return records, err
 }
