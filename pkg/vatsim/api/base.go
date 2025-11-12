@@ -34,7 +34,7 @@ func GetLocation(cid uint) (Location, error) {
 	}
 
 	if resp.StatusCode > 299 {
-		log.Warnf("Failed to get division for %s: %s", cid, body)
+		log.Warnf("Failed to get division for %d: %s", cid, body)
 		return Location{}, fmt.Errorf("invalid status code: %d", resp.StatusCode)
 	}
 
@@ -76,7 +76,7 @@ func GetHours(cid uint) (UserStats, error) {
 	}
 
 	if resp.StatusCode > 299 {
-		log.Warnf("Failed to get stats for %s: %s", cid, body)
+		log.Warnf("Failed to get stats for %d: %s", cid, body)
 		return UserStats{}, fmt.Errorf("invalid status code: %d", resp.StatusCode)
 	}
 
@@ -121,7 +121,7 @@ func GetATCConnections(cid uint) (ATCConnections, error) {
 	}
 
 	if resp.StatusCode > 299 {
-		log.Warnf("Failed to get stats for %s: %s", cid, body)
+		log.Warnf("Failed to get stats for %d: %s", cid, body)
 		return ATCConnections{}, fmt.Errorf("invalid status code: %d", resp.StatusCode)
 	}
 

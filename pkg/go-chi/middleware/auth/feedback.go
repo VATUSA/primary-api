@@ -120,7 +120,7 @@ func CanLeaveFeedback(next http.Handler) http.Handler {
 
 		if credentials.User != nil {
 			if req.Status != types.Pending {
-				log.Error("User %d, attempted to create feedback with status: %s. No permissions.", credentials.User.CID, req.Status)
+				log.Errorf("User %d, attempted to create feedback with status: %s. No permissions.", credentials.User.CID, req.Status)
 				utils.Render(w, r, utils.ErrForbidden)
 				return
 			}
