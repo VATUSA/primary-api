@@ -103,7 +103,7 @@ func main() {
 }
 
 func MigrateFacilities(oldDbConn *gorm.DB) {
-	fmt.Sprintln("Migrating facilities")
+	fmt.Println("Migrating facilities")
 
 	var facilities []Facility
 	oldDbConn.Table("facilities").Find(&facilities)
@@ -126,7 +126,7 @@ func MigrateFacilities(oldDbConn *gorm.DB) {
 		}
 	}
 
-	fmt.Sprintln("Done migrating facilities")
+	fmt.Println("Done migrating facilities")
 }
 
 func MigrateUsers(oldDbConn *gorm.DB) {

@@ -2,14 +2,16 @@ package views
 
 import (
 	"fmt"
+
 	"github.com/VATUSA/primary-api/pkg/config"
 	"github.com/VATUSA/primary-api/views/docs"
-	_ "github.com/VATUSA/primary-api/views/docs"
+
+	"net/http"
+	"strings"
+
 	v3 "github.com/VATUSA/primary-api/views/v3"
 	"github.com/go-chi/chi/v5"
 	httpSwagger "github.com/swaggo/http-swagger"
-	"net/http"
-	"strings"
 )
 
 // @title           VATUSA API

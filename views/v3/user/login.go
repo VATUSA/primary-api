@@ -4,6 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
+	"net/url"
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/VATUSA/primary-api/pkg/config"
 	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/cookie"
@@ -14,12 +21,6 @@ import (
 	gonanoid "github.com/matoous/go-nanoid"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
-	"io"
-	"net/http"
-	"net/url"
-	"strconv"
-	"strings"
-	"time"
 )
 
 func GetLogin(w http.ResponseWriter, r *http.Request) {
@@ -292,7 +293,7 @@ func exchangeToken(ctx context.Context, oauthConfig *oauth2.Config, code string)
 	if err != nil {
 		return nil, fmt.Errorf("error sending token request: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("unexpected token response status: %s", resp.Status)
