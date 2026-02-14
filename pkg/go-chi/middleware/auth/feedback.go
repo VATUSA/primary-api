@@ -2,11 +2,12 @@ package middleware
 
 import (
 	"encoding/json"
+	"net/http"
+	"strconv"
+
 	"github.com/VATUSA/primary-api/pkg/database/types"
 	"github.com/VATUSA/primary-api/pkg/utils"
 	log "github.com/sirupsen/logrus"
-	"net/http"
-	"strconv"
 )
 
 func CanViewFeedback(next http.Handler) http.Handler {
@@ -120,7 +121,7 @@ func CanLeaveFeedback(next http.Handler) http.Handler {
 
 		if credentials.User != nil {
 			if req.Status != types.Pending {
-				log.Error("User %d, attempted to create feedback with status: %s. No permissions.", credentials.User.CID, req.Status)
+				log.Errorf("User %d, attempted to create feedback with status: %s. No permissions.", credentials.User.CID, req.Status)
 				utils.Render(w, r, utils.ErrForbidden)
 				return
 			}
