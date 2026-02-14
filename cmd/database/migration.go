@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"sync"
+	"time"
+
 	"github.com/VATUSA/primary-api/pkg/config"
 	"github.com/VATUSA/primary-api/pkg/constants"
 	"github.com/VATUSA/primary-api/pkg/database"
 	"github.com/VATUSA/primary-api/pkg/database/models"
 	"github.com/joho/godotenv"
 	"gorm.io/gorm"
-	"os"
-	"sync"
-	"time"
 )
 
 type Facility struct {
@@ -200,7 +201,6 @@ func MigrateUsers(oldDbConn *gorm.DB) {
 				Home:      true,
 				Visiting:  false,
 				Status:    "Active",
-				DeletedAt: nil,
 			}
 
 			if err := roster.Create(); err != nil {
@@ -220,7 +220,6 @@ func MigrateUsers(oldDbConn *gorm.DB) {
 					Home:      false,
 					Visiting:  true,
 					Status:    "Active",
-					DeletedAt: nil,
 				}
 
 				if err := roster.Create(); err != nil {
